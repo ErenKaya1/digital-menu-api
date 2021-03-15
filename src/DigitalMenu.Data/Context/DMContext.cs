@@ -1,4 +1,5 @@
 using System;
+using DigitalMenu.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Data.Context
@@ -14,5 +15,7 @@ namespace DigitalMenu.Data.Context
         {
             optionsBuilder.LogTo(Console.WriteLine);
         }
+
+        public DbSet<DMUser> User { get; set; }
     }
 }

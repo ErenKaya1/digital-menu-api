@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Data.Context
@@ -7,6 +8,11 @@ namespace DigitalMenu.Data.Context
         public DMContext(DbContextOptions<DMContext> options) : base(options)
         {
 
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.LogTo(Console.WriteLine);
         }
     }
 }

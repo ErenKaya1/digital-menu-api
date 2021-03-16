@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DigitalMenu.Core.Attribute;
@@ -37,7 +38,6 @@ namespace DigitalMenu.Entity.Entities
 
         public bool EmailConfirmed { get; set; } = false;
 
-        public Guid RefreshToken { get; set; }
-        public DateTime RefreshTokenExpirationTime { get; set; }
+        public List<RefreshToken> RefreshTokens { get; set; }
     }
 }

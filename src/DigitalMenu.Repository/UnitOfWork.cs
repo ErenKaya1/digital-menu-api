@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using DigitalMenu.Data.Context;
 using DigitalMenu.Repository.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Repository
 {
@@ -26,7 +27,7 @@ namespace DigitalMenu.Repository
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.InnerException.Message);
-                throw;
+                throw new DbUpdateException();
             }
         }
 

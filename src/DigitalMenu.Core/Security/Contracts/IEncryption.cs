@@ -4,7 +4,7 @@ namespace DigitalMenu.Core.Security.Contracts
 {
     public interface IEncryption
     {
-        Task<string> EncryptText(string text);
-        Task<string> DecryptText(string text);
+        string EncryptText(string text);
+        string DecryptText(string text);
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Security.Contracts;
 using Microsoft.Extensions.Options;
@@ -16,10 +15,9 @@ namespace DigitalMenu.Core.Security
         public Encryption(IOptions<EncryptionConfig> encryptionConfig)
         {
             _encryptionConfig = encryptionConfig;
-            Console.WriteLine(_encryptionConfig.Value.PrivateKey);
         }
     
-        public async Task<string> EncryptText(string text)
+        public string EncryptText(string text)
         {
             try
             {
@@ -31,7 +29,7 @@ namespace DigitalMenu.Core.Security
                     provider.Key = Encoding.ASCII.GetBytes(_encryptionConfig.Value.PrivateKey.Substring(0, 16));
                     provider.IV = Encoding.ASCII.GetBytes(_encryptionConfig.Value.PrivateKey.Substring(8, 8));
 
-                    var encryptedBinary = await EncryptTextToMemory(text, provider.Key, provider.IV);
+                    var encryptedBinary = EncryptTextToMemory(text, provider.Key, provider.IV);
                     return Convert.ToBase64String(encryptedBinary);
                 }
             }
@@ -44,7 +42,7 @@ namespace DigitalMenu.Core.Security
             }
         }
 
-        public async Task<string> DecryptText(string text)
+        public string DecryptText(string text)
         {
             try
             {
@@ -57,7 +55,7 @@ namespace DigitalMenu.Core.Security
                     provider.IV = Encoding.ASCII.GetBytes(_encryptionConfig.Value.PrivateKey.Substring(8, 8));
 
                     var buffer = Convert.FromBase64String(text);
-                    return await DecryptTextFromMemory(buffer, provider.Key, provider.IV);
+                    return DecryptTextFromMemory(buffer, provider.Key, provider.IV);
                 }
             }
             catch (Exception ex)
@@ -69,22 +67,22 @@ namespace DigitalMenu.Core.Security
             }
         }
 
-        private async Task<byte[]> EncryptTextToMemory(string data, byte[] key, byte[] iv)
+        private byte[] EncryptTextToMemory(string data, byte[] key, byte[] iv)
         {
             using (var ms = new MemoryStream())
             {
                 using (var cs = new CryptoStream(ms, new TripleDESCryptoServiceProvider().CreateEncryptor(key, iv), CryptoStreamMode.Write))
                 {
                     var toEncrypt = Encoding.Unicode.GetBytes(data);
-                    await cs.WriteAsync(toEncrypt, 0, toEncrypt.Length);
-                    await cs.FlushFinalBlockAsync();
+                    cs.Write(toEncrypt, 0, toEncrypt.Length);
+                    cs.FlushFinalBlock();
                 }
 
                 return ms.ToArray();
             }
         }
 
-        private async Task<string> DecryptTextFromMemory(byte[] data, byte[] key, byte[] iv)
+        private string DecryptTextFromMemory(byte[] data, byte[] key, byte[] iv)
         {
             using (var ms = new MemoryStream(data))
             {
@@ -92,7 +90,7 @@ namespace DigitalMenu.Core.Security
                 {
                     using (var sr = new StreamReader(cs, Encoding.Unicode))
                     {
-                        return await sr.ReadToEndAsync();
+                        return sr.ReadToEnd();
                     }
                 }
             }

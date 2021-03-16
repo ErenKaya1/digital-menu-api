@@ -1,6 +1,7 @@
 using System;
 using DigitalMenu.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DigitalMenu.Data.Context
 {
@@ -13,7 +14,7 @@ namespace DigitalMenu.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.LogTo(Console.WriteLine);
+            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
         }
 
         public DbSet<DMUser> User { get; set; }

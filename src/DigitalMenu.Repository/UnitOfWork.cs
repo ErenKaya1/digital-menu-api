@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using DigitalMenu.Core.Security.Contracts;
 using DigitalMenu.Data.Context;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
@@ -11,14 +12,15 @@ namespace DigitalMenu.Repository
     {
         private bool disposedValue;
         private readonly DMContext _dbContext;
+        private readonly IEncryption _encryption;
         private IRepository<DMUser> _userRepository;
 
-        public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext);
+        public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext, _encryption);
 
-        public UnitOfWork(DMContext dbContext)
+        public UnitOfWork(DMContext dbContext, IEncryption encryption)
         {
-            if (dbContext == null) return;
             _dbContext = dbContext;
+            _encryption = encryption;
         }
 
         public async Task SaveChangesAsync()

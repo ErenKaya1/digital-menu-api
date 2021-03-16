@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DigitalMenu.Common\DigitalMenu.Common.csproj" />
+    <ProjectReference Include="..\DigitalMenu.Core\DigitalMenu.Core.csproj" />
   </ItemGroup>
 
 </Project>

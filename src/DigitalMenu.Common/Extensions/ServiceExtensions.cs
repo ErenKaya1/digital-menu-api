@@ -1,3 +1,6 @@
+using DigitalMenu.Core.Model;
+using DigitalMenu.Core.Security;
+using DigitalMenu.Core.Security.Contracts;
 using DigitalMenu.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +14,12 @@ namespace DigitalMenu.Common.Extensions
         {
             var connectionString = configuration.GetConnectionString("PostgreSqlProvider");
             services.AddDbContext<DMContext>(options => options.UseNpgsql(connectionString));
+        }
+
+        public static void ConfigureEncryption(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<EncryptionConfig>(configuration.GetSection("EncryptionConfig"));
+            services.AddTransient<IEncryption, Encryption>();
         }
     }
 }

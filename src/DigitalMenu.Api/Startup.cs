@@ -1,4 +1,7 @@
 using DigitalMenu.Common.Extensions;
+using DigitalMenu.Core.Model;
+using DigitalMenu.Core.Security;
+using DigitalMenu.Core.Security.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +30,9 @@ namespace DigitalMenu.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DigitalMenu.Api", Version = "v1" });
             });
 
+
             services.ConfigureDbContext(Configuration);
+            services.ConfigureEncryption(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

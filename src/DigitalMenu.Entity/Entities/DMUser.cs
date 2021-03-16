@@ -21,11 +21,12 @@ namespace DigitalMenu.Entity.Entities
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(200)]
         public string EmailAddress { get; set; }
 
         [Required]
-        [StringLength(20)]
+        public string PasswordHash { get; set; }
+
+        [Required]
         public string PhoneNumber { get; set; }
 
         [Required]

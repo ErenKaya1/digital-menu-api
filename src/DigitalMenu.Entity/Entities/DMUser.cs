@@ -36,5 +36,8 @@ namespace DigitalMenu.Entity.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public bool EmailConfirmed { get; set; } = false;
+
+        public Guid RefreshToken { get; set; }
+        public DateTime RefreshTokenExpirationTime { get; set; }
     }
 }

@@ -11,6 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DigitalMenu.Entity.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System;
 
 namespace DigitalMenu.Common.Extensions
 {
@@ -46,6 +50,33 @@ namespace DigitalMenu.Common.Extensions
             {
                 config.CreateMap<UserDTO, DMUser>();
                 config.CreateMap<DMUser, UserDTO>();
+            });
+        }
+
+        public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<JwtSettings>(configuration.GetSection("Token"));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Token:Issuer"],
+                    ValidAudience = configuration["Token:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"])),
+                    ClockSkew = TimeSpan.Zero
+                };
             });
         }
     }

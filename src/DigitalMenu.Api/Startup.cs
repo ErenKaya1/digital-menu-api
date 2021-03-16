@@ -35,6 +35,7 @@ namespace DigitalMenu.Api
             services.ConfigureHasher(Configuration);
             services.ConfigureRepository(Configuration);
             services.ConfigureAutoMapper(Configuration);
+            services.ConfigureAuthentication(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +51,7 @@ namespace DigitalMenu.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Repository
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity, new()
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly DMContext _dbContext;
         private readonly DbSet<T> _dbSet;

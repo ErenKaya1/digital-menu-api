@@ -2,13 +2,15 @@ using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Security;
 using DigitalMenu.Core.Security.Contracts;
 using DigitalMenu.Data.Context;
+using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository;
 using DigitalMenu.Repository.Contracts;
-using DigitalMenu.Service;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DigitalMenu.Entity.DTOs;
 
 namespace DigitalMenu.Common.Extensions
 {
@@ -36,6 +38,15 @@ namespace DigitalMenu.Common.Extensions
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
+        }
+
+        public static void ConfigureAutoMapper(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAutoMapper(config =>
+            {
+                config.CreateMap<UserDTO, DMUser>();
+                config.CreateMap<DMUser, UserDTO>();
+            });
         }
     }
 }

@@ -14,6 +14,8 @@
   <ItemGroup>
     <ProjectReference Include="..\DigitalMenu.Data\DigitalMenu.Data.csproj" />
     <ProjectReference Include="..\DigitalMenu.Core\DigitalMenu.Core.csproj" />
+    <ProjectReference Include="..\DigitalMenu.Repository\DigitalMenu.Repository.csproj" />
+    <ProjectReference Include="..\DigitalMenu.Service\DigitalMenu.Service.csproj" />
   </ItemGroup>
 
 </Project>

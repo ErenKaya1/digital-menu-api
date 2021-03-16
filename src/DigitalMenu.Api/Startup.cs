@@ -33,6 +33,7 @@ namespace DigitalMenu.Api
             services.ConfigureDbContext(Configuration);
             services.ConfigureEncryption(Configuration);
             services.ConfigureHasher(Configuration);
+            services.ConfigureRepository(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

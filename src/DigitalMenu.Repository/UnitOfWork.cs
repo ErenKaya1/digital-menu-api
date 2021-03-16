@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DigitalMenu.Data.Context;
+using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,9 @@ namespace DigitalMenu.Repository
     {
         private bool disposedValue;
         private readonly DMContext _dbContext;
+        private IRepository<DMUser> _userRepository;
+
+        public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext);
 
         public UnitOfWork(DMContext dbContext)
         {

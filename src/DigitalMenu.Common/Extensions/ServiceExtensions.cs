@@ -21,5 +21,11 @@ namespace DigitalMenu.Common.Extensions
             services.Configure<EncryptionConfig>(configuration.GetSection("EncryptionConfig"));
             services.AddTransient<IEncryption, Encryption>();
         }
+
+        public static void ConfigureHasher(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<HasherConfig>(configuration.GetSection("HasherConfig"));
+            services.AddTransient<IHasher, Hasher>();
+        }
     }
 }

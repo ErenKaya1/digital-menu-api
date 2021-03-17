@@ -8,5 +8,6 @@ namespace DigitalMenu.Repository.Contracts
     {
         Task SaveChangesAsync();
         IRepository<DMUser> UserRepository { get; }
+        IRepository<RefreshToken> RefreshTokenRepository { get; }
     }
 }

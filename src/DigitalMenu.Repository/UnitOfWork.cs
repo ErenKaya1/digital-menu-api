@@ -14,8 +14,10 @@ namespace DigitalMenu.Repository
         private readonly DMContext _dbContext;
         private readonly IEncryption _encryption;
         private IRepository<DMUser> _userRepository;
+        private IRepository<RefreshToken> _refreshTokenRepository;
 
         public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext, _encryption);
+        public IRepository<RefreshToken> RefreshTokenRepository => _refreshTokenRepository ??= new Repository<RefreshToken>(_dbContext, _encryption);
 
         public UnitOfWork(DMContext dbContext, IEncryption encryption)
         {

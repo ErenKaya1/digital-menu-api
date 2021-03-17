@@ -38,14 +38,17 @@ namespace DigitalMenu.Api.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(LoginModel model)
         {
-            var response = await _userService.AuthenticateAsync(model);
+            var response = await _userService.AuthenticateAsync(model, GetClientIpAddress());
 
             if (response.Success)
             {
                 return Ok(new
                 {
-                    token = response.Data.AccessToken,
-                    refreshToken = response.Data.RefreshToken
+                    UserName = response.Data.UserName,
+                    FirstName = response.Data.FirstName,
+                    LastName = response.Data.LastName,
+                    Token = response.Data.AccessToken,
+                    RefreshToken = response.Data.RefreshToken
                 });
             }
 

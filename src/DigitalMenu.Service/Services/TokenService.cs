@@ -1,6 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Entity.Entities;
@@ -36,6 +37,24 @@ namespace DigitalMenu.Service.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public RefreshToken GenerateRefreshToken(string ipAddress)
+        {
+            using (var provider = new RNGCryptoServiceProvider())
+            {
+                var randomBytes = new byte[64];
+                provider.GetBytes(randomBytes);
+
+                return new RefreshToken
+                {
+                    Id = Guid.NewGuid(),
+                    Token = Convert.ToBase64String(randomBytes),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedByIp = ipAddress
+                };
+            }
         }
     }
 }

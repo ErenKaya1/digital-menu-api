@@ -29,23 +29,26 @@ namespace DigitalMenu.Service.Services
         {
             var entity = _mapper.Map<DMUser>(dto);
             entity.PasswordHash = _hasher.CreateHash(dto.Password);
-            _unitOfWork.UserRepository.Add(entity, true);
+            _unitOfWork.UserRepository.Add(entity);
             await _unitOfWork.SaveChangesAsync();
 
             return new ServiceResponse<UserDTO>(true, "user created successfully.");
         }
 
-        public async Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel model)
+        public async Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel model, string ipAddress)
         {
-            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password), true);
+            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password));
             if (user == null) return new ServiceResponse<UserDTO>(false, "user not found.");
 
             var jwtToken = _tokenService.GenerateJwtToken(user);
-            var refreshToken = Guid.NewGuid();
+            var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
+            refreshToken.UserId = user.Id;
+            _unitOfWork.RefreshTokenRepository.Add(refreshToken);
+            await _unitOfWork.SaveChangesAsync();
 
             var data = _mapper.Map<UserDTO>(user);
             data.AccessToken = jwtToken;
-            data.RefreshToken = refreshToken.ToString();
+            data.RefreshToken = refreshToken.Token;
 
             return new ServiceResponse<UserDTO>(true, "authenticated successfully.")
             {

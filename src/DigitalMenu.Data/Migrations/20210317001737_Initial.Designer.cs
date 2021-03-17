@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210316101231_AddedPasswordColumnToUserTable")]
-    partial class AddedPasswordColumnToUserTable
+    [Migration("20210317001737_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,9 +33,6 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

@@ -56,6 +56,7 @@ namespace DigitalMenu.Common.Extensions
         public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JwtSettings>(configuration.GetSection("Token"));
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddAuthentication(options =>
             {

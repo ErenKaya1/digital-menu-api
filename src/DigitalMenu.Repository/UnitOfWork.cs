@@ -29,11 +29,17 @@ namespace DigitalMenu.Repository
             {
                 await _dbContext.SaveChangesAsync();
             }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex?.InnerException.Message);
+                throw new DbUpdateException();
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException.Message);
-                throw new DbUpdateException();
+                Console.WriteLine(ex?.InnerException.Message);
+                throw new Exception();
             }
         }
 

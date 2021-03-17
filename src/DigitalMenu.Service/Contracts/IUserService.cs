@@ -1,10 +1,12 @@
+using System.Threading.Tasks;
+using DigitalMenu.Core.Model.User;
 using DigitalMenu.Entity.DTOs;
-using DigitalMenu.Entity.Entities;
 
 namespace DigitalMenu.Service.Contracts
 {
     public interface IUserService
     {
-        ServiceResponse<DMUser> InsertUser(UserDTO dto);
+        Task<ServiceResponse<UserDTO>> InsertUserAsync(UserDTO dto);
+        Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel dto);
     }
 }

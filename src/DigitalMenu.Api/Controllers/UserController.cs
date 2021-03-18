@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DigitalMenu.Api.Controllers.Base;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Service.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalMenu.Api.Controllers
@@ -10,14 +11,16 @@ namespace DigitalMenu.Api.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ITokenService tokenService)
         {
             _userService = userService;
+            _tokenService = tokenService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var response = await _userService.InsertUserAsync(model, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage);
@@ -33,7 +36,7 @@ namespace DigitalMenu.Api.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate(LoginModel model)
+        public async Task<IActionResult> Authenticate([FromBody] LoginModel model)
         {
             var response = await _userService.AuthenticateAsync(model, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage, code: 401);
@@ -63,6 +66,15 @@ namespace DigitalMenu.Api.Controllers
             };
 
             return Success(data: data);
+        }
+
+        [HttpGet("logout/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> Logout([FromRoute] string userId)
+        {
+            Response.Cookies.Delete("refreshToken");
+            await _tokenService.RevokeRefreshTokensAsync(Guid.Parse(userId), GetClientIpAddress());
+            return Success();
         }
     }
 }

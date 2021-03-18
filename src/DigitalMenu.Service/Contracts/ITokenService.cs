@@ -1,4 +1,6 @@
 using DigitalMenu.Entity.Entities;
+using System;
+using System.Threading.Tasks;
 
 namespace DigitalMenu.Service.Contracts
 {
@@ -6,5 +8,6 @@ namespace DigitalMenu.Service.Contracts
     {
         string GenerateJwtToken(DMUser user);
         RefreshToken GenerateRefreshToken(string ipAddress);
+        Task RevokeRefreshTokensAsync(Guid userId, string ipAddress);
     }
 }

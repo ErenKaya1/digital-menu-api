@@ -68,7 +68,7 @@ namespace DigitalMenu.Api.Controllers
             return Success(data: data);
         }
 
-        [HttpGet("logout/{userId}")]
+        [HttpDelete("logout/{userId}")]
         [Authorize]
         public async Task<IActionResult> Logout([FromRoute] string userId)
         {

@@ -19,5 +19,6 @@ namespace DigitalMenu.Data.Context
 
         public DbSet<DMUser> User { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
+        public DbSet<DMRole> Role { get; set; }
     }
 }

@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210317115344_AddedRefreshTokenTable")]
-    partial class AddedRefreshTokenTable
+    [Migration("20210318230109_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,34 @@ namespace DigitalMenu.Data.Migrations
                 .UseIdentityByDefaultColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.2");
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.DMRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"),
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("1ba9e20b-008a-42fd-aa02-efe0d7ea0143"),
+                            RoleName = "Customer"
+                        });
+                });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMUser", b =>
                 {
@@ -52,6 +80,9 @@ namespace DigitalMenu.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(16)
@@ -59,7 +90,23 @@ namespace DigitalMenu.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("user");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("730a97ef-c332-4b38-a3d1-6006ac5561be"),
+                            CreatedAt = new DateTime(2021, 3, 18, 23, 1, 9, 316, DateTimeKind.Utc).AddTicks(7612),
+                            EmailAddress = "test@gmail.com",
+                            FirstName = "admin",
+                            LastName = "test",
+                            PasswordHash = "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=",
+                            PhoneNumber = "123456789",
+                            RoleId = new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"),
+                            UserName = "admintest"
+                        });
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.RefreshToken", b =>
@@ -101,10 +148,21 @@ namespace DigitalMenu.Data.Migrations
                     b.ToTable("refresh_token");
                 });
 
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.DMUser", b =>
+                {
+                    b.HasOne("DigitalMenu.Entity.Entities.DMRole", "Role")
+                        .WithMany("User")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("DigitalMenu.Entity.Entities.RefreshToken", b =>
                 {
                     b.HasOne("DigitalMenu.Entity.Entities.DMUser", "User")
-                        .WithMany("RefreshTokens")
+                        .WithMany("RefreshToken")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -112,9 +170,14 @@ namespace DigitalMenu.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.DMRole", b =>
+                {
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMUser", b =>
                 {
-                    b.Navigation("RefreshTokens");
+                    b.Navigation("RefreshToken");
                 });
 #pragma warning restore 612, 618
         }

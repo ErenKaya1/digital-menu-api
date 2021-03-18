@@ -38,6 +38,7 @@ namespace DigitalMenu.Service.Services
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("UserId", user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.RoleName)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256),

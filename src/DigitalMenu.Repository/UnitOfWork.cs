@@ -15,9 +15,11 @@ namespace DigitalMenu.Repository
         private readonly IEncryption _encryption;
         private IRepository<DMUser> _userRepository;
         private IRepository<RefreshToken> _refreshTokenRepository;
+        private IRepository<DMRole> _roleRepository;
 
         public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext, _encryption);
         public IRepository<RefreshToken> RefreshTokenRepository => _refreshTokenRepository ??= new Repository<RefreshToken>(_dbContext, _encryption);
+        public IRepository<DMRole> RoleRepository => _roleRepository ??= new Repository<DMRole>(_dbContext, _encryption);
 
         public UnitOfWork(DMContext dbContext, IEncryption encryption)
         {
@@ -34,13 +36,11 @@ namespace DigitalMenu.Repository
             catch (DbUpdateException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine(ex?.InnerException.Message);
                 throw new DbUpdateException();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine(ex?.InnerException.Message);
                 throw new Exception();
             }
         }

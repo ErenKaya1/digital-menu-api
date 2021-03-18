@@ -29,14 +29,21 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress)
         {
+            // check if username and email are valid
             if (await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName || x.EmailAddress == model.EmailAddress).AnyAsync())
                 return new ServiceResponse<UserDTO>(false, "register failed", "username or email is already taken");
 
             var entity = _mapper.Map<DMUser>(model);
             entity.Id = Guid.NewGuid();
             entity.PasswordHash = _hasher.CreateHash(model.Password);
+
+            // add role to user and save
+            entity.RoleId = (await _unitOfWork.RoleRepository.FindOneAsync(x => x.RoleName.ToLower() == "customer")).Id;
             _unitOfWork.UserRepository.Add(entity);
+
             // kullanýcýya subscription atanacak.
+
+            // generate jwt and refresh token
             var jwtToken = _tokenService.GenerateJwtToken(entity);
             var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
             refreshToken.UserId = entity.Id;
@@ -56,9 +63,11 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel model, string ipAddress)
         {
-            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password));
+            // check if username and email are correct
+            var user = await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password)).Include(x => x.Role).FirstOrDefaultAsync();
             if (user == null) return new ServiceResponse<UserDTO>(false, "authentication failed", "username or password incorrect");
 
+            // if correct, generate jwt and refresh token
             var jwtToken = _tokenService.GenerateJwtToken(user);
             var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
             refreshToken.UserId = user.Id;
@@ -74,7 +83,7 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<UserDTO>> RefreshTokenAsync(string token, string ipAddress)
         {
-            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.RefreshToken.Any(x => x.Token == token));
+            var user = await _unitOfWork.UserRepository.Find(x => x.RefreshToken.Any(x => x.Token == token)).Include(x => x.Role).FirstOrDefaultAsync();
             if (user == null) return new ServiceResponse<UserDTO>(false, "no user found with this token");
             var refreshToken = await _unitOfWork.RefreshTokenRepository.FindOneAsync(x => x.UserId == user.Id && x.Token == token && x.CreatedByIp == ipAddress);
             if (refreshToken == null) return new ServiceResponse<UserDTO>(false, "token not found");
@@ -87,10 +96,10 @@ namespace DigitalMenu.Service.Services
             refreshToken.RevokedAt = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             refreshToken.ReplacedByToken = newRefreshToken.Token;
-            
+
             _unitOfWork.RefreshTokenRepository.Update(refreshToken);
             _unitOfWork.RefreshTokenRepository.Add(newRefreshToken);
-            
+
             await _unitOfWork.SaveChangesAsync();
 
             // generate new jwt token

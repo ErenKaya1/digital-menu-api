@@ -17,7 +17,7 @@ namespace DigitalMenu.Api.Controllers.Base
             {
                 Secure = true,
                 HttpOnly = true,
-                Expires = isPersistent ? DateTime.UtcNow.AddDays(7) : null,
+                Expires = isPersistent ? DateTime.UtcNow.AddDays(14) : null,
             };
 
             Response.Cookies.Append("refreshToken", token, cookieOptions);

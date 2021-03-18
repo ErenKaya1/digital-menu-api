@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
+using DigitalMenu.Core.Model.User;
 
 namespace DigitalMenu.Common.Extensions
 {
@@ -50,6 +51,8 @@ namespace DigitalMenu.Common.Extensions
             {
                 config.CreateMap<UserDTO, DMUser>();
                 config.CreateMap<DMUser, UserDTO>();
+                config.CreateMap<DMUser, RegisterModel>();
+                config.CreateMap<RegisterModel, DMUser>();
             });
         }
 
@@ -75,7 +78,7 @@ namespace DigitalMenu.Common.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["Token:Issuer"],
                     ValidAudience = configuration["Token:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"])),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Token:SecurityKey"])),
                     ClockSkew = TimeSpan.Zero
                 };
             });

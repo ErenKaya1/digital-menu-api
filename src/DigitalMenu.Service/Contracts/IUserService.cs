@@ -6,7 +6,8 @@ namespace DigitalMenu.Service.Contracts
 {
     public interface IUserService
     {
-        Task<ServiceResponse<UserDTO>> InsertUserAsync(UserDTO dto);
+        Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress);
         Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel dto, string ipAddress);
+        Task<ServiceResponse<UserDTO>> RefreshTokenAsync(string token, string ipAddress);
     }
 }

@@ -15,9 +15,6 @@ namespace DigitalMenu.Entity.Entities
         public DateTime Expires { get; set; }
 
         [Required]
-        public bool IsExpired => DateTime.UtcNow >= Expires;
-
-        [Required]
         public DateTime CreatedAt { get; set; }
 
         [Required]
@@ -26,13 +23,13 @@ namespace DigitalMenu.Entity.Entities
         public DateTime? RevokedAt { get; set; }
         public string RevokedByIp { get; set; }
         public string ReplacedByToken { get; set; }
-        
-        [Required]
-        public bool IsActive => RevokedAt == null && !IsExpired;
 
         [Required]
         public Guid UserId { get; set; }
 
         public DMUser User { get; set; }
+
+        public bool IsExpired => DateTime.UtcNow >= Expires;
+        public bool IsActive => RevokedAt == null && !IsExpired;
     }
 }

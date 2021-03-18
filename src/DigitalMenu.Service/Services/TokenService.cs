@@ -26,6 +26,8 @@ namespace DigitalMenu.Service.Services
             var securityKey = Encoding.ASCII.GetBytes(_jwtSettings.Value.SecurityKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Issuer = _jwtSettings.Value.Issuer,
+                Audience = _jwtSettings.Value.Audience,
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
@@ -41,20 +43,18 @@ namespace DigitalMenu.Service.Services
 
         public RefreshToken GenerateRefreshToken(string ipAddress)
         {
-            using (var provider = new RNGCryptoServiceProvider())
-            {
-                var randomBytes = new byte[64];
-                provider.GetBytes(randomBytes);
+            using var provider = new RNGCryptoServiceProvider();
+            var randomBytes = new byte[64];
+            provider.GetBytes(randomBytes);
 
-                return new RefreshToken
-                {
-                    Id = Guid.NewGuid(),
-                    Token = Convert.ToBase64String(randomBytes),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedByIp = ipAddress
-                };
-            }
+            return new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                Token = Convert.ToBase64String(randomBytes),
+                Expires = DateTime.UtcNow.AddDays(14),
+                CreatedAt = DateTime.UtcNow,
+                CreatedByIp = ipAddress
+            };
         }
     }
 }

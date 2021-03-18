@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using DigitalMenu.Core.Model.ApiReturn;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalMenu.Api.Controllers.Base
@@ -8,6 +10,19 @@ namespace DigitalMenu.Api.Controllers.Base
     [Route("[controller]")]
     public class BaseController : ControllerBase
     {
+        [NonAction]
+        protected void SetTokenCookie(string token, bool isPersistent)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                Secure = true,
+                HttpOnly = true,
+                Expires = isPersistent ? DateTime.UtcNow.AddDays(7) : null,
+            };
+
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
         [NonAction]
         protected string GetClientIpAddress()
         {
@@ -18,7 +33,7 @@ namespace DigitalMenu.Api.Controllers.Base
         }
 
         [NonAction]
-        public IActionResult Success(string message = default(string), object data = default(object), int code = 200)
+        protected IActionResult Success(string message = default(string), object data = default(object), int code = 200)
         {
             return new JsonResult(
                 new DMReturn
@@ -32,7 +47,7 @@ namespace DigitalMenu.Api.Controllers.Base
         }
 
         [NonAction]
-        public IActionResult Error(string message = default(string), string internalMessage = default(string), object data = default(object), int code = 400, List<DMReturnError> errors = null)
+        protected IActionResult Error(string message = default(string), string internalMessage = default(string), object data = default(object), int code = 400, List<DMReturnError> errors = null)
         {
             var response = new DMReturn
             {

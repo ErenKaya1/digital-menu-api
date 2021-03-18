@@ -33,6 +33,6 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+        public List<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
     }
 }

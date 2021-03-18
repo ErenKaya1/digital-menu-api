@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace DigitalMenu.Core.Model.User
 {
     public class LoginModel

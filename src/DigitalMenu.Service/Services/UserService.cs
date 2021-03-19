@@ -124,5 +124,12 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<UserDTO>(true) { Data = data };
         }
+
+        public async Task<ServiceResponse<Guid>> GetUserIdByEmailAsync(string emailAddress)
+        {
+            var user = await _unitOfWork.UserRepository.Find(x => x.EmailAddress == emailAddress, true).FirstOrDefaultAsync();
+            if (user == null) return new ServiceResponse<Guid>(false, "user not found", "no user found for this email");
+            return new ServiceResponse<Guid>(true) { Data = user.Id };
+        }
     }
 }

@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using DigitalMenu.Api.Controllers.Base;
 using DigitalMenu.Core.Contants;
+using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
+using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace DigitalMenu.Api.Controllers
 {
@@ -15,12 +20,20 @@ namespace DigitalMenu.Api.Controllers
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
         private readonly IDataProtector _dataProtector;
+        private readonly IMailService _mailService;
+        private readonly IOptions<MailSettings> _mailSettings;
 
-        public UserController(IUserService userService, ITokenService tokenService, IDataProtectionProvider dataProtectionProvider)
+        public UserController(IUserService userService,
+                              ITokenService tokenService, 
+                              IDataProtectionProvider dataProtectionProvider, 
+                              IMailService mailService, 
+                              IOptions<MailSettings> mailSettings)
         {
             _userService = userService;
             _tokenService = tokenService;
             _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionKeys.ResetPasswordTokenKey);
+            _mailService = mailService;
+            _mailSettings = mailSettings;
         }
 
         [HttpPost]
@@ -81,10 +94,22 @@ namespace DigitalMenu.Api.Controllers
             return Success();
         }
 
-        [HttpPost("resetpassword/{userId}")]
+        [HttpPost("forgotpassword")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
-            return Ok();
+            var userResponse = await _userService.GetUserIdByEmailAsync(model.EmailAddress);
+            if (!userResponse.Success) return Error(userResponse.Message, userResponse.InternalMessage);
+            var response = await _tokenService.GenerateResetPasswordTokenAsync(userResponse.Data);
+            if (!response.Success) return Error(response.Message, response.InternalMessage);
+            var protectedToken = _dataProtector.Protect(response.Data.Token);
+
+            var data = new
+            {
+                UserId = userResponse.Data,
+                ResetPasswordToken = protectedToken
+            };
+
+            return Success(data: data);
         }
     }
 }

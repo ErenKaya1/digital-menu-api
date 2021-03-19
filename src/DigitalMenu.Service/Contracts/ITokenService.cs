@@ -1,4 +1,3 @@
-using DigitalMenu.Core.Model.User;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using System;
@@ -11,6 +10,6 @@ namespace DigitalMenu.Service.Contracts
         string GenerateJwtToken(DMUser user);
         RefreshToken GenerateRefreshToken(string ipAddress);
         Task RevokeRefreshTokensAsync(Guid userId, string ipAddress);
-        Task<ServiceResponse<ResetPasswordTokenDTO>> GenerateResetPasswordToken(ForgotPasswordModel model);
+        Task<ServiceResponse<ResetPasswordTokenDTO>> GenerateResetPasswordTokenAsync(Guid userId);
     }
 }

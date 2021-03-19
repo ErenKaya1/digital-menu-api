@@ -47,15 +47,6 @@ namespace DigitalMenu.Common.Extensions
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
-
-            services.AddScoped<IMailService>(x => new MailService
-            {
-                Host = configuration["Mail:Host"],
-                Port = string.IsNullOrEmpty(configuration["Mail:Port"]) ? 0 : Convert.ToInt32(configuration["Mail:Port"]),
-                Username = configuration["Mail:Username"],
-                Password = configuration["Mail:Password"],
-                UseSsl = !string.IsNullOrEmpty(configuration["Mail:UseSsl"]) && Convert.ToBoolean(configuration["Mail:UseSsl"])
-            });
         }
 
         public static void ConfigureAutoMapper(this IServiceCollection services, IConfiguration configuration)
@@ -94,6 +85,19 @@ namespace DigitalMenu.Common.Extensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Token:SecurityKey"])),
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+        }
+
+        public static void ConfigureEmailService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<MailSettings>(configuration.GetSection("Mail"));
+            services.AddScoped<IMailService>(x => new MailService
+            {
+                Host = configuration["Mail:Host"],
+                Port = string.IsNullOrEmpty(configuration["Mail:Port"]) ? 0 : Convert.ToInt32(configuration["Mail:Port"]),
+                Username = configuration["Mail:Username"],
+                Password = configuration["Mail:Password"],
+                UseSsl = !string.IsNullOrEmpty(configuration["Mail:UseSsl"]) && Convert.ToBoolean(configuration["Mail:UseSsl"])
             });
         }
     }

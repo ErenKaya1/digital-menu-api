@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using DigitalMenu.Core.Model;
-using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.Security.Contracts;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
@@ -82,11 +81,8 @@ namespace DigitalMenu.Service.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<ServiceResponse<ResetPasswordTokenDTO>> GenerateResetPasswordToken(ForgotPasswordModel model)
+        public async Task<ServiceResponse<ResetPasswordTokenDTO>> GenerateResetPasswordTokenAsync(Guid userId)
         {
-            var user = await _unitOfWork.UserRepository.Find(x => x.EmailAddress == model.EmailAddress, true).FirstOrDefaultAsync();
-            if (user == null) return new ServiceResponse<ResetPasswordTokenDTO>(false, "user not found");
-
             using var provider = new RNGCryptoServiceProvider();
             var randomBytes = new byte[16];
             provider.GetBytes(randomBytes);
@@ -97,7 +93,7 @@ namespace DigitalMenu.Service.Services
                 Id = Guid.NewGuid(),
                 TokenHash = _hasher.CreateHash(token),
                 Expires = DateTime.UtcNow.AddMinutes(15),
-                UserId = user.Id
+                UserId = userId
             };
 
             _unitOfWork.ResetPasswordTokenRepository.Add(entity);
@@ -105,7 +101,7 @@ namespace DigitalMenu.Service.Services
 
             var data = new ResetPasswordTokenDTO
             {
-                UserId = user.Id,
+                UserId = userId,
                 Token = token
             };
 

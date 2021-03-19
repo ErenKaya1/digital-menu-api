@@ -36,6 +36,7 @@ namespace DigitalMenu.Entity.Entities
         public Guid RoleId { get; set; }
 
         public List<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
+        public List<Subscription> Subscription { get; set; }
         public DMRole Role { get; set; }
     }
 }

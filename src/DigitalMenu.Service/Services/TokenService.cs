@@ -37,7 +37,6 @@ namespace DigitalMenu.Service.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("UserId", user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role.RoleName)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),

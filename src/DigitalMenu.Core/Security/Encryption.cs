@@ -37,7 +37,7 @@ namespace DigitalMenu.Core.Security
             {
                 Console.WriteLine("Encryption/EncryptText");
                 Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException.Message);
+                Console.WriteLine(ex?.InnerException.Message);
                 return text;
             }
         }
@@ -62,7 +62,7 @@ namespace DigitalMenu.Core.Security
             {
                 Console.WriteLine("Encryption/DecryptText");
                 Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException.Message);
+                Console.WriteLine(ex?.InnerException.Message);
                 return text;
             }
         }

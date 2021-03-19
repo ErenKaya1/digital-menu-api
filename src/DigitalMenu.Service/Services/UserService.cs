@@ -40,7 +40,7 @@ namespace DigitalMenu.Service.Services
 
             // add role to user and save
             entity.RoleId = (await _unitOfWork.RoleRepository.FindOneAsync(x => x.RoleName.ToLower() == "customer")).Id;
-            _unitOfWork.UserRepository.Add(entity);
+            _unitOfWork.UserRepository.Add(entity, true);
 
             // start trial version and save
             var subscription = new Subscription
@@ -77,7 +77,7 @@ namespace DigitalMenu.Service.Services
         public async Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel model, string ipAddress)
         {
             // check if username and email are correct
-            var user = await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password)).Include(x => x.Role).FirstOrDefaultAsync();
+            var user = await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password), true).Include(x => x.Role).FirstOrDefaultAsync();
             if (user == null) return new ServiceResponse<UserDTO>(false, "authentication failed", "username or password incorrect");
 
             // if correct, generate jwt and refresh token

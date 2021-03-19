@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210319010115_Initial")]
+    [Migration("20210319075432_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7232a868-89f5-44ff-add8-48acba47bfe2"),
+                            Id = new Guid("61acf906-bdb8-465e-8aee-05e78d13c1e4"),
                             RoleName = "Customer"
                         });
                 });
@@ -106,8 +106,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ee12f864-5690-42fa-b750-a4bac4b61582"),
-                            CreatedAt = new DateTime(2021, 3, 19, 1, 1, 15, 97, DateTimeKind.Utc).AddTicks(2897),
+                            Id = new Guid("7f99972b-967b-495c-8045-d5220061b513"),
+                            CreatedAt = new DateTime(2021, 3, 19, 7, 54, 32, 389, DateTimeKind.Utc).AddTicks(7338),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -164,13 +164,13 @@ namespace DigitalMenu.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("date");
 
                     b.Property<bool>("InTrialModel")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("date");
 
                     b.Property<byte>("SubscriptionStatus")
                         .HasColumnType("smallint");
@@ -182,7 +182,7 @@ namespace DigitalMenu.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Subscription");
+                    b.ToTable("subscription");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMUser", b =>

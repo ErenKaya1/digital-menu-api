@@ -31,7 +31,7 @@ namespace DigitalMenu.Repository
             var entities = _dbSet.AsQueryable();
 
             if (isDecrypt)
-                entities = DecryptEntityFields(entities.ToList()).AsQueryable();
+                entities = DecryptEntityFields(entities);
 
             return entities;
         }
@@ -41,9 +41,9 @@ namespace DigitalMenu.Repository
             var entities = _dbSet.AsQueryable();
 
             if (isDecrypt)
-                entities = DecryptEntityFields(entities.ToList()).AsQueryable();
+                entities = DecryptEntityFields(entities);
 
-            return entities.Where(predicate).AsQueryable();
+            return entities.Where(predicate);
         }
 
         public async Task<T> FindOneAsync(Expression<Func<T, bool>> predicate, bool isDecrypt = false)
@@ -77,7 +77,7 @@ namespace DigitalMenu.Repository
         public void Update(T entity, bool isEncrypt = false)
         {
             if (isEncrypt)
-                entity = EncryptEntityFields(entity);                
+                entity = EncryptEntityFields(entity);
 
             _dbSet.Attach(entity);
             _dbContext.Entry(entity).State = EntityState.Modified;
@@ -148,9 +148,9 @@ namespace DigitalMenu.Repository
             return entity;
         }
 
-        private List<T> DecryptEntityFields(List<T> entities)
+        private IQueryable<T> DecryptEntityFields(IQueryable<T> entities)
         {
-            foreach (var entity in entities)
+            foreach (var entity in entities.ToList())
             {
                 PropertyInfo[] properties = typeof(T).GetProperties();
                 foreach (PropertyInfo property in properties)

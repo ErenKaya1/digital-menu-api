@@ -70,21 +70,21 @@ namespace DigitalMenu.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subscription",
+                name: "subscription",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "date", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "date", nullable: false),
                     InTrialModel = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     SubscriptionStatus = table.Column<byte>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subscription", x => x.Id);
+                    table.PrimaryKey("PK_subscription", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Subscription_user_UserId",
+                        name: "FK_subscription_user_UserId",
                         column: x => x.UserId,
                         principalTable: "user",
                         principalColumn: "Id",
@@ -97,13 +97,13 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("7232a868-89f5-44ff-add8-48acba47bfe2"), "Customer" }
+                    { new Guid("61acf906-bdb8-465e-8aee-05e78d13c1e4"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("ee12f864-5690-42fa-b750-a4bac4b61582"), new DateTime(2021, 3, 19, 1, 1, 15, 97, DateTimeKind.Utc).AddTicks(2897), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("7f99972b-967b-495c-8045-d5220061b513"), new DateTime(2021, 3, 19, 7, 54, 32, 389, DateTimeKind.Utc).AddTicks(7338), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",
@@ -117,8 +117,8 @@ namespace DigitalMenu.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subscription_UserId",
-                table: "Subscription",
+                name: "IX_subscription_UserId",
+                table: "subscription",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -145,7 +145,7 @@ namespace DigitalMenu.Data.Migrations
                 name: "refresh_token");
 
             migrationBuilder.DropTable(
-                name: "Subscription");
+                name: "subscription");
 
             migrationBuilder.DropTable(
                 name: "user");

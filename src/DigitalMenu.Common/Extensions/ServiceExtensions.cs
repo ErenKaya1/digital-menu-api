@@ -24,7 +24,11 @@ namespace DigitalMenu.Common.Extensions
         public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("PostgreSqlProvider");
-            services.AddDbContext<DMContext>(options => options.UseNpgsql(connectionString));
+            services.AddDbContext<DMContext>(options =>
+            {
+                options.UseNpgsql(connectionString);
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
         }
 
         public static void ConfigureEncryption(this IServiceCollection services, IConfiguration configuration)

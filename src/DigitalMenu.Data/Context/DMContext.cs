@@ -42,8 +42,8 @@ namespace DigitalMenu.Data.Context
                     UserName = "admintest",
                     FirstName = "admin",
                     LastName = "test",
-                    EmailAddress = "7kZ70Fsg/M1ldDvytd2IRgGLScOsY7TbRdiVV0/1UNc=", // test@gmail.com
-                    PhoneNumber = "vcX83jUAd/UJxiqFkb6nQP2bAAjt87nF", // 123456789
+                    EmailAddress = "test@gmail.com", // 7kZ70Fsg/M1ldDvytd2IRgGLScOsY7TbRdiVV0/1UNc=
+                    PhoneNumber = "123456789", // vcX83jUAd/UJxiqFkb6nQP2bAAjt87nF
                     CreatedAt = DateTime.UtcNow,
                     PasswordHash = "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", // admintest123
                     RoleId = Guid.Parse("b19ebe2e-0dad-4445-896c-b0b2d0a33157") // admin

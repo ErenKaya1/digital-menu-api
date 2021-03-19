@@ -117,13 +117,13 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("0ae770ec-6f8d-4a74-8d99-3f0b2b06551a"), "Customer" }
+                    { new Guid("4b158dee-012f-4231-9e93-04062a0d49fa"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("ec64e9aa-83d6-4360-bbfe-d45b560e479d"), new DateTime(2021, 3, 19, 12, 39, 2, 286, DateTimeKind.Utc).AddTicks(2494), "7kZ70Fsg/M1ldDvytd2IRgGLScOsY7TbRdiVV0/1UNc=", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "vcX83jUAd/UJxiqFkb6nQP2bAAjt87nF", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("a85d0ff3-3b04-40e3-89e3-008942418add"), new DateTime(2021, 3, 19, 18, 0, 54, 470, DateTimeKind.Utc).AddTicks(4371), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",

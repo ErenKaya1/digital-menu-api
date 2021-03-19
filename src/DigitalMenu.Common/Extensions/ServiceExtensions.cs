@@ -27,7 +27,7 @@ namespace DigitalMenu.Common.Extensions
             services.AddDbContext<DMContext>(options =>
             {
                 options.UseNpgsql(connectionString);
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
         }
 

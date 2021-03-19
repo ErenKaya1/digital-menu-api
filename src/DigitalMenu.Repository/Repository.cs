@@ -150,7 +150,7 @@ namespace DigitalMenu.Repository
 
         private IQueryable<T> DecryptEntityFields(IQueryable<T> entities)
         {
-            foreach (var entity in entities.ToList())
+            foreach (var entity in entities)
             {
                 PropertyInfo[] properties = typeof(T).GetProperties();
                 foreach (PropertyInfo property in properties)

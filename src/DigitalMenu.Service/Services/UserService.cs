@@ -40,7 +40,7 @@ namespace DigitalMenu.Service.Services
 
             // add role to user and save
             entity.Role = await _unitOfWork.RoleRepository.FindOneAsync(x => x.RoleName.ToLower() == "customer");
-            _unitOfWork.UserRepository.Add(entity, true);
+            _unitOfWork.UserRepository.Add(entity);
 
             // start trial version and save
             var subscription = new Subscription
@@ -77,7 +77,7 @@ namespace DigitalMenu.Service.Services
         public async Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel model, string ipAddress)
         {
             // check if username and email are correct
-            var user = await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password), true).Include(x => x.Role).FirstOrDefaultAsync();
+            var user = await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password)).Include(x => x.Role).FirstOrDefaultAsync();
             if (user == null) return new ServiceResponse<UserDTO>(false, "authentication failed", "username or password incorrect");
 
             // if correct, generate jwt and refresh token
@@ -127,9 +127,28 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<Guid>> GetUserIdByEmailAsync(string emailAddress)
         {
-            var user = await _unitOfWork.UserRepository.Find(x => x.EmailAddress == emailAddress, true).FirstOrDefaultAsync();
-            if (user == null) return new ServiceResponse<Guid>(false, "user not found", "no user found for this email");
+            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.EmailAddress == emailAddress);
+            if (user == null) return new ServiceResponse<Guid>(false, "no user found with this email");
             return new ServiceResponse<Guid>(true) { Data = user.Id };
+        }
+
+        public async Task<ServiceResponse<UserDTO>> ResetPasswordAsync(Guid userId, string newPassword, string resetPasswordToken)
+        {
+            var tokenEntity = await _unitOfWork.ResetPasswordTokenRepository.FindOneAsync(x => x.UserId == userId && x.TokenHash == _hasher.CreateHash(resetPasswordToken));
+            if (tokenEntity == null) return new ServiceResponse<UserDTO>(false, "invalid token");
+            if (tokenEntity.IsExpired) return new ServiceResponse<UserDTO>(false, "token was expired");
+            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.Id == userId);
+            if (user == null) return new ServiceResponse<UserDTO>(false, "user not found");
+
+            user.PasswordHash = _hasher.CreateHash(newPassword);
+            tokenEntity.Expires = DateTime.UtcNow;
+
+            _unitOfWork.UserRepository.Update(user);
+            _unitOfWork.ResetPasswordTokenRepository.Update(tokenEntity);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<UserDTO>(true, "password updated successfully");
         }
     }
 }

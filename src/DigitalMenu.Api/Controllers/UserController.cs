@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using DigitalMenu.Api.Controllers.Base;
-using DigitalMenu.Core.Contants;
+using DigitalMenu.Core.Constants;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Entity.DTOs;
@@ -23,11 +23,7 @@ namespace DigitalMenu.Api.Controllers
         private readonly IMailService _mailService;
         private readonly IOptions<MailSettings> _mailSettings;
 
-        public UserController(IUserService userService,
-                              ITokenService tokenService, 
-                              IDataProtectionProvider dataProtectionProvider, 
-                              IMailService mailService, 
-                              IOptions<MailSettings> mailSettings)
+        public UserController(IUserService userService, ITokenService tokenService, IDataProtectionProvider dataProtectionProvider, IMailService mailService, IOptions<MailSettings> mailSettings)
         {
             _userService = userService;
             _tokenService = tokenService;
@@ -94,22 +90,45 @@ namespace DigitalMenu.Api.Controllers
             return Success();
         }
 
-        [HttpPost("forgotpassword")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
         {
             var userResponse = await _userService.GetUserIdByEmailAsync(model.EmailAddress);
             if (!userResponse.Success) return Error(userResponse.Message, userResponse.InternalMessage);
             var response = await _tokenService.GenerateResetPasswordTokenAsync(userResponse.Data);
             if (!response.Success) return Error(response.Message, response.InternalMessage);
             var protectedToken = _dataProtector.Protect(response.Data.Token);
+            var urlEncodedToken = HttpUtility.UrlEncode(protectedToken);
+            var mailContent = $"<p>Parolanýzý sýfýrlamak için <a href='https://localhost:5001/user/reset-password/{userResponse.Data}/{urlEncodedToken}'>týklayýnýz</a>.</p>" +
+                               "<p>Bu link 15 dakika sonra geçersiz olacaktýr.</p>";
 
-            var data = new
+            var mail = new MailDTO
             {
-                UserId = userResponse.Data,
-                ResetPasswordToken = protectedToken
+                Subject = "Parola Sýfýrlama",
+                From = _mailSettings.Value.Username,
+                To = new List<string> { model.EmailAddress },
+                Content = mailContent,
             };
 
-            return Success(data: data);
+            await _mailService.Send(mail);
+
+            return Success("password reset email sent");
+        }
+
+        [HttpPut("reset-password/{userId}/{token}")]
+        public async Task<IActionResult> ResetPassword([FromRoute] string userId, [FromRoute] string token, [FromBody] ResetPasswordModel model)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token)) return Error("token and userid required for reset password");
+            if (Guid.TryParse(userId, out Guid id))
+            {
+                var decodedToken = HttpUtility.UrlDecode(token);
+                var unprotectedToken = _dataProtector.Unprotect(decodedToken);
+                var result = await _userService.ResetPasswordAsync(id, model.Password, unprotectedToken);
+                if (!result.Success) return Error(result.Message, result.InternalMessage);
+                return Success(result.Message);
+            }
+
+            return Error("invalid user id", "user id must be in guid format");
         }
     }
 }

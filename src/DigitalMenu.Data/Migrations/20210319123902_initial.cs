@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DigitalMenu.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -70,6 +70,26 @@ namespace DigitalMenu.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "reset_password_token",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TokenHash = table.Column<string>(type: "text", nullable: false),
+                    Expires = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_reset_password_token", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_reset_password_token_user_UserId",
+                        column: x => x.UserId,
+                        principalTable: "user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "subscription",
                 columns: table => new
                 {
@@ -97,17 +117,22 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("61acf906-bdb8-465e-8aee-05e78d13c1e4"), "Customer" }
+                    { new Guid("0ae770ec-6f8d-4a74-8d99-3f0b2b06551a"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("7f99972b-967b-495c-8045-d5220061b513"), new DateTime(2021, 3, 19, 7, 54, 32, 389, DateTimeKind.Utc).AddTicks(7338), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("ec64e9aa-83d6-4360-bbfe-d45b560e479d"), new DateTime(2021, 3, 19, 12, 39, 2, 286, DateTimeKind.Utc).AddTicks(2494), "7kZ70Fsg/M1ldDvytd2IRgGLScOsY7TbRdiVV0/1UNc=", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "vcX83jUAd/UJxiqFkb6nQP2bAAjt87nF", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",
                 table: "refresh_token",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_reset_password_token_UserId",
+                table: "reset_password_token",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -143,6 +168,9 @@ namespace DigitalMenu.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "refresh_token");
+
+            migrationBuilder.DropTable(
+                name: "reset_password_token");
 
             migrationBuilder.DropTable(
                 name: "subscription");

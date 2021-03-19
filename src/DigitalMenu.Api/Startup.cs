@@ -1,14 +1,10 @@
 using DigitalMenu.Common.Extensions;
-using DigitalMenu.Core.Model;
-using DigitalMenu.Core.Security;
-using DigitalMenu.Core.Security.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System.Text.Json;
 
 namespace DigitalMenu.Api
 {
@@ -31,6 +27,7 @@ namespace DigitalMenu.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DigitalMenu.Api", Version = "v1" });
             });
 
+            services.AddDataProtection();
             services.ConfigureDbContext(Configuration);
             services.ConfigureEncryption(Configuration);
             services.ConfigureHasher(Configuration);

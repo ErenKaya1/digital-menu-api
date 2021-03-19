@@ -39,7 +39,7 @@ namespace DigitalMenu.Service.Services
             entity.PasswordHash = _hasher.CreateHash(model.Password);
 
             // add role to user and save
-            entity.RoleId = (await _unitOfWork.RoleRepository.FindOneAsync(x => x.RoleName.ToLower() == "customer")).Id;
+            entity.Role = await _unitOfWork.RoleRepository.FindOneAsync(x => x.RoleName.ToLower() == "customer");
             _unitOfWork.UserRepository.Add(entity, true);
 
             // start trial version and save

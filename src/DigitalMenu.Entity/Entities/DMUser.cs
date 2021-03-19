@@ -40,6 +40,7 @@ namespace DigitalMenu.Entity.Entities
 
         public List<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
         public List<Subscription> Subscription { get; set; }
+        public List<ResetPasswordToken> ResetPasswordToken { get; set; }
         public DMRole Role { get; set; }
     }
 }

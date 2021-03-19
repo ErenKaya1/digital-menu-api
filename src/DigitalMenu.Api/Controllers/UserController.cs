@@ -76,5 +76,11 @@ namespace DigitalMenu.Api.Controllers
             await _tokenService.RevokeRefreshTokensAsync(Guid.Parse(userId), GetClientIpAddress());
             return Success();
         }
+
+        [HttpPost("resetpassword/{userId}")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            return Ok();
+        }
     }
 }

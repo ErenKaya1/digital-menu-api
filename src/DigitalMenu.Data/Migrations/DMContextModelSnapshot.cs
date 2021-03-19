@@ -45,7 +45,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("61acf906-bdb8-465e-8aee-05e78d13c1e4"),
+                            Id = new Guid("0ae770ec-6f8d-4a74-8d99-3f0b2b06551a"),
                             RoleName = "Customer"
                         });
                 });
@@ -104,13 +104,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7f99972b-967b-495c-8045-d5220061b513"),
-                            CreatedAt = new DateTime(2021, 3, 19, 7, 54, 32, 389, DateTimeKind.Utc).AddTicks(7338),
-                            EmailAddress = "test@gmail.com",
+                            Id = new Guid("ec64e9aa-83d6-4360-bbfe-d45b560e479d"),
+                            CreatedAt = new DateTime(2021, 3, 19, 12, 39, 2, 286, DateTimeKind.Utc).AddTicks(2494),
+                            EmailAddress = "7kZ70Fsg/M1ldDvytd2IRgGLScOsY7TbRdiVV0/1UNc=",
                             FirstName = "admin",
                             LastName = "test",
                             PasswordHash = "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=",
-                            PhoneNumber = "123456789",
+                            PhoneNumber = "vcX83jUAd/UJxiqFkb6nQP2bAAjt87nF",
                             RoleId = new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"),
                             UserName = "admintest"
                         });
@@ -153,6 +153,29 @@ namespace DigitalMenu.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("refresh_token");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.ResetPasswordToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("reset_password_token");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Subscription", b =>
@@ -205,6 +228,17 @@ namespace DigitalMenu.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.ResetPasswordToken", b =>
+                {
+                    b.HasOne("DigitalMenu.Entity.Entities.DMUser", "User")
+                        .WithMany("ResetPasswordToken")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Subscription", b =>
                 {
                     b.HasOne("DigitalMenu.Entity.Entities.DMUser", "User")
@@ -224,6 +258,8 @@ namespace DigitalMenu.Data.Migrations
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMUser", b =>
                 {
                     b.Navigation("RefreshToken");
+
+                    b.Navigation("ResetPasswordToken");
 
                     b.Navigation("Subscription");
                 });

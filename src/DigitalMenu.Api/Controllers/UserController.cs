@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using DigitalMenu.Api.Controllers.Base;
+using DigitalMenu.Core.Contants;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalMenu.Api.Controllers
@@ -12,11 +14,13 @@ namespace DigitalMenu.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
+        private readonly IDataProtector _dataProtector;
 
-        public UserController(IUserService userService, ITokenService tokenService)
+        public UserController(IUserService userService, ITokenService tokenService, IDataProtectionProvider dataProtectionProvider)
         {
             _userService = userService;
             _tokenService = tokenService;
+            _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionKeys.ResetPasswordTokenKey);
         }
 
         [HttpPost]

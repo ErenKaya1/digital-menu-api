@@ -10,5 +10,6 @@ namespace DigitalMenu.Repository.Contracts
         IRepository<DMUser> UserRepository { get; }
         IRepository<RefreshToken> RefreshTokenRepository { get; }
         IRepository<DMRole> RoleRepository { get; }
+        IRepository<Subscription> SubscriptionRepository { get; }
     }
 }

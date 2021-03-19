@@ -6,6 +6,7 @@ using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.Security.Contracts;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
+using DigitalMenu.Entity.Enum;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -41,13 +42,25 @@ namespace DigitalMenu.Service.Services
             entity.RoleId = (await _unitOfWork.RoleRepository.FindOneAsync(x => x.RoleName.ToLower() == "customer")).Id;
             _unitOfWork.UserRepository.Add(entity);
 
-            // kullanýcýya subscription atanacak.
+            // start trial version and save
+            var subscription = new Subscription
+            {
+                Id = Guid.NewGuid(),
+                StartDate = DateTime.UtcNow.Date,
+                EndDate = DateTime.UtcNow.Date.AddDays(14),
+                InTrialModel = true,
+                SubscriptionStatus = SubscriptionStatus.Active,
+                UserId = entity.Id
+            };
+
+            _unitOfWork.SubscriptionRepository.Add(subscription);
 
             // generate jwt and refresh token
             var jwtToken = _tokenService.GenerateJwtToken(entity);
             var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
             refreshToken.UserId = entity.Id;
             _unitOfWork.RefreshTokenRepository.Add(refreshToken);
+
             await _unitOfWork.SaveChangesAsync();
 
             var data = _mapper.Map<UserDTO>(entity);

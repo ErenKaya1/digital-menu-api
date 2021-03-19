@@ -19,6 +19,7 @@ namespace DigitalMenu.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DMRole>().HasIndex(x => x.RoleName).IsUnique();
             modelBuilder.Entity<DMRole>().HasData(
                 new DMRole
                 {
@@ -32,6 +33,8 @@ namespace DigitalMenu.Data.Context
                 }
             );
 
+            modelBuilder.Entity<DMUser>().HasIndex(x => x.UserName).IsUnique();
+            modelBuilder.Entity<DMUser>().HasIndex(x => x.EmailAddress).IsUnique();
             modelBuilder.Entity<DMUser>().HasData(
                 new DMUser
                 {
@@ -50,5 +53,6 @@ namespace DigitalMenu.Data.Context
         public DbSet<DMUser> User { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
         public DbSet<DMRole> Role { get; set; }
+        public DbSet<Subscription> Subscription { get; set; }
     }
 }

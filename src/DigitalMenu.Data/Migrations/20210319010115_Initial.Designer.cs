@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210319004118_AddedSubscriptionTable")]
-    partial class AddedSubscriptionTable
+    [Migration("20210319010115_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,6 +34,9 @@ namespace DigitalMenu.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleName")
+                        .IsUnique();
+
                     b.ToTable("role");
 
                     b.HasData(
@@ -44,7 +47,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("18fbbb53-6bac-40c5-b9f2-40a061d49f7f"),
+                            Id = new Guid("7232a868-89f5-44ff-add8-48acba47bfe2"),
                             RoleName = "Customer"
                         });
                 });
@@ -90,15 +93,21 @@ namespace DigitalMenu.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmailAddress")
+                        .IsUnique();
+
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("user");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9b89cb25-3515-4a80-958b-5c80a4ccaedb"),
-                            CreatedAt = new DateTime(2021, 3, 19, 0, 41, 18, 200, DateTimeKind.Utc).AddTicks(6677),
+                            Id = new Guid("ee12f864-5690-42fa-b750-a4bac4b61582"),
+                            CreatedAt = new DateTime(2021, 3, 19, 1, 1, 15, 97, DateTimeKind.Utc).AddTicks(2897),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",

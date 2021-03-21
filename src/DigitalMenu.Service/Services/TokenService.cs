@@ -107,5 +107,23 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<ResetPasswordTokenDTO>(true) { Data = data };
         }
+
+        public async Task RevokeRefreshTokensAsync(Guid userId, string newRefreshToken, string ipAddress)
+        {
+            var tokens = await _unitOfWork.RefreshTokenRepository.Find(x => x.UserId == userId && x.Expires < DateTime.Now).ToListAsync();
+
+            foreach (var token in tokens)
+            {
+                if (!token.IsActive) continue;
+
+                token.RevokedAt = DateTime.Now;
+                token.RevokedByIp = ipAddress;
+                token.ReplacedByToken = newRefreshToken;
+
+                _unitOfWork.RefreshTokenRepository.Update(token);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

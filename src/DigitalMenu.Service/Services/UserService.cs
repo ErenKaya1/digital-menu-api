@@ -83,6 +83,11 @@ namespace DigitalMenu.Service.Services
             // if correct, generate jwt and refresh token
             var jwtToken = _tokenService.GenerateJwtToken(user);
             var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
+
+            // revoke old refresh tokens
+            await _tokenService.RevokeRefreshTokensAsync(user.Id, refreshToken.Token, ipAddress);
+
+            // add new refresh token to db
             refreshToken.UserId = user.Id;
             _unitOfWork.RefreshTokenRepository.Add(refreshToken);
             await _unitOfWork.SaveChangesAsync();

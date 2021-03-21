@@ -11,5 +11,6 @@ namespace DigitalMenu.Service.Contracts
         RefreshToken GenerateRefreshToken(string ipAddress);
         Task RevokeRefreshTokensAsync(Guid userId, string ipAddress);
         Task<ServiceResponse<ResetPasswordTokenDTO>> GenerateResetPasswordTokenAsync(Guid userId);
+        Task RevokeRefreshTokensAsync(Guid userId, string newRefreshToken, string ipAddress);
     }
 }

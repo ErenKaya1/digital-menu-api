@@ -36,6 +36,7 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        [Required]
         public Guid RoleId { get; set; }
 
         public List<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();

@@ -64,7 +64,7 @@ namespace DigitalMenu.Api.Controllers.Base
                 case 500:
                     return StatusCode(500, response);
                 case 401:
-                    return Unauthorized();
+                    return Unauthorized(response);
                 case 403:
                     return Forbid();
                 case 404:

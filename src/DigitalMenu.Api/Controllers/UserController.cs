@@ -99,12 +99,12 @@ namespace DigitalMenu.Api.Controllers
             if (!response.Success) return Error(response.Message, response.InternalMessage);
             var protectedToken = _dataProtector.Protect(response.Data.Token);
             var urlEncodedToken = HttpUtility.UrlEncode(protectedToken);
-            var mailContent = $"<p>Parolanýzý sýfýrlamak için <a href='https://localhost:5001/user/reset-password/{userResponse.Data}/{urlEncodedToken}'>týklayýnýz</a>.</p>" +
-                               "<p>Bu link 15 dakika sonra geçersiz olacaktýr.</p>";
+            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='https://localhost:5001/user/reset-password/{userResponse.Data}/{urlEncodedToken}'>tiklayiniz</a>.</p>" +
+                               "<p>Bu link 15 dakika sonra gecersiz olacaktir.</p>";
 
             var mail = new MailDTO
             {
-                Subject = "Parola Sýfýrlama",
+                Subject = "Parola Sï¿½fï¿½rlama",
                 From = _mailSettings.Value.Username,
                 To = new List<string> { model.EmailAddress },
                 Content = mailContent,

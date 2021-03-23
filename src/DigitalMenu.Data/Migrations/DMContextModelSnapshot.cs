@@ -45,7 +45,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4b158dee-012f-4231-9e93-04062a0d49fa"),
+                            Id = new Guid("484d2791-4f38-400a-b48c-0afdb784cf6b"),
                             RoleName = "Customer"
                         });
                 });
@@ -104,8 +104,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a85d0ff3-3b04-40e3-89e3-008942418add"),
-                            CreatedAt = new DateTime(2021, 3, 19, 18, 0, 54, 470, DateTimeKind.Utc).AddTicks(4371),
+                            Id = new Guid("f3fee6e7-f650-440a-aec6-9c4ecfee0cfe"),
+                            CreatedAt = new DateTime(2021, 3, 22, 23, 40, 58, 550, DateTimeKind.Utc).AddTicks(1845),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",

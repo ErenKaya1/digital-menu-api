@@ -26,41 +26,30 @@ namespace DigitalMenu.Repository
             _encryption = encryption;
         }
 
-        public IQueryable<T> FindAll(bool isDecrypt = false)
+        public IQueryable<T> FindAll()
         {
-            var entities = _dbSet.AsQueryable();
-
-            if (isDecrypt)
-                entities = DecryptEntityFields(entities);
-
-            return entities;
+            return _dbSet.AsQueryable();
         }
 
-        public IQueryable<T> Find(Expression<Func<T, bool>> predicate, bool isDecrypt = false)
+        public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
         {
-            var entities = _dbSet.AsQueryable();
-
-            if (isDecrypt)
-                entities = DecryptEntityFields(entities);
-
-            return entities.Where(predicate);
+            return _dbSet.Where(predicate).AsQueryable();
         }
 
-        public async Task<T> FindOneAsync(Expression<Func<T, bool>> predicate, bool isDecrypt = false)
+        public async Task<T> FindOneAsync(Expression<Func<T, bool>> predicate)
         {
-            var entity = await _dbSet.FirstOrDefaultAsync(predicate);
-            if (entity == null) return null;
+            return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
 
-            if (isDecrypt)
-                entity = DecryptEntityFields(entity);
-
-            return entity;
+        public async Task<T> FindByIdAsync(Guid id)
+        {
+            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void Add(T entity, bool isEncrypt = false)
         {
             if (isEncrypt)
-                entity = EncryptEntityFields(entity);
+                entity = EncryptEntityFields(entity, _dbContext);
 
             _dbContext.Entry(entity).State = EntityState.Added;
         }
@@ -68,7 +57,7 @@ namespace DigitalMenu.Repository
         public void AddRange(List<T> entities, bool isEncrypt = false)
         {
             if (isEncrypt)
-                entities = EncryptEntityFields(entities);
+                entities = EncryptEntityFields(entities, _dbContext);
 
             foreach (var entity in entities)
                 _dbContext.Entry(entity).State = EntityState.Added;
@@ -77,7 +66,7 @@ namespace DigitalMenu.Repository
         public void Update(T entity, bool isEncrypt = false)
         {
             if (isEncrypt)
-                entity = EncryptEntityFields(entity);
+                entity = EncryptEntityFields(entity, _dbContext);
 
             _dbSet.Attach(entity);
             _dbContext.Entry(entity).State = EntityState.Modified;
@@ -88,7 +77,7 @@ namespace DigitalMenu.Repository
             _dbContext.Entry(entity).State = EntityState.Deleted;
         }
 
-        private T EncryptEntityFields(T entity)
+        private T EncryptEntityFields(T entity, DMContext dbContext)
         {
             PropertyInfo[] properties = typeof(T).GetProperties();
             foreach (PropertyInfo property in properties)
@@ -98,8 +87,9 @@ namespace DigitalMenu.Repository
                 {
                     if (attr is EncryptedAttribute)
                     {
-                        var encryptedValue = _encryption.EncryptText(entity.GetType().GetProperty(property.Name).GetValue(entity, null).ToString());
-                        entity.GetType().GetProperty(property.Name).SetValue(entity, encryptedValue);
+                        var encryptedValue = _encryption.EncryptText(dbContext.Entry(entity).Property(property.Name).CurrentValue.ToString());
+                        dbContext.Entry(entity).Property(property.Name).CurrentValue = encryptedValue;
+                        // entity.GetType().GetProperty(property.Name).SetValue(entity, encryptedValue);
                     }
                 }
             }
@@ -107,7 +97,7 @@ namespace DigitalMenu.Repository
             return entity;
         }
 
-        private List<T> EncryptEntityFields(List<T> entities)
+        private List<T> EncryptEntityFields(List<T> entities, DMContext dbContext)
         {
             foreach (var entity in entities)
             {
@@ -119,49 +109,9 @@ namespace DigitalMenu.Repository
                     {
                         if (attr is EncryptedAttribute)
                         {
-                            var encryptedValue = _encryption.EncryptText(entity.GetType().GetProperty(property.Name).GetValue(entity, null).ToString());
-                            entity.GetType().GetProperty(property.Name).SetValue(entity, encryptedValue);
-                        }
-                    }
-                }
-            }
-
-            return entities;
-        }
-
-        private T DecryptEntityFields(T entity)
-        {
-            PropertyInfo[] properties = typeof(T).GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                var attrs = property.GetCustomAttributes(false);
-                foreach (var attr in attrs)
-                {
-                    if (attr is EncryptedAttribute)
-                    {
-                        var decryptedValue = _encryption.DecryptText(entity.GetType().GetProperty(property.Name).GetValue(entity, null).ToString());
-                        entity.GetType().GetProperty(property.Name).SetValue(entity, decryptedValue);
-                    }
-                }
-            }
-
-            return entity;
-        }
-
-        private IQueryable<T> DecryptEntityFields(IQueryable<T> entities)
-        {
-            foreach (var entity in entities)
-            {
-                PropertyInfo[] properties = typeof(T).GetProperties();
-                foreach (PropertyInfo property in properties)
-                {
-                    var attrs = property.GetCustomAttributes(false);
-                    foreach (var attr in attrs)
-                    {
-                        if (attr is EncryptedAttribute)
-                        {
-                            var decryptedValue = _encryption.DecryptText(entity.GetType().GetProperty(property.Name).GetValue(entity, null).ToString());
-                            entity.GetType().GetProperty(property.Name).SetValue(entity, decryptedValue);
+                            var encryptedValue = _encryption.EncryptText(dbContext.Entry(entity).Property(property.Name).CurrentValue.ToString());
+                            dbContext.Entry(entity).Property(property.Name).CurrentValue = encryptedValue;
+                            // entity.GetType().GetProperty(property.Name).SetValue(entity, encryptedValue);
                         }
                     }
                 }

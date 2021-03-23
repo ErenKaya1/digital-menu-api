@@ -19,19 +19,21 @@ namespace DigitalMenu.Service.Services
         private readonly IHasher _hasher;
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
+        private readonly IEncryption _encryption;
 
-        public UserService(IUnitOfWork unitOfWork, IHasher hasher, IMapper mapper, ITokenService tokenService)
+        public UserService(IUnitOfWork unitOfWork, IHasher hasher, IMapper mapper, ITokenService tokenService, IEncryption encryption)
         {
             _unitOfWork = unitOfWork;
             _hasher = hasher;
             _mapper = mapper;
             _tokenService = tokenService;
+            _encryption = encryption;
         }
 
         public async Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress)
         {
             // check if username and email are valid
-            if (await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName || x.EmailAddress == model.EmailAddress).AnyAsync())
+            if (await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName || x.EmailAddress == _encryption.EncryptText(model.EmailAddress)).AnyAsync())
                 return new ServiceResponse<UserDTO>(false, "register failed", "username or email is already taken");
 
             var entity = _mapper.Map<DMUser>(model);
@@ -40,7 +42,7 @@ namespace DigitalMenu.Service.Services
 
             // add role to user and save
             entity.Role = await _unitOfWork.RoleRepository.FindOneAsync(x => x.RoleName.ToLower() == "customer");
-            _unitOfWork.UserRepository.Add(entity);
+            _unitOfWork.UserRepository.Add(entity, true);
 
             // start trial version and save
             var subscription = new Subscription
@@ -132,7 +134,7 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<Guid>> GetUserIdByEmailAsync(string emailAddress)
         {
-            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.EmailAddress == emailAddress);
+            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.EmailAddress ==_encryption.EncryptText(emailAddress));
             if (user == null) return new ServiceResponse<Guid>(false, "no user found with this email");
             return new ServiceResponse<Guid>(true) { Data = user.Id };
         }

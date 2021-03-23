@@ -9,12 +9,13 @@ namespace DigitalMenu.Repository.Contracts
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        IQueryable<T> FindAll(bool isDecrypt = false);
-        IQueryable<T> Find(Expression<Func<T, bool>> predicate, bool isDecrypt = false);
-        Task<T> FindOneAsync(Expression<Func<T, bool>> predicate, bool isDecrypt = false);
+        IQueryable<T> FindAll();
+        IQueryable<T> Find(Expression<Func<T, bool>> predicate);
+        Task<T> FindOneAsync(Expression<Func<T, bool>> predicate);
         void Add(T entity, bool isEncrypt = false);
         void AddRange(List<T> entities, bool isEncrypt = false);
         void Update(T entity, bool isEncrypt = false);
         void Delete(T entity);
+        Task<T> FindByIdAsync(Guid id);
     }
 }

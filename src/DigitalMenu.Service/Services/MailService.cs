@@ -15,37 +15,39 @@ namespace DigitalMenu.Service.Services
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public async Task Send(MailDTO data)
+        public async Task SendAsync(MailDTO data)
         {
             if (string.IsNullOrEmpty(Host)) throw new ArgumentNullException(Host);
             if (string.IsNullOrEmpty(Username)) throw new ArgumentNullException(Username);
             if (string.IsNullOrEmpty(Password)) throw new ArgumentNullException(Password);
 
-            using var client = new SmtpClient();
-            client.Host = Host;
-            client.Port = Port;
-            client.EnableSsl = UseSsl;
-            client.Credentials = new NetworkCredential(Username, Password);
-
-            var mailMessage = new MailMessage
+            using (var client = new SmtpClient())
             {
-                From = new MailAddress(data.From),
-                Subject = data.Subject,
-                Body = data.Content,
-                IsBodyHtml = true
-            };
+                client.Host = Host;
+                client.Port = Port;
+                client.EnableSsl = UseSsl;
+                client.Credentials = new NetworkCredential(Username, Password);
 
-            foreach (var to in data.To)
-                mailMessage.To.Add(new MailAddress(to));
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(data.From),
+                    Subject = data.Subject,
+                    Body = data.Content,
+                    IsBodyHtml = true
+                };
 
-            try
-            {
-                await client.SendMailAsync(mailMessage);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("mail service");
-                Console.WriteLine(ex.Message);
+                foreach (var to in data.To)
+                    mailMessage.To.Add(new MailAddress(to));
+
+                try
+                {
+                    await client.SendMailAsync(mailMessage);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("mail service");
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
     }

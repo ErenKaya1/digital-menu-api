@@ -10,6 +10,6 @@ namespace DigitalMenu.Service.Contracts
         bool UseSsl { get; set; }
         string Username { get; set; }
         string Password { get; set; }
-        Task Send(MailDTO data);
+        Task SendAsync(MailDTO data);
     }
 }

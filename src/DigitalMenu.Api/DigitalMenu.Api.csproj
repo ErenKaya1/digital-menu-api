@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DigitalMenu.Common\DigitalMenu.Common.csproj" />
     <ProjectReference Include="..\DigitalMenu.Core\DigitalMenu.Core.csproj" />
+    <ProjectReference Include="..\DigitalMenu.RabbitMQ.Consumer\DigitalMenu.RabbitMQ.Consumer.csproj" />
   </ItemGroup>
 
 </Project>

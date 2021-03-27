@@ -10,7 +10,6 @@ namespace DigitalMenu.Core.RabbitMQ
         public string Hostname { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public int Port { get; set; }
 
         public bool Post(string channelName, object data)
         {
@@ -25,7 +24,6 @@ namespace DigitalMenu.Core.RabbitMQ
                     HostName = this.Hostname,
                     UserName = this.Username,
                     Password = this.Password,
-                    Port = this.Port
                 };
 
                 using (IConnection connection = factory.CreateConnection())

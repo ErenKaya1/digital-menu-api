@@ -17,6 +17,7 @@ using System.Text;
 using System;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.RabbitMQ;
+using src.DigitalMenu.Core.Model;
 
 namespace DigitalMenu.Common.Extensions
 {
@@ -104,12 +105,13 @@ namespace DigitalMenu.Common.Extensions
 
         public static void ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<RabbitMQConfig>(configuration.GetSection("RabbitMQConfig"));
+
             services.AddTransient<IRabbitMQService>(x => new RabbitMQService
             {
                 Hostname = configuration["RabbitMQConfig:Host"],
                 Username = configuration["RabbitMQConfig:Username"],
                 Password = configuration["RabbitMQConfig:password"],
-                Port = Convert.ToInt32(configuration["RabbitMQConfig:Port"])
             });
         }
     }

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalMenu.Repository", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalMenu.Service", "DigitalMenu.Service\DigitalMenu.Service.csproj", "{D48E2518-EF8C-40B6-9CDE-698534295E1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalMenu.RabbitMQ.Consumer", "DigitalMenu.RabbitMQ.Consumer\DigitalMenu.RabbitMQ.Consumer.csproj", "{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,17 @@ Global
 		{D48E2518-EF8C-40B6-9CDE-698534295E1D}.Release|x64.Build.0 = Release|Any CPU
 		{D48E2518-EF8C-40B6-9CDE-698534295E1D}.Release|x86.ActiveCfg = Release|Any CPU
 		{D48E2518-EF8C-40B6-9CDE-698534295E1D}.Release|x86.Build.0 = Release|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Debug|x64.Build.0 = Debug|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Debug|x86.Build.0 = Debug|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Release|x64.ActiveCfg = Release|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Release|x64.Build.0 = Release|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Release|x86.ActiveCfg = Release|Any CPU
+		{E6FE4C3C-6ACA-4099-99C8-5F8CC2F6656C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

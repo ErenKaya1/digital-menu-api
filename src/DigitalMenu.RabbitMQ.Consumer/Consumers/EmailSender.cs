@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DigitalMenu.Core.Constants;
+using DigitalMenu.Core.Model;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Service.Contracts;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using src.DigitalMenu.Core.Model;
 
 namespace DigitalMenu.RabbitMQ.Consumer.Consumers
 {

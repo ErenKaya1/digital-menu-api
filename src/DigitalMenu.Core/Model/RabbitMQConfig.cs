@@ -1,4 +1,4 @@
-namespace src.DigitalMenu.Core.Model
+namespace DigitalMenu.Core.Model
 {
     public class RabbitMQConfig
     {

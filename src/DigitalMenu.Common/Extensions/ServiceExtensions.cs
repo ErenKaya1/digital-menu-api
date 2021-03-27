@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
 using DigitalMenu.Core.Model.User;
+using DigitalMenu.Core.RabbitMQ;
 
 namespace DigitalMenu.Common.Extensions
 {
@@ -98,6 +99,17 @@ namespace DigitalMenu.Common.Extensions
                 Username = configuration["Mail:Username"],
                 Password = configuration["Mail:Password"],
                 UseSsl = !string.IsNullOrEmpty(configuration["Mail:UseSsl"]) && Convert.ToBoolean(configuration["Mail:UseSsl"])
+            });
+        }
+
+        public static void ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<IRabbitMQService>(x => new RabbitMQService
+            {
+                Hostname = configuration["RabbitMQConfig:Host"],
+                Username = configuration["RabbitMQConfig:Username"],
+                Password = configuration["RabbitMQConfig:password"],
+                Port = Convert.ToInt32(configuration["RabbitMQConfig:Port"])
             });
         }
     }

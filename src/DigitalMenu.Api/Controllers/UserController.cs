@@ -8,7 +8,6 @@ using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Service.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -82,7 +81,6 @@ namespace DigitalMenu.Api.Controllers
         }
 
         [HttpDelete("logout/{userId}")]
-        [Authorize]
         public async Task<IActionResult> Logout([FromRoute] string userId)
         {
             Response.Cookies.Delete("refreshToken");
@@ -104,7 +102,7 @@ namespace DigitalMenu.Api.Controllers
 
             var mail = new MailDTO
             {
-                Subject = "Parola S�f�rlama",
+                Subject = "Parola Sifirlama",
                 From = _mailSettings.Value.Username,
                 To = new List<string> { model.EmailAddress },
                 Content = mailContent,

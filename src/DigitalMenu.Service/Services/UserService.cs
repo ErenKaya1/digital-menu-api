@@ -1,15 +1,22 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
+using DigitalMenu.Core.Constants;
+using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
+using DigitalMenu.Core.RabbitMQ;
 using DigitalMenu.Core.Security.Contracts;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Entity.Enum;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace DigitalMenu.Service.Services
 {
@@ -20,14 +27,27 @@ namespace DigitalMenu.Service.Services
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
         private readonly IEncryption _encryption;
+        private readonly IRabbitMQService _rabbitMQService;
+        private readonly IDataProtector _dataProtector;
+        private readonly IOptions<MailSettings> _mailSettings;
 
-        public UserService(IUnitOfWork unitOfWork, IHasher hasher, IMapper mapper, ITokenService tokenService, IEncryption encryption)
+        public UserService(IUnitOfWork unitOfWork,
+                           IHasher hasher,
+                           IMapper mapper,
+                           ITokenService tokenService,
+                           IEncryption encryption,
+                           IRabbitMQService rabbitMQService,
+                           IDataProtectionProvider dataProtectionProvider,
+                           IOptions<MailSettings> mailSettings)
         {
             _unitOfWork = unitOfWork;
             _hasher = hasher;
             _mapper = mapper;
             _tokenService = tokenService;
             _encryption = encryption;
+            _rabbitMQService = rabbitMQService;
+            _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionKeys.ResetPasswordTokenKey);
+            _mailSettings = mailSettings;
         }
 
         public async Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress)
@@ -134,9 +154,35 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<Guid>> GetUserIdByEmailAsync(string emailAddress)
         {
-            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.EmailAddress ==_encryption.EncryptText(emailAddress));
+            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.EmailAddress == _encryption.EncryptText(emailAddress));
             if (user == null) return new ServiceResponse<Guid>(false, "no user found with this email");
             return new ServiceResponse<Guid>(true) { Data = user.Id };
+        }
+
+        public async Task<ServiceResponse<Guid>> SendResetPasswordMailAsync(string emailAddress)
+        {
+            var userResponse = await GetUserIdByEmailAsync(emailAddress);
+            if (!userResponse.Success) return new ServiceResponse<Guid>(false, userResponse.Message, userResponse.InternalMessage);
+            var refreshPasswordTokenResponse = await _tokenService.GenerateResetPasswordTokenAsync(userResponse.Data);
+            if (!refreshPasswordTokenResponse.Success) return new ServiceResponse<Guid>(false, refreshPasswordTokenResponse.Message, refreshPasswordTokenResponse.InternalMessage);
+            var urlEncodedToken = HttpUtility.UrlEncode(refreshPasswordTokenResponse.Data.Token);
+            var protectedToken = _dataProtector.Protect(urlEncodedToken);
+            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='https://localhost:5001/user/reset-password/{userResponse.Data}/{urlEncodedToken}'>tiklayiniz</a>.</p>" +
+                               "<p>Bu link 15 dakika sonra gecersiz olacaktir.</p>";
+
+            var mail = new MailDTO
+            {
+                Subject = "Parola Sifirlama",
+                From = _mailSettings.Value.Username,
+                Content = mailContent,
+                To = new List<string> { emailAddress },
+            };
+
+            var response = _rabbitMQService.Post(MessageQueueNames.EMAIL, mail);
+            if (response)
+                return new ServiceResponse<Guid>(true, "reset password mail was sent");
+            else
+                return new ServiceResponse<Guid>(false, "rabbit mq error");
         }
 
         public async Task<ServiceResponse<UserDTO>> ResetPasswordAsync(Guid userId, string newPassword, string resetPasswordToken)

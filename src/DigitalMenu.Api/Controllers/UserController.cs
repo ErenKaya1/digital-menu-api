@@ -91,26 +91,11 @@ namespace DigitalMenu.Api.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
         {
-            var userResponse = await _userService.GetUserIdByEmailAsync(model.EmailAddress);
-            if (!userResponse.Success) return Error(userResponse.Message, userResponse.InternalMessage);
-            var response = await _tokenService.GenerateResetPasswordTokenAsync(userResponse.Data);
-            if (!response.Success) return Error(response.Message, response.InternalMessage);
-            var protectedToken = _dataProtector.Protect(response.Data.Token);
-            var urlEncodedToken = HttpUtility.UrlEncode(protectedToken);
-            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='https://localhost:5001/user/reset-password/{userResponse.Data}/{urlEncodedToken}'>tiklayiniz</a>.</p>" +
-                               "<p>Bu link 15 dakika sonra gecersiz olacaktir.</p>";
+            var response = await _userService.SendResetPasswordMailAsync(model.EmailAddress);
+            if (!response.Success)
+                return Error(response.Message, response.InternalMessage);
 
-            var mail = new MailDTO
-            {
-                Subject = "Parola Sifirlama",
-                From = _mailSettings.Value.Username,
-                To = new List<string> { model.EmailAddress },
-                Content = mailContent,
-            };
-
-            await _mailService.Send(mail);
-
-            return Success("password reset email sent");
+            return Success(response.Message, response.InternalMessage);
         }
 
         [HttpPut("reset-password/{userId}/{token}")]

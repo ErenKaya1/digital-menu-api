@@ -11,6 +11,7 @@ namespace DigitalMenu.Service.Contracts
         Task<ServiceResponse<UserDTO>> AuthenticateAsync(LoginModel dto, string ipAddress);
         Task<ServiceResponse<UserDTO>> RefreshTokenAsync(string token, string ipAddress);
         Task<ServiceResponse<Guid>> GetUserIdByEmailAsync(string emailAddress);
+        Task<ServiceResponse<Guid>> SendResetPasswordMailAsync(string emailAddress);
         Task<ServiceResponse<UserDTO>> ResetPasswordAsync(Guid userId, string newPassword, string resetPasswordToken);
     }
 }

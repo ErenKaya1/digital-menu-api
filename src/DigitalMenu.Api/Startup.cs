@@ -53,6 +53,10 @@ namespace DigitalMenu.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod();
+            });
             app.UseAuthentication();
             app.UseAuthorization();
 

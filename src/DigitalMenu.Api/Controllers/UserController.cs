@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using DigitalMenu.Api.Controllers.Base;
 using DigitalMenu.Core.Constants;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
-using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +65,7 @@ namespace DigitalMenu.Api.Controllers
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken)) return Error("no token found", code: 404);
             var response = await _userService.RefreshTokenAsync(refreshToken, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage);
             SetTokenCookie(response.Data.RefreshToken, true);

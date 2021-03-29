@@ -34,14 +34,18 @@ namespace DigitalMenu.Common.Extensions
 
         public static void ConfigureEncryption(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<EncryptionConfig>(configuration.GetSection("EncryptionConfig"));
-            services.AddTransient<IEncryption, Encryption>();
+            services.AddTransient<IEncryption>(x => new Encryption
+            {
+                PrivateKey = configuration["EncryptionConfig:PrivateKey"]
+            });
         }
 
         public static void ConfigureHasher(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<HasherConfig>(configuration.GetSection("HasherConfig"));
-            services.AddTransient<IHasher, Hasher>();
+            services.AddTransient<IHasher>(x => new Hasher
+            {
+                Salt = configuration["HasherConfig:Salt"]
+            });
         }
 
         public static void ConfigureRepository(this IServiceCollection services, IConfiguration configuration)

@@ -2,21 +2,14 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Security.Contracts;
-using Microsoft.Extensions.Options;
 
 namespace DigitalMenu.Core.Security
 {
     public class Encryption : IEncryption
     {
-        private readonly IOptions<EncryptionConfig> _encryptionConfig;
+        public string PrivateKey { get; set; }
 
-        public Encryption(IOptions<EncryptionConfig> encryptionConfig)
-        {
-            _encryptionConfig = encryptionConfig;
-        }
-    
         public string EncryptText(string text)
         {
             try
@@ -26,8 +19,8 @@ namespace DigitalMenu.Core.Security
 
                 using (var provider = new TripleDESCryptoServiceProvider())
                 {
-                    provider.Key = Encoding.ASCII.GetBytes(_encryptionConfig.Value.PrivateKey.Substring(0, 16));
-                    provider.IV = Encoding.ASCII.GetBytes(_encryptionConfig.Value.PrivateKey.Substring(8, 8));
+                    provider.Key = Encoding.ASCII.GetBytes(PrivateKey.Substring(0, 16));
+                    provider.IV = Encoding.ASCII.GetBytes(PrivateKey.Substring(8, 8));
 
                     var encryptedBinary = EncryptTextToMemory(text, provider.Key, provider.IV);
                     return Convert.ToBase64String(encryptedBinary);
@@ -51,8 +44,8 @@ namespace DigitalMenu.Core.Security
 
                 using (var provider = new TripleDESCryptoServiceProvider())
                 {
-                    provider.Key = Encoding.ASCII.GetBytes(_encryptionConfig.Value.PrivateKey.Substring(0, 16));
-                    provider.IV = Encoding.ASCII.GetBytes(_encryptionConfig.Value.PrivateKey.Substring(8, 8));
+                    provider.Key = Encoding.ASCII.GetBytes(PrivateKey.Substring(0, 16));
+                    provider.IV = Encoding.ASCII.GetBytes(PrivateKey.Substring(8, 8));
 
                     var buffer = Convert.FromBase64String(text);
                     return DecryptTextFromMemory(buffer, provider.Key, provider.IV);

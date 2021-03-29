@@ -88,6 +88,8 @@ namespace DigitalMenu.Service.Services
             var data = _mapper.Map<UserDTO>(entity);
             data.AccessToken = jwtToken;
             data.RefreshToken = refreshToken.Token;
+            data.EmailAddress = _encryption.DecryptText(data.EmailAddress);
+            data.PhoneNumber = _encryption.DecryptText(data.PhoneNumber);
 
             return new ServiceResponse<UserDTO>(true)
             {

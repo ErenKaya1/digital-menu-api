@@ -6,6 +6,7 @@ using DigitalMenu.Core.Constants;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Service.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -34,12 +35,20 @@ namespace DigitalMenu.Api.Controllers
         {
             var response = await _userService.InsertUserAsync(model, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage);
-            SetTokenCookie(response.Data.RefreshToken, false);
 
             var data = new
             {
-                UserId = response.Data.Id,
-                Token = response.Data.AccessToken
+                Token = response.Data.AccessToken,
+                refreshToken = response.Data.RefreshToken,
+                User = new
+                {
+                    UserId = response.Data.Id,
+                    Username = response.Data.UserName,
+                    FirstName = response.Data.FirstName,
+                    LastName = response.Data.LastName,
+                    EmailAddress = response.Data.EmailAddress,
+                    PhoneNumber = response.Data.PhoneNumber,
+                }
             };
 
             return Success(data: data);
@@ -50,30 +59,47 @@ namespace DigitalMenu.Api.Controllers
         {
             var response = await _userService.AuthenticateAsync(model, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage, code: 401);
-            SetTokenCookie(response.Data.RefreshToken, model.IsPersistent);
 
             var data = new
             {
-                UserId = response.Data.Id,
                 Token = response.Data.AccessToken,
+                refreshToken = response.Data.RefreshToken,
+                User = new
+                {
+                    UserId = response.Data.Id,
+                    Username = response.Data.UserName,
+                    FirstName = response.Data.FirstName,
+                    LastName = response.Data.LastName,
+                    EmailAddress = response.Data.EmailAddress,
+                    PhoneNumber = response.Data.PhoneNumber,
+                }
             };
 
             return Success(data: data);
         }
 
-        [HttpGet("refresh-token")]
-        public async Task<IActionResult> RefreshToken()
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenModel model)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
-            if (string.IsNullOrEmpty(refreshToken)) return Error("no token found", code: 404);
-            var response = await _userService.RefreshTokenAsync(refreshToken, GetClientIpAddress());
+            System.Console.WriteLine("refresh token action");
+            System.Console.WriteLine(model.RefreshToken);
+            if (model == null) return Error("no token found", code: 404);
+            var response = await _userService.RefreshTokenAsync(model.RefreshToken, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage);
-            SetTokenCookie(response.Data.RefreshToken, true);
 
             var data = new
             {
-                UserId = response.Data.Id,
-                token = response.Data.AccessToken
+                token = response.Data.AccessToken,
+                refreshToken = response.Data.RefreshToken,
+                User = new
+                {
+                    UserId = response.Data.Id,
+                    Username = response.Data.UserName,
+                    FirstName = response.Data.FirstName,
+                    LastName = response.Data.LastName,
+                    EmailAddress = response.Data.EmailAddress,
+                    PhoneNumber = response.Data.PhoneNumber,
+                }
             };
 
             return Success(data: data);
@@ -82,7 +108,6 @@ namespace DigitalMenu.Api.Controllers
         [HttpDelete("logout/{userId}")]
         public async Task<IActionResult> Logout([FromRoute] string userId)
         {
-            Response.Cookies.Delete("refreshToken");
             await _tokenService.RevokeRefreshTokensAsync(Guid.Parse(userId), GetClientIpAddress());
             return Success();
         }
@@ -111,6 +136,13 @@ namespace DigitalMenu.Api.Controllers
             }
 
             return Error("invalid user id", "user id must be in guid format");
+        }
+
+        [Authorize]
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Success();
         }
     }
 }

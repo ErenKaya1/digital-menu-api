@@ -11,6 +11,20 @@ namespace DigitalMenu.Api.Controllers.Base
     public class BaseController : ControllerBase
     {
         [NonAction]
+        protected void SetTokenCookie(string token, bool isPersistent)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                Secure = true,
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = isPersistent ? DateTime.UtcNow.AddDays(14) : null,
+            };
+
+            HttpContext.Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
+        [NonAction]
         protected string GetClientIpAddress()
         {
             if (Request.Headers.ContainsKey("X-Forwarded-For"))

@@ -51,11 +51,14 @@ namespace DigitalMenu.Api
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseCors(builder =>
             {
-                builder.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod();
+                builder
+                    .WithOrigins("http://localhost:8080")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             });
             app.UseAuthentication();
             app.UseAuthorization();

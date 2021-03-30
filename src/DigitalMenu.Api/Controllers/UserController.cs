@@ -35,11 +35,11 @@ namespace DigitalMenu.Api.Controllers
         {
             var response = await _userService.InsertUserAsync(model, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage);
+            SetTokenCookie(response.Data.RefreshToken, false);
 
             var data = new
             {
                 Token = response.Data.AccessToken,
-                refreshToken = response.Data.RefreshToken,
                 User = new
                 {
                     UserId = response.Data.Id,
@@ -59,11 +59,11 @@ namespace DigitalMenu.Api.Controllers
         {
             var response = await _userService.AuthenticateAsync(model, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage, code: 401);
+            SetTokenCookie(response.Data.RefreshToken, model.IsPersistent);
 
             var data = new
             {
                 Token = response.Data.AccessToken,
-                refreshToken = response.Data.RefreshToken,
                 User = new
                 {
                     UserId = response.Data.Id,
@@ -78,14 +78,14 @@ namespace DigitalMenu.Api.Controllers
             return Success(data: data);
         }
 
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenModel model)
+        [HttpGet("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
         {
-            System.Console.WriteLine("refresh token action");
-            System.Console.WriteLine(model.RefreshToken);
-            if (model == null) return Error("no token found", code: 404);
-            var response = await _userService.RefreshTokenAsync(model.RefreshToken, GetClientIpAddress());
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken)) return Error("no token found", code: 404);
+            var response = await _userService.RefreshTokenAsync(refreshToken, GetClientIpAddress());
             if (!response.Success) return Error(response.Message, response.InternalMessage);
+            SetTokenCookie(response.Data.RefreshToken, true);
 
             var data = new
             {
@@ -108,6 +108,7 @@ namespace DigitalMenu.Api.Controllers
         [HttpDelete("logout/{userId}")]
         public async Task<IActionResult> Logout([FromRoute] string userId)
         {
+            Response.Cookies.Delete("refreshToken");
             await _tokenService.RevokeRefreshTokensAsync(Guid.Parse(userId), GetClientIpAddress());
             return Success();
         }
@@ -136,13 +137,6 @@ namespace DigitalMenu.Api.Controllers
             }
 
             return Error("invalid user id", "user id must be in guid format");
-        }
-
-        [Authorize]
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            return Success();
         }
     }
 }

@@ -48,6 +48,21 @@ namespace DigitalMenu.Data.Context
                     PasswordHash = "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", // admintest123
                     RoleId = Guid.Parse("b19ebe2e-0dad-4445-896c-b0b2d0a33157") // admin
                 });
+
+            modelBuilder.Entity<Culture>().HasData(
+                new Culture
+                {
+                    Id = Guid.NewGuid(),
+                    CultureCode = "tr",
+                    IsDefaultCulture = true
+                },
+                new Culture
+                {
+                    Id = Guid.NewGuid(),
+                    CultureCode = "en",
+                    IsDefaultCulture = false
+                }
+            );
         }
 
         public DbSet<DMUser> User { get; set; }
@@ -55,5 +70,6 @@ namespace DigitalMenu.Data.Context
         public DbSet<DMRole> Role { get; set; }
         public DbSet<Subscription> Subscription { get; set; }
         public DbSet<ResetPasswordToken> ResetPasswordToken { get; set; }
+        public DbSet<Culture> Culture { get; set; }
     }
 }

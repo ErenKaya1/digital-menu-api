@@ -3,10 +3,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DigitalMenu.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "culture",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CultureCode = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: false),
+                    IsDefaultCulture = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_culture", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "role",
                 columns: table => new
@@ -112,18 +125,27 @@ namespace DigitalMenu.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "culture",
+                columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
+                values: new object[,]
+                {
+                    { new Guid("ad0f4d2c-1329-401b-937e-cfde41e81c2d"), "tr", true },
+                    { new Guid("1b66763d-4d4e-4855-bc93-368c90a9869b"), "en", false }
+                });
+
+            migrationBuilder.InsertData(
                 table: "role",
                 columns: new[] { "Id", "RoleName" },
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("484d2791-4f38-400a-b48c-0afdb784cf6b"), "Customer" }
+                    { new Guid("3338aecf-f375-48f2-9a50-481da91aa062"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("f3fee6e7-f650-440a-aec6-9c4ecfee0cfe"), new DateTime(2021, 3, 22, 23, 40, 58, 550, DateTimeKind.Utc).AddTicks(1845), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("37997b33-45cb-4bea-8d7d-cddf9c906572"), new DateTime(2021, 3, 30, 18, 9, 30, 836, DateTimeKind.Utc).AddTicks(83), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",
@@ -166,6 +188,9 @@ namespace DigitalMenu.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "culture");
+
             migrationBuilder.DropTable(
                 name: "refresh_token");
 

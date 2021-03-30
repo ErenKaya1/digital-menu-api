@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210322234058_initial")]
-    partial class initial
+    [Migration("20210330180931_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,39 @@ namespace DigitalMenu.Data.Migrations
                 .UseIdentityByDefaultColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.2");
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.Culture", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CultureCode")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("character varying(5)");
+
+                    b.Property<bool>("IsDefaultCulture")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("culture");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("ad0f4d2c-1329-401b-937e-cfde41e81c2d"),
+                            CultureCode = "tr",
+                            IsDefaultCulture = true
+                        },
+                        new
+                        {
+                            Id = new Guid("1b66763d-4d4e-4855-bc93-368c90a9869b"),
+                            CultureCode = "en",
+                            IsDefaultCulture = false
+                        });
+                });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMRole", b =>
                 {
@@ -47,7 +80,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("484d2791-4f38-400a-b48c-0afdb784cf6b"),
+                            Id = new Guid("3338aecf-f375-48f2-9a50-481da91aa062"),
                             RoleName = "Customer"
                         });
                 });
@@ -106,8 +139,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f3fee6e7-f650-440a-aec6-9c4ecfee0cfe"),
-                            CreatedAt = new DateTime(2021, 3, 22, 23, 40, 58, 550, DateTimeKind.Utc).AddTicks(1845),
+                            Id = new Guid("37997b33-45cb-4bea-8d7d-cddf9c906572"),
+                            CreatedAt = new DateTime(2021, 3, 30, 18, 9, 30, 836, DateTimeKind.Utc).AddTicks(83),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",

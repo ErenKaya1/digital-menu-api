@@ -117,6 +117,8 @@ namespace DigitalMenu.Service.Services
             await _unitOfWork.SaveChangesAsync();
 
             var data = _mapper.Map<UserDTO>(user);
+            data.EmailAddress = _encryption.DecryptText(data.EmailAddress);
+            data.PhoneNumber = _encryption.DecryptText(data.PhoneNumber);
             data.AccessToken = jwtToken;
             data.RefreshToken = refreshToken.Token;
 
@@ -148,6 +150,8 @@ namespace DigitalMenu.Service.Services
             var jwtToken = _tokenService.GenerateJwtToken(user);
 
             var data = _mapper.Map<UserDTO>(user);
+            data.EmailAddress = _encryption.DecryptText(data.EmailAddress);
+            data.PhoneNumber = _encryption.DecryptText(data.PhoneNumber);
             data.AccessToken = jwtToken;
             data.RefreshToken = newRefreshToken.Token;
 

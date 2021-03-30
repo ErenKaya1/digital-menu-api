@@ -117,10 +117,7 @@ namespace DigitalMenu.Api.Controllers
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
         {
             var response = await _userService.SendResetPasswordMailAsync(model.EmailAddress);
-            if (!response.Success)
-                return Error(response.Message, response.InternalMessage);
-
-            return Success(response.Message, response.InternalMessage);
+            return Success("email sended");
         }
 
         [HttpPut("reset-password/{userId}/{token}")]

@@ -71,5 +71,9 @@ namespace DigitalMenu.Data.Context
         public DbSet<Subscription> Subscription { get; set; }
         public DbSet<ResetPasswordToken> ResetPasswordToken { get; set; }
         public DbSet<Culture> Culture { get; set; }
+        public DbSet<SubscriptionType> SubscriptionType { get; set; }
+        public DbSet<SubscriptionTypeTranslation> SubscriptionTypeTranslation { get; set; }
+        public DbSet<SubscriptionTypeFeature> SubscriptionTypeFeature { get; set; }
+        public DbSet<SubscriptionTypeFeatureTranslation> SubscriptionTypeFeatureTranslation { get; set; }
     }
 }

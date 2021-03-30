@@ -70,9 +70,8 @@ namespace DigitalMenu.Service.Services
                 Id = Guid.NewGuid(),
                 StartDate = DateTime.UtcNow.Date,
                 EndDate = DateTime.UtcNow.Date.AddDays(14),
-                InTrialModel = true,
                 SubscriptionStatus = SubscriptionStatus.Active,
-                UserId = entity.Id
+                UserId = entity.Id,
             };
 
             _unitOfWork.SubscriptionRepository.Add(subscription);

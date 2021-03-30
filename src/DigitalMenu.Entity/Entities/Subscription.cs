@@ -17,14 +17,15 @@ namespace DigitalMenu.Entity.Entities
         [Column(TypeName = "date")]
         public DateTime EndDate { get; set; }
 
-        public bool InTrialModel { get; set; }
-
         [Required]
         public Guid UserId { get; set; }
 
         [Required]
         public SubscriptionStatus SubscriptionStatus { get; set; }
 
+        public Guid SubscriptionTypeId { get; set; }
+
         public DMUser User { get; set; }
+        public SubscriptionType SubscriptionType { get; set; }
     }
 }

@@ -9,6 +9,6 @@ namespace DigitalMenu.Entity.Entities.Base
         [Key]
         [Required]
         [Column(Order = 0)]
-        public Guid Id { get; set; }
+        public virtual Guid Id { get; set; }
     }
 }

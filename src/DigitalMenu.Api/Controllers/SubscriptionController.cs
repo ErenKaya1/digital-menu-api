@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DigitalMenu.Api.Controllers.Base;
 using DigitalMenu.Data.Context;
 using DigitalMenu.Entity.Entities;
@@ -16,12 +15,6 @@ namespace src.DigitalMenu.Api.Controllers
         public SubscriptionController(DMContext dbContext)
         {
             _dbContext = dbContext;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetSubscriptionTypes()
-        {
-            return Success();
         }
 
         [HttpGet("seed")]

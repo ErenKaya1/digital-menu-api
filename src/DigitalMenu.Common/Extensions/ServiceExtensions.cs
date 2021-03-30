@@ -17,6 +17,7 @@ using System.Text;
 using System;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.RabbitMQ;
+using System.Collections.Generic;
 
 namespace DigitalMenu.Common.Extensions
 {

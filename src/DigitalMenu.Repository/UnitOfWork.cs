@@ -18,12 +18,14 @@ namespace DigitalMenu.Repository
         private IRepository<DMRole> _roleRepository;
         private IRepository<Subscription> _subscriptionRepository;
         private IRepository<ResetPasswordToken> _resetPassowordTokenRepository;
+        private IRepository<SubscriptionType> _subscriptionTypeRepository;
 
         public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext, _encryption);
         public IRepository<RefreshToken> RefreshTokenRepository => _refreshTokenRepository ??= new Repository<RefreshToken>(_dbContext, _encryption);
         public IRepository<DMRole> RoleRepository => _roleRepository ??= new Repository<DMRole>(_dbContext, _encryption);
         public IRepository<Subscription> SubscriptionRepository => _subscriptionRepository ??= new Repository<Subscription>(_dbContext, _encryption);
         public IRepository<ResetPasswordToken> ResetPasswordTokenRepository => _resetPassowordTokenRepository ??= new Repository<ResetPasswordToken>(_dbContext, _encryption);
+        public IRepository<SubscriptionType> SubscriptionTypeRepository => _subscriptionTypeRepository ??= new Repository<SubscriptionType>(_dbContext, _encryption);
 
         public UnitOfWork(DMContext dbContext, IEncryption encryption)
         {

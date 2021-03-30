@@ -40,13 +40,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8d934f36-c20d-4d1d-969f-af4f0b926798"),
+                            Id = new Guid("18ecd6e2-09b4-457b-8fa8-042db418a0cf"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("faa2cfb7-174e-4f0d-8a52-ed98a2587927"),
+                            Id = new Guid("8b53e7ea-a9e8-4f19-bb72-90649ea0db15"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -78,7 +78,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d8148ada-6f66-4f89-9e32-3f5ee2fec8d6"),
+                            Id = new Guid("38d33773-9203-44a8-887e-ae76fda3714a"),
                             RoleName = "Customer"
                         });
                 });
@@ -137,8 +137,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("493141b2-a45c-4e63-8769-bf4353dddd53"),
-                            CreatedAt = new DateTime(2021, 3, 30, 18, 26, 17, 985, DateTimeKind.Utc).AddTicks(4917),
+                            Id = new Guid("0754a1ed-318f-47c1-a8ac-0cfdb4d9f120"),
+                            CreatedAt = new DateTime(2021, 3, 30, 20, 3, 42, 521, DateTimeKind.Utc).AddTicks(1080),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -220,13 +220,16 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<bool>("IsTrialModel")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("date");
 
                     b.Property<byte>("SubscriptionStatus")
                         .HasColumnType("smallint");
 
-                    b.Property<Guid>("SubscriptionTypeId")
+                    b.Property<Guid?>("SubscriptionTypeId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("UserId")
@@ -247,9 +250,6 @@ namespace DigitalMenu.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("InTrialModel")
-                        .HasColumnType("boolean");
-
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
@@ -267,7 +267,7 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<bool>("IsUnlimited")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("SubscriptionTypeId")
+                    b.Property<Guid?>("SubscriptionTypeId")
                         .HasColumnType("uuid");
 
                     b.Property<int?>("TotalValue")
@@ -276,7 +276,7 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<int?>("ValueRemained")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ValueUsed")
+                    b.Property<int?>("ValueUsed")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -295,10 +295,8 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<Guid>("CultureId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("FeatureName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("SubscriptionTypeFeatureId")
                         .HasColumnType("uuid");
@@ -309,16 +307,13 @@ namespace DigitalMenu.Data.Migrations
 
                     b.HasIndex("SubscriptionTypeFeatureId");
 
-                    b.ToTable("subscription_type_feature_translation");
+                    b.ToTable("subsctiption_type_feature_translation");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeTranslation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Culture")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CultureId")
@@ -328,11 +323,11 @@ namespace DigitalMenu.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CultureId");
 
                     b.HasIndex("SubscriptionTypeId");
 
@@ -376,9 +371,7 @@ namespace DigitalMenu.Data.Migrations
                 {
                     b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", "SubscriptionType")
                         .WithMany()
-                        .HasForeignKey("SubscriptionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubscriptionTypeId");
 
                     b.HasOne("DigitalMenu.Entity.Entities.DMUser", "User")
                         .WithMany("Subscription")
@@ -393,13 +386,9 @@ namespace DigitalMenu.Data.Migrations
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeature", b =>
                 {
-                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", "SubscriptionType")
+                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", null)
                         .WithMany("SubscriptionTypeFeature")
-                        .HasForeignKey("SubscriptionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SubscriptionType");
+                        .HasForeignKey("SubscriptionTypeId");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeatureTranslation", b =>
@@ -411,7 +400,7 @@ namespace DigitalMenu.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("DigitalMenu.Entity.Entities.SubscriptionTypeFeature", "SubscriptionTypeFeature")
-                        .WithMany()
+                        .WithMany("SubscriptionTypeFeatureTranslation")
                         .HasForeignKey("SubscriptionTypeFeatureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -423,11 +412,19 @@ namespace DigitalMenu.Data.Migrations
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeTranslation", b =>
                 {
-                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", "SubscriptionType")
+                    b.HasOne("DigitalMenu.Entity.Entities.Culture", "Culture")
                         .WithMany()
+                        .HasForeignKey("CultureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", "SubscriptionType")
+                        .WithMany("SubscriptionTypeTranslation")
                         .HasForeignKey("SubscriptionTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Culture");
 
                     b.Navigation("SubscriptionType");
                 });
@@ -449,6 +446,13 @@ namespace DigitalMenu.Data.Migrations
             modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionType", b =>
                 {
                     b.Navigation("SubscriptionTypeFeature");
+
+                    b.Navigation("SubscriptionTypeTranslation");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeature", b =>
+                {
+                    b.Navigation("SubscriptionTypeFeatureTranslation");
                 });
 #pragma warning restore 612, 618
         }

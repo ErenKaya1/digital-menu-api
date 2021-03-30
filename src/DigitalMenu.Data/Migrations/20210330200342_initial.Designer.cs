@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210330180931_Initial")]
-    partial class Initial
+    [Migration("20210330200342_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,13 +42,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ad0f4d2c-1329-401b-937e-cfde41e81c2d"),
+                            Id = new Guid("18ecd6e2-09b4-457b-8fa8-042db418a0cf"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("1b66763d-4d4e-4855-bc93-368c90a9869b"),
+                            Id = new Guid("8b53e7ea-a9e8-4f19-bb72-90649ea0db15"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -80,7 +80,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3338aecf-f375-48f2-9a50-481da91aa062"),
+                            Id = new Guid("38d33773-9203-44a8-887e-ae76fda3714a"),
                             RoleName = "Customer"
                         });
                 });
@@ -139,8 +139,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("37997b33-45cb-4bea-8d7d-cddf9c906572"),
-                            CreatedAt = new DateTime(2021, 3, 30, 18, 9, 30, 836, DateTimeKind.Utc).AddTicks(83),
+                            Id = new Guid("0754a1ed-318f-47c1-a8ac-0cfdb4d9f120"),
+                            CreatedAt = new DateTime(2021, 3, 30, 20, 3, 42, 521, DateTimeKind.Utc).AddTicks(1080),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -222,7 +222,7 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("date");
 
-                    b.Property<bool>("InTrialModel")
+                    b.Property<bool>("IsTrialModel")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("StartDate")
@@ -231,14 +231,109 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<byte>("SubscriptionStatus")
                         .HasColumnType("smallint");
 
+                    b.Property<Guid?>("SubscriptionTypeId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SubscriptionTypeId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("subscription");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("subscription_type");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeature", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsUnlimited")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("SubscriptionTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("TotalValue")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ValueRemained")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ValueUsed")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionTypeId");
+
+                    b.ToTable("subscription_type_feature");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeatureTranslation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CultureId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SubscriptionTypeFeatureId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CultureId");
+
+                    b.HasIndex("SubscriptionTypeFeatureId");
+
+                    b.ToTable("subsctiption_type_feature_translation");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeTranslation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CultureId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SubscriptionTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CultureId");
+
+                    b.HasIndex("SubscriptionTypeId");
+
+                    b.ToTable("subscription_type_translation");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMUser", b =>
@@ -276,13 +371,64 @@ namespace DigitalMenu.Data.Migrations
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Subscription", b =>
                 {
+                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", "SubscriptionType")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionTypeId");
+
                     b.HasOne("DigitalMenu.Entity.Entities.DMUser", "User")
                         .WithMany("Subscription")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("SubscriptionType");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeature", b =>
+                {
+                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", null)
+                        .WithMany("SubscriptionTypeFeature")
+                        .HasForeignKey("SubscriptionTypeId");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeatureTranslation", b =>
+                {
+                    b.HasOne("DigitalMenu.Entity.Entities.Culture", "Culture")
+                        .WithMany()
+                        .HasForeignKey("CultureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionTypeFeature", "SubscriptionTypeFeature")
+                        .WithMany("SubscriptionTypeFeatureTranslation")
+                        .HasForeignKey("SubscriptionTypeFeatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Culture");
+
+                    b.Navigation("SubscriptionTypeFeature");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeTranslation", b =>
+                {
+                    b.HasOne("DigitalMenu.Entity.Entities.Culture", "Culture")
+                        .WithMany()
+                        .HasForeignKey("CultureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DigitalMenu.Entity.Entities.SubscriptionType", "SubscriptionType")
+                        .WithMany("SubscriptionTypeTranslation")
+                        .HasForeignKey("SubscriptionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Culture");
+
+                    b.Navigation("SubscriptionType");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMRole", b =>
@@ -297,6 +443,18 @@ namespace DigitalMenu.Data.Migrations
                     b.Navigation("ResetPasswordToken");
 
                     b.Navigation("Subscription");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionType", b =>
+                {
+                    b.Navigation("SubscriptionTypeFeature");
+
+                    b.Navigation("SubscriptionTypeTranslation");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.SubscriptionTypeFeature", b =>
+                {
+                    b.Navigation("SubscriptionTypeFeatureTranslation");
                 });
 #pragma warning restore 612, 618
         }

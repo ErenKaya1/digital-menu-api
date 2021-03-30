@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DigitalMenu.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -33,6 +33,18 @@ namespace DigitalMenu.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "subscription_type",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_subscription_type", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "user",
                 columns: table => new
                 {
@@ -53,6 +65,54 @@ namespace DigitalMenu.Data.Migrations
                         name: "FK_user_role_RoleId",
                         column: x => x.RoleId,
                         principalTable: "role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "subscription_type_feature",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsUnlimited = table.Column<bool>(type: "boolean", nullable: false),
+                    TotalValue = table.Column<int>(type: "integer", nullable: true),
+                    ValueUsed = table.Column<int>(type: "integer", nullable: true),
+                    ValueRemained = table.Column<int>(type: "integer", nullable: true),
+                    SubscriptionTypeId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_subscription_type_feature", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_subscription_type_feature_subscription_type_SubscriptionTyp~",
+                        column: x => x.SubscriptionTypeId,
+                        principalTable: "subscription_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "subscription_type_translation",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
+                    CultureId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SubscriptionTypeId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_subscription_type_translation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_subscription_type_translation_culture_CultureId",
+                        column: x => x.CultureId,
+                        principalTable: "culture",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_subscription_type_translation_subscription_type_Subscriptio~",
+                        column: x => x.SubscriptionTypeId,
+                        principalTable: "subscription_type",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -109,17 +169,50 @@ namespace DigitalMenu.Data.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     StartDate = table.Column<DateTime>(type: "date", nullable: false),
                     EndDate = table.Column<DateTime>(type: "date", nullable: false),
-                    InTrialModel = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SubscriptionStatus = table.Column<byte>(type: "smallint", nullable: false)
+                    SubscriptionStatus = table.Column<byte>(type: "smallint", nullable: false),
+                    IsTrialModel = table.Column<bool>(type: "boolean", nullable: false),
+                    SubscriptionTypeId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_subscription", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_subscription_subscription_type_SubscriptionTypeId",
+                        column: x => x.SubscriptionTypeId,
+                        principalTable: "subscription_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_subscription_user_UserId",
                         column: x => x.UserId,
                         principalTable: "user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "subsctiption_type_feature_translation",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    CultureId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SubscriptionTypeFeatureId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_subsctiption_type_feature_translation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_subsctiption_type_feature_translation_culture_CultureId",
+                        column: x => x.CultureId,
+                        principalTable: "culture",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_subsctiption_type_feature_translation_subscription_type_fea~",
+                        column: x => x.SubscriptionTypeFeatureId,
+                        principalTable: "subscription_type_feature",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -129,8 +222,8 @@ namespace DigitalMenu.Data.Migrations
                 columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
                 values: new object[,]
                 {
-                    { new Guid("ad0f4d2c-1329-401b-937e-cfde41e81c2d"), "tr", true },
-                    { new Guid("1b66763d-4d4e-4855-bc93-368c90a9869b"), "en", false }
+                    { new Guid("18ecd6e2-09b4-457b-8fa8-042db418a0cf"), "tr", true },
+                    { new Guid("8b53e7ea-a9e8-4f19-bb72-90649ea0db15"), "en", false }
                 });
 
             migrationBuilder.InsertData(
@@ -139,13 +232,13 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("3338aecf-f375-48f2-9a50-481da91aa062"), "Customer" }
+                    { new Guid("38d33773-9203-44a8-887e-ae76fda3714a"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("37997b33-45cb-4bea-8d7d-cddf9c906572"), new DateTime(2021, 3, 30, 18, 9, 30, 836, DateTimeKind.Utc).AddTicks(83), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("0754a1ed-318f-47c1-a8ac-0cfdb4d9f120"), new DateTime(2021, 3, 30, 20, 3, 42, 521, DateTimeKind.Utc).AddTicks(1080), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",
@@ -164,9 +257,39 @@ namespace DigitalMenu.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_subscription_SubscriptionTypeId",
+                table: "subscription",
+                column: "SubscriptionTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_subscription_UserId",
                 table: "subscription",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_subscription_type_feature_SubscriptionTypeId",
+                table: "subscription_type_feature",
+                column: "SubscriptionTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_subscription_type_translation_CultureId",
+                table: "subscription_type_translation",
+                column: "CultureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_subscription_type_translation_SubscriptionTypeId",
+                table: "subscription_type_translation",
+                column: "SubscriptionTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_subsctiption_type_feature_translation_CultureId",
+                table: "subsctiption_type_feature_translation",
+                column: "CultureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_subsctiption_type_feature_translation_SubscriptionTypeFeatu~",
+                table: "subsctiption_type_feature_translation",
+                column: "SubscriptionTypeFeatureId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_user_EmailAddress",
@@ -189,9 +312,6 @@ namespace DigitalMenu.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "culture");
-
-            migrationBuilder.DropTable(
                 name: "refresh_token");
 
             migrationBuilder.DropTable(
@@ -201,10 +321,25 @@ namespace DigitalMenu.Data.Migrations
                 name: "subscription");
 
             migrationBuilder.DropTable(
+                name: "subscription_type_translation");
+
+            migrationBuilder.DropTable(
+                name: "subsctiption_type_feature_translation");
+
+            migrationBuilder.DropTable(
                 name: "user");
 
             migrationBuilder.DropTable(
+                name: "culture");
+
+            migrationBuilder.DropTable(
+                name: "subscription_type_feature");
+
+            migrationBuilder.DropTable(
                 name: "role");
+
+            migrationBuilder.DropTable(
+                name: "subscription_type");
         }
     }
 }

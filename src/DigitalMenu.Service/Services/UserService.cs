@@ -68,7 +68,8 @@ namespace DigitalMenu.Service.Services
             var subscription = new Subscription
             {
                 Id = Guid.NewGuid(),
-                IsTrialModel = true,
+                IsTrialMode = true,
+                IsSubscriptionReminderMailSent = false,
                 StartDate = DateTime.UtcNow.Date,
                 EndDate = DateTime.UtcNow.Date.AddDays(14),
                 SubscriptionStatus = SubscriptionStatus.Active,

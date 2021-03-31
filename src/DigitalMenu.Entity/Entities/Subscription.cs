@@ -24,7 +24,10 @@ namespace DigitalMenu.Entity.Entities
         public SubscriptionStatus SubscriptionStatus { get; set; }
 
         [Required]
-        public bool IsTrialModel { get; set; }
+        public bool IsTrialMode { get; set; }
+
+        [Required]
+        public bool IsSubscriptionReminderMailSent { get; set; }
 
         public Guid? SubscriptionTypeId { get; set; }
 

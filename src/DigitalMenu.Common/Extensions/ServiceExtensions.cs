@@ -19,6 +19,8 @@ using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.RabbitMQ;
 using System.Collections.Generic;
 using DigitalMenu.Core.Cache;
+using DigitalMenu.Service.BackgroundServices;
+using DigitalMenu.RabbitMQ.Consumer.Consumers;
 
 namespace DigitalMenu.Common.Extensions
 {
@@ -30,7 +32,6 @@ namespace DigitalMenu.Common.Extensions
             services.AddDbContext<DMContext>(options =>
             {
                 options.UseNpgsql(connectionString);
-                //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
         }
 
@@ -131,6 +132,12 @@ namespace DigitalMenu.Common.Extensions
                 port: string.IsNullOrEmpty(configuration["RedisConfig:Port"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Port"]),
                 timeout: string.IsNullOrEmpty(configuration["RedisConfig:Timeout"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Timeout"])
             ));
+        }
+
+        public static void ConfigureHostedServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHostedService<EmailSender>();
+            services.AddHostedService<SubscriptionReminder>();
         }
     }
 }

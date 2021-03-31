@@ -1,5 +1,6 @@
 using DigitalMenu.Common.Extensions;
 using DigitalMenu.RabbitMQ.Consumer.Consumers;
+using DigitalMenu.Service.BackgroundServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -42,8 +43,8 @@ namespace DigitalMenu.Api
             services.ConfigureAuthentication(Configuration);
             services.ConfigureEmailService(Configuration);
             services.ConfigureRabbitMQ(Configuration);
-            services.AddHostedService<EmailSender>();
             services.ConfigureRedis(Configuration);
+            services.ConfigureHostedServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

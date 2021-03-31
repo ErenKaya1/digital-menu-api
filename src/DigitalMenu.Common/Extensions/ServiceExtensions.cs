@@ -55,6 +55,7 @@ namespace DigitalMenu.Common.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISubscriptionTypeService, SubscriptionTypeService>();
+            services.AddScoped<ISubscriptionService, SubscriptionService>();
         }
 
         public static void ConfigureAutoMapper(this IServiceCollection services, IConfiguration configuration)
@@ -65,6 +66,8 @@ namespace DigitalMenu.Common.Extensions
                 config.CreateMap<DMUser, UserDTO>();
                 config.CreateMap<DMUser, RegisterModel>();
                 config.CreateMap<RegisterModel, DMUser>();
+                config.CreateMap<SubscriptionDTO, Subscription>();
+                config.CreateMap<Subscription, SubscriptionDTO>();
             });
         }
 

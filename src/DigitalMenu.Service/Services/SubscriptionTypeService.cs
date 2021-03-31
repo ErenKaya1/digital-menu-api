@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+using DigitalMenu.Core.Cache;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
@@ -13,14 +13,18 @@ namespace DigitalMenu.Service.Services
     public class SubscriptionTypeService : ISubscriptionTypeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public SubscriptionTypeService(IUnitOfWork unitOfWork)
+        public SubscriptionTypeService(IUnitOfWork unitOfWork, IRedisCacheService redisCacheService)
         {
             _unitOfWork = unitOfWork;
+            _redisCacheService = redisCacheService;
         }
 
         public async Task<ServiceResponse<List<SubscriptionTypeDTO>>> GetSubscriptionTypesAsync(string cultureCode)
         {
+            Console.WriteLine(_redisCacheService.IsSet("test"));
+
             var entities = await _unitOfWork.SubscriptionTypeRepository
                     .FindAll()
                     .OrderBy(x => x.Price)

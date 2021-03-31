@@ -121,14 +121,13 @@ namespace DigitalMenu.Common.Extensions
             });
         }
 
-        public static void ConfiguredRedis(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IRedisCacheService>(x => new RedisCacheService
-            {
-                Host = configuration["ReditConfig:Host"],
-                Port = string.IsNullOrEmpty(configuration["RedisConfig:Port"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Port"]),
-                Timeout = string.IsNullOrEmpty(configuration["RedisConfig:Timeout"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Timeout"])
-            });
+            services.AddTransient<IRedisCacheService>(x => new RedisCacheService(
+                host: configuration["RedisConfig:Host"],
+                port: string.IsNullOrEmpty(configuration["RedisConfig:Port"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Port"]),
+                timeout: string.IsNullOrEmpty(configuration["RedisConfig:Timeout"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Timeout"])
+            ));
         }
     }
 }

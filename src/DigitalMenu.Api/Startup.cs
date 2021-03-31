@@ -43,7 +43,7 @@ namespace DigitalMenu.Api
             services.ConfigureEmailService(Configuration);
             services.ConfigureRabbitMQ(Configuration);
             services.AddHostedService<EmailSender>();
-            services.ConfiguredRedis(Configuration);
+            services.ConfigureRedis(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

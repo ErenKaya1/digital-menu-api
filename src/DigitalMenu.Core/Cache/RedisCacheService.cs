@@ -17,6 +17,20 @@ namespace DigitalMenu.Core.Cache
             _conf = new RedisEndpoint { Host = host, Port = port, Password = "", RetryTimeout = 1000 };
         }
 
+        public T Get<T>(string key)
+        {
+            try
+            {
+                using (IRedisClient client = new RedisClient(_conf))
+                    return client.Get<T>(key);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
         public void Set(string key, object data)
         {
             try

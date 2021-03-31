@@ -23,28 +23,40 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<List<SubscriptionTypeDTO>>> GetSubscriptionTypesAsync(string cultureCode)
         {
-            Console.WriteLine(_redisCacheService.IsSet("test"));
+            var entities = new List<SubscriptionTypeDTO>();
 
-            var entities = await _unitOfWork.SubscriptionTypeRepository
-                    .FindAll()
-                    .OrderBy(x => x.Price)
-                    .Include(x => x.SubscriptionTypeTranslation)
-                    .Include(x => x.SubscriptionTypeFeature.OrderByDescending(x => x.TotalValue))
-                    .ThenInclude(x => x.SubscriptionTypeFeatureTranslation)
-                    .Select(x => new SubscriptionTypeDTO
-                    {
-                        Id = x.Id,
-                        Title = x.SubscriptionTypeTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Title,
-                        Price = x.Price,
-                        Features = x.SubscriptionTypeFeature.Select(x => new SubscriptionTypeFeatureDTO
-                        {
-                            IsUnlimited = x.IsUnlimited,
-                            TotalValue = Convert.ToInt32(x.TotalValue),
-                            Name = x.SubscriptionTypeFeatureTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name
+            // SubscriptionTypes_tr, SubscriptionTypes_en
+            if (_redisCacheService.IsSet("SubscriptionTypes_" + cultureCode))
+            {
+                entities = _redisCacheService.Get<List<SubscriptionTypeDTO>>("SubscriptionTypes_" + cultureCode);
+            }
+            else
+            {
+                entities = await _unitOfWork.SubscriptionTypeRepository
+                                    .FindAll()
+                                    .OrderBy(x => x.Price)
+                                    .Include(x => x.SubscriptionTypeTranslation)
+                                    .Include(x => x.SubscriptionTypeFeature.OrderByDescending(x => x.TotalValue))
+                                    .ThenInclude(x => x.SubscriptionTypeFeatureTranslation)
+                                    .Select(x => new SubscriptionTypeDTO
+                                    {
+                                        Id = x.Id,
+                                        Title = x.SubscriptionTypeTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Title,
+                                        Price = x.Price,
+                                        Features = x.SubscriptionTypeFeature.Select(x => new SubscriptionTypeFeatureDTO
+                                        {
+                                            IsUnlimited = x.IsUnlimited,
+                                            TotalValue = Convert.ToInt32(x.TotalValue),
+                                            Name = x.SubscriptionTypeFeatureTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name
 
-                        }).ToList()
-                    })
-                    .ToListAsync();
+                                        }).ToList()
+                                    })
+                                    .ToListAsync();
+
+                _redisCacheService.Set("SubscriptionTypes_" + cultureCode, entities);
+            }
+
+
 
             return new ServiceResponse<List<SubscriptionTypeDTO>>(true) { Data = entities };
         }

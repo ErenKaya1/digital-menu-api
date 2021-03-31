@@ -11,6 +11,15 @@ namespace DigitalMenu.Api.Controllers.Base
     public class BaseController : ControllerBase
     {
         [NonAction]
+        protected string GetCurrentLanguage()
+        {
+            if (Request.Headers.ContainsKey("X-Language"))
+                return Request.Headers["X-Language"];
+            return "tr";
+        }
+
+
+        [NonAction]
         protected void SetTokenCookie(string token, bool isPersistent)
         {
             var cookieOptions = new CookieOptions

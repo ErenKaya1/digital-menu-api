@@ -18,6 +18,7 @@ using System;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.RabbitMQ;
 using System.Collections.Generic;
+using DigitalMenu.Core.Cache;
 
 namespace DigitalMenu.Common.Extensions
 {
@@ -117,6 +118,16 @@ namespace DigitalMenu.Common.Extensions
                 Hostname = configuration["RabbitMQConfig:Host"],
                 Username = configuration["RabbitMQConfig:Username"],
                 Password = configuration["RabbitMQConfig:password"],
+            });
+        }
+
+        public static void ConfiguredRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<IRedisCacheService>(x => new RedisCacheService
+            {
+                Host = configuration["ReditConfig:Host"],
+                Port = string.IsNullOrEmpty(configuration["RedisConfig:Port"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Port"]),
+                Timeout = string.IsNullOrEmpty(configuration["RedisConfig:Timeout"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Timeout"])
             });
         }
     }

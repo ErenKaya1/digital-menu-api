@@ -234,5 +234,17 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<UserDTO>(true, "user updated successfully") { Data = data };
         }
+
+        public async Task<ServiceResponse<UserDTO>> ChangePasswordAsync(Guid userId, UpdatePasswordModel model)
+        {
+            var user = await _unitOfWork.UserRepository.FindByIdAsync(userId);
+            if (user == null) return new ServiceResponse<UserDTO>(false, "user not found");
+            if (user.PasswordHash != _hasher.CreateHash(model.OldPassword)) return new ServiceResponse<UserDTO>(false, "incorrect old password");
+            user.PasswordHash = _hasher.CreateHash(model.NewPassword);
+            _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<UserDTO>(true, "password changed successfully");
+        }
     }
 }

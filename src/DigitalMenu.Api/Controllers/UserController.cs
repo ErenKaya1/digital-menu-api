@@ -34,7 +34,7 @@ namespace DigitalMenu.Api.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var response = await _userService.InsertUserAsync(model, GetClientIpAddress());
-            if (!response.Success) return Error(response.Message, response.InternalMessage);
+            if (!response.Success) return Error(response.Message, response.InternalMessage, code: 409);
             SetTokenCookie(response.Data.RefreshToken, false);
 
             var data = new
@@ -60,7 +60,7 @@ namespace DigitalMenu.Api.Controllers
         public async Task<IActionResult> Authenticate([FromBody] LoginModel model)
         {
             var response = await _userService.AuthenticateAsync(model, GetClientIpAddress());
-            if (!response.Success) return Error(response.Message, response.InternalMessage, code: 404);
+            if (!response.Success) return Error(response.Message, response.InternalMessage, code: 401);
             SetTokenCookie(response.Data.RefreshToken, model.IsPersistent);
 
             var data = new
@@ -163,6 +163,17 @@ namespace DigitalMenu.Api.Controllers
 
                 return Success(data: data);
             }
+
+            return Error(response.Message, response.InternalMessage);
+        }
+
+        [HttpPut("{userId}/update-password")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePassword([FromRoute] Guid userId, [FromBody] UpdatePasswordModel model)
+        {
+            var response = await _userService.ChangePasswordAsync(userId, model);
+            if (response.Success)
+                return Success(message: response.Message);
 
             return Error(response.Message, response.InternalMessage);
         }

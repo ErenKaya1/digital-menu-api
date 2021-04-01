@@ -15,5 +15,6 @@ namespace DigitalMenu.Service.Contracts
         Task<ServiceResponse<Guid>> SendResetPasswordMailAsync(string emailAddress);
         Task<ServiceResponse<UserDTO>> ResetPasswordAsync(Guid userId, string newPassword, string resetPasswordToken);
         Task<ServiceResponse<UserDTO>> UpdateUserAsync(Guid userId, UpdateProfileModel model);
+        Task<ServiceResponse<UserDTO>> ChangePasswordAsync(Guid userId, UpdatePasswordModel model);
     }
 }

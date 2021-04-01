@@ -80,6 +80,8 @@ namespace DigitalMenu.Api.Controllers.Base
                     return Forbid();
                 case 404:
                     return NotFound(response);
+                case 409:
+                    return Conflict(response);
                 default:
                     return BadRequest(response);
             }

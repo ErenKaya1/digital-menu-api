@@ -42,6 +42,8 @@ namespace DigitalMenu.Entity.Entities
         [StringLength(200)]
         public string CompanySlug { get; set; }
 
+        public string CompanyImageName { get; set; }
+
         [Required]
         public Guid RoleId { get; set; }
 

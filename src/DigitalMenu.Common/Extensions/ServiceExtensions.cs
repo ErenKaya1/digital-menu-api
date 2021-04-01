@@ -66,6 +66,8 @@ namespace DigitalMenu.Common.Extensions
                 config.CreateMap<UserDTO, DMUser>();
                 config.CreateMap<DMUser, UserDTO>();
                 config.CreateMap<DMUser, RegisterModel>();
+                config.CreateMap<DMUser, UpdateProfileModel>();
+                config.CreateMap<UpdateProfileModel, DMUser>();
                 config.CreateMap<RegisterModel, DMUser>();
                 config.CreateMap<SubscriptionDTO, Subscription>();
                 config.CreateMap<Subscription, SubscriptionDTO>();

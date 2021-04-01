@@ -210,5 +210,29 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<UserDTO>(true, "password updated successfully");
         }
+
+        public async Task<ServiceResponse<UserDTO>> UpdateUserAsync(Guid userId, UpdateProfileModel model)
+        {
+            var userEntity = await _unitOfWork.UserRepository.Find(x => x.Id == userId).Include(x => x.Role).FirstOrDefaultAsync();
+            if (userEntity == null) return new ServiceResponse<UserDTO>(false, "user not found");
+            userEntity.UserName = model.UserName;
+            userEntity.FirstName = model.FirstName;
+            userEntity.LastName = model.LastName;
+            userEntity.EmailAddress = model.EmailAddress;
+            userEntity.PhoneNumber = model.PhoneNumber;
+            userEntity.CompanyName = model.CompanyName;
+            userEntity.CompanySlug = model.CompanySlug;
+
+            // generate new jwt token
+            var jwtToken = _tokenService.GenerateJwtToken(userEntity);
+
+            var data = _mapper.Map<UserDTO>(userEntity);
+            data.AccessToken = jwtToken;
+
+            _unitOfWork.UserRepository.Update(userEntity, true);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<UserDTO>(true, "user updated successfully") { Data = data };
+        }
     }
 }

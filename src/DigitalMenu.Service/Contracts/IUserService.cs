@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Entity.DTOs;
@@ -13,5 +14,6 @@ namespace DigitalMenu.Service.Contracts
         Task<ServiceResponse<Guid>> GetUserIdByEmailAsync(string emailAddress);
         Task<ServiceResponse<Guid>> SendResetPasswordMailAsync(string emailAddress);
         Task<ServiceResponse<UserDTO>> ResetPasswordAsync(Guid userId, string newPassword, string resetPasswordToken);
+        Task<ServiceResponse<UserDTO>> UpdateUserAsync(Guid userId, UpdateProfileModel model);
     }
 }

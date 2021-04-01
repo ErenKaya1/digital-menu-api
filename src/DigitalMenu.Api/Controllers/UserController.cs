@@ -60,7 +60,7 @@ namespace DigitalMenu.Api.Controllers
         public async Task<IActionResult> Authenticate([FromBody] LoginModel model)
         {
             var response = await _userService.AuthenticateAsync(model, GetClientIpAddress());
-            if (!response.Success) return Error(response.Message, response.InternalMessage, code: 401);
+            if (!response.Success) return Error(response.Message, response.InternalMessage, code: 404);
             SetTokenCookie(response.Data.RefreshToken, model.IsPersistent);
 
             var data = new
@@ -136,6 +136,35 @@ namespace DigitalMenu.Api.Controllers
             }
 
             return Error("invalid user id", "user id must be in guid format");
+        }
+
+        [HttpPut("{userId}/update")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromRoute] Guid userId, [FromBody] UpdateProfileModel model)
+        {
+            var response = await _userService.UpdateUserAsync(userId, model);
+            if (response.Success)
+            {
+                var data = new
+                {
+                    token = response.Data.AccessToken,
+                    User = new
+                    {
+                        UserId = response.Data.Id,
+                        Username = response.Data.UserName,
+                        FirstName = response.Data.FirstName,
+                        LastName = response.Data.LastName,
+                        EmailAddress = response.Data.EmailAddress,
+                        PhoneNumber = response.Data.PhoneNumber,
+                        CompanyName = response.Data.CompanyName,
+                        CompanySlug = response.Data.CompanySlug
+                    }
+                };
+
+                return Success(data: data);
+            }
+
+            return Error(response.Message, response.InternalMessage);
         }
     }
 }

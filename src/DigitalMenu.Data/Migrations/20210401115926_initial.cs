@@ -171,7 +171,8 @@ namespace DigitalMenu.Data.Migrations
                     EndDate = table.Column<DateTime>(type: "date", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     SubscriptionStatus = table.Column<byte>(type: "smallint", nullable: false),
-                    IsTrialModel = table.Column<bool>(type: "boolean", nullable: false),
+                    IsTrialMode = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSubscriptionReminderMailSent = table.Column<bool>(type: "boolean", nullable: false),
                     SubscriptionTypeId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -222,8 +223,8 @@ namespace DigitalMenu.Data.Migrations
                 columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
                 values: new object[,]
                 {
-                    { new Guid("18ecd6e2-09b4-457b-8fa8-042db418a0cf"), "tr", true },
-                    { new Guid("8b53e7ea-a9e8-4f19-bb72-90649ea0db15"), "en", false }
+                    { new Guid("ae5ec309-4efb-47ec-8c20-30dcf91832bc"), "tr", true },
+                    { new Guid("51a7d260-021f-4d61-bd27-108961b7f596"), "en", false }
                 });
 
             migrationBuilder.InsertData(
@@ -232,13 +233,13 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("38d33773-9203-44a8-887e-ae76fda3714a"), "Customer" }
+                    { new Guid("2be51e99-953d-4611-a3b6-61d59b378428"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("0754a1ed-318f-47c1-a8ac-0cfdb4d9f120"), new DateTime(2021, 3, 30, 20, 3, 42, 521, DateTimeKind.Utc).AddTicks(1080), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("03ca55dd-cfbb-4720-b9f0-e3f75b6d3502"), new DateTime(2021, 4, 1, 11, 59, 26, 676, DateTimeKind.Utc).AddTicks(3027), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",

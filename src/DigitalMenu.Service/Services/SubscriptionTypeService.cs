@@ -41,13 +41,17 @@ namespace DigitalMenu.Service.Services
                                     .Select(x => new SubscriptionTypeDTO
                                     {
                                         Id = x.Id,
-                                        Title = x.SubscriptionTypeTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Title,
+                                        Title = x.SubscriptionTypeTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode) == null 
+                                                ? x.SubscriptionTypeTranslation.First(x => x.Culture.IsDefaultCulture).Title 
+                                                : x.SubscriptionTypeTranslation.First(x => x.Culture.CultureCode == cultureCode).Title,
                                         Price = x.Price,
                                         Features = x.SubscriptionTypeFeature.Select(x => new SubscriptionTypeFeatureDTO
                                         {
                                             IsUnlimited = x.IsUnlimited,
                                             TotalValue = Convert.ToInt32(x.TotalValue),
-                                            Name = x.SubscriptionTypeFeatureTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name
+                                            Name = x.SubscriptionTypeFeatureTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode) == null
+                                                ? x.SubscriptionTypeFeatureTranslation.First(x => x.Culture.IsDefaultCulture).Name
+                                                : x.SubscriptionTypeFeatureTranslation.First(x => x.Culture.CultureCode == cultureCode).Name
 
                                         }).ToList()
                                     })
@@ -55,8 +59,6 @@ namespace DigitalMenu.Service.Services
 
                 _redisCacheService.Set("SubscriptionTypes_" + cultureCode, entities);
             }
-
-
 
             return new ServiceResponse<List<SubscriptionTypeDTO>>(true) { Data = entities };
         }

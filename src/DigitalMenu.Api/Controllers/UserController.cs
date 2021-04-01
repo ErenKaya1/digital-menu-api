@@ -48,6 +48,8 @@ namespace DigitalMenu.Api.Controllers
                     LastName = response.Data.LastName,
                     EmailAddress = response.Data.EmailAddress,
                     PhoneNumber = response.Data.PhoneNumber,
+                    companyName = "",
+                    companySlug = "",
                 }
             };
 

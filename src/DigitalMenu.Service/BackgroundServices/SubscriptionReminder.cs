@@ -62,7 +62,7 @@ namespace DigitalMenu.Service.BackgroundServices
                         {
                             From = _mailSettings.Value.Username,
                             Subject = "Digital Menu Uyelik Yenileme",
-                            Content = "<p>Digital menu uyeliginiz 3 gun sonra sona erecektir. 3 gun sonra uyeliginizi yenilemeniz gerekmektedir.</p>",
+                            Content = "<p>Digital Menu uyeliginiz 3 gun icinde sona erecektir. 3 gun sonra uyeliginizi yenilemeniz gerekmektedir.</p>",
                             To = mailTo
                         };
 

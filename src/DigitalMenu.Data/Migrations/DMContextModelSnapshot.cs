@@ -40,13 +40,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a7aefd6a-920c-4b17-af58-1677306ce256"),
+                            Id = new Guid("27fcd866-64b3-4301-9d5c-06a30bbd566a"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("d36a52f8-a3fb-4831-a7c0-6d8cb1c21460"),
+                            Id = new Guid("55ac2cc2-4994-4b6d-baf5-e34b3d95c583"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -78,7 +78,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c39b5359-5037-42dd-bca6-7d569567e8b3"),
+                            Id = new Guid("6e482a26-1f54-46da-bffa-aef67c44b4d5"),
                             RoleName = "Customer"
                         });
                 });
@@ -88,6 +88,14 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("CompanyName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("CompanySlug")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -137,8 +145,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0d66f1a7-241f-4da5-a3dc-d693a0829009"),
-                            CreatedAt = new DateTime(2021, 3, 31, 20, 24, 6, 991, DateTimeKind.Utc).AddTicks(5793),
+                            Id = new Guid("20fc6a89-538e-4d1b-8303-345b72a9ccc2"),
+                            CreatedAt = new DateTime(2021, 4, 1, 13, 49, 21, 163, DateTimeKind.Utc).AddTicks(2077),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",

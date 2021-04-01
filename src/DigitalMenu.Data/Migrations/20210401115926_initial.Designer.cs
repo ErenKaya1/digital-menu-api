@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210330200342_initial")]
+    [Migration("20210401115926_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,13 +42,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("18ecd6e2-09b4-457b-8fa8-042db418a0cf"),
+                            Id = new Guid("ae5ec309-4efb-47ec-8c20-30dcf91832bc"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("8b53e7ea-a9e8-4f19-bb72-90649ea0db15"),
+                            Id = new Guid("51a7d260-021f-4d61-bd27-108961b7f596"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -80,7 +80,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("38d33773-9203-44a8-887e-ae76fda3714a"),
+                            Id = new Guid("2be51e99-953d-4611-a3b6-61d59b378428"),
                             RoleName = "Customer"
                         });
                 });
@@ -139,8 +139,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0754a1ed-318f-47c1-a8ac-0cfdb4d9f120"),
-                            CreatedAt = new DateTime(2021, 3, 30, 20, 3, 42, 521, DateTimeKind.Utc).AddTicks(1080),
+                            Id = new Guid("03ca55dd-cfbb-4720-b9f0-e3f75b6d3502"),
+                            CreatedAt = new DateTime(2021, 4, 1, 11, 59, 26, 676, DateTimeKind.Utc).AddTicks(3027),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -222,7 +222,10 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("date");
 
-                    b.Property<bool>("IsTrialModel")
+                    b.Property<bool>("IsSubscriptionReminderMailSent")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsTrialMode")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("StartDate")

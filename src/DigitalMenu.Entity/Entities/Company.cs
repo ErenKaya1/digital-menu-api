@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DigitalMenu.Entity.Entities.Base;
@@ -9,11 +8,11 @@ namespace DigitalMenu.Entity.Entities
     public class Company : BaseEntity
     {
         [StringLength(200)]
-        public string CompanyName { get; set; }
+        public string Name { get; set; }
 
         [StringLength(200)]
-        public string CompanySlug { get; set; }
+        public string Slug { get; set; }
 
-        public string CompanyLogoName { get; set; }
+        public string LogoName { get; set; }
     }
 }

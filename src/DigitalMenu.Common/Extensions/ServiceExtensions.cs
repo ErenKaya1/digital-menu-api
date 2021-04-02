@@ -71,6 +71,10 @@ namespace DigitalMenu.Common.Extensions
                 config.CreateMap<RegisterModel, DMUser>();
                 config.CreateMap<SubscriptionDTO, Subscription>();
                 config.CreateMap<Subscription, SubscriptionDTO>();
+                config.CreateMap<Company, CompanyDTO>();
+                config.CreateMap<CompanyDTO, Company>();
+                config.CreateMap<UpdateCompanyModel, Company>();
+                config.CreateMap<Company, UpdateCompanyModel>();
             });
         }
 

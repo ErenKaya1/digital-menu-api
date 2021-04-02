@@ -25,14 +25,14 @@ namespace DigitalMenu.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CompanyLogoName")
+                    b.Property<string>("LogoName")
                         .HasColumnType("text");
 
-                    b.Property<string>("CompanyName")
+                    b.Property<string>("Name")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("CompanySlug")
+                    b.Property<string>("Slug")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
@@ -62,13 +62,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("927db5da-5f6d-485b-b574-cea96d1cb1e5"),
+                            Id = new Guid("fdca6ecd-af69-4215-b610-92ba075605a8"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("0df1122e-57ac-4ef4-b23a-472f5fc402e1"),
+                            Id = new Guid("36ff9ab1-6e68-4500-8fb9-f6bcc5d013bf"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -100,7 +100,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0a925d77-76e2-4c47-b0f6-99ddb0b6460d"),
+                            Id = new Guid("98b5f41c-6092-425e-8768-9a682505b0c6"),
                             RoleName = "Customer"
                         });
                 });
@@ -164,8 +164,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("78f160ca-91b1-4c2a-975e-9d9369657b4f"),
-                            CreatedAt = new DateTime(2021, 4, 2, 16, 36, 10, 944, DateTimeKind.Utc).AddTicks(3512),
+                            Id = new Guid("c52ff520-8b03-4c39-bf5d-2d723dd7db80"),
+                            CreatedAt = new DateTime(2021, 4, 2, 16, 40, 28, 976, DateTimeKind.Utc).AddTicks(3500),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",

@@ -12,9 +12,9 @@ namespace DigitalMenu.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    CompanySlug = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    CompanyLogoName = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    Slug = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    LogoName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -244,8 +244,8 @@ namespace DigitalMenu.Data.Migrations
                 columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
                 values: new object[,]
                 {
-                    { new Guid("927db5da-5f6d-485b-b574-cea96d1cb1e5"), "tr", true },
-                    { new Guid("0df1122e-57ac-4ef4-b23a-472f5fc402e1"), "en", false }
+                    { new Guid("fdca6ecd-af69-4215-b610-92ba075605a8"), "tr", true },
+                    { new Guid("36ff9ab1-6e68-4500-8fb9-f6bcc5d013bf"), "en", false }
                 });
 
             migrationBuilder.InsertData(
@@ -254,13 +254,13 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("0a925d77-76e2-4c47-b0f6-99ddb0b6460d"), "Customer" }
+                    { new Guid("98b5f41c-6092-425e-8768-9a682505b0c6"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("78f160ca-91b1-4c2a-975e-9d9369657b4f"), null, new DateTime(2021, 4, 2, 16, 36, 10, 944, DateTimeKind.Utc).AddTicks(3512), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("c52ff520-8b03-4c39-bf5d-2d723dd7db80"), null, new DateTime(2021, 4, 2, 16, 40, 28, 976, DateTimeKind.Utc).AddTicks(3500), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",

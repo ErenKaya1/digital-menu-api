@@ -11,9 +11,6 @@ namespace DigitalMenu.Entity.DTOs
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
         public string Password { get; set; }
-        public string CompanyName { get; set; }
-        public string CompanySlug { get; set; }
-        public string CompanyImageName { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
     }

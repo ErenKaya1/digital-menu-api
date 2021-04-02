@@ -7,7 +7,5 @@ namespace DigitalMenu.Core.Model.User
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
-        public string CompanyName { get; set; }
-        public string CompanySlug { get; set; }
     }
 }

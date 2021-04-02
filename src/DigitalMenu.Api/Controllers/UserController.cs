@@ -48,9 +48,6 @@ namespace DigitalMenu.Api.Controllers
                     LastName = response.Data.LastName,
                     EmailAddress = response.Data.EmailAddress,
                     PhoneNumber = response.Data.PhoneNumber,
-                    CompanyName = "",
-                    CompanySlug = "",
-                    CompanyImageName = ""
                 }
             };
 
@@ -75,8 +72,6 @@ namespace DigitalMenu.Api.Controllers
                     LastName = response.Data.LastName,
                     EmailAddress = response.Data.EmailAddress,
                     PhoneNumber = response.Data.PhoneNumber,
-                    CompanyName = "",
-                    CompanySlug = "",
                 }
             };
 
@@ -146,7 +141,6 @@ namespace DigitalMenu.Api.Controllers
         [DisableRequestSizeLimit]
         public async Task<IActionResult> UpdateProfile([FromRoute] Guid userId, [FromBody] UpdateProfileModel model)
         {
-            System.Console.WriteLine(Request.Form.Files.Count);
             var response = await _userService.UpdateUserAsync(userId, model);
             if (response.Success)
             {
@@ -161,8 +155,6 @@ namespace DigitalMenu.Api.Controllers
                         LastName = response.Data.LastName,
                         EmailAddress = response.Data.EmailAddress,
                         PhoneNumber = response.Data.PhoneNumber,
-                        CompanyName = response.Data.CompanyName,
-                        CompanySlug = response.Data.CompanySlug
                     }
                 };
 
@@ -179,6 +171,28 @@ namespace DigitalMenu.Api.Controllers
             var response = await _userService.ChangePasswordAsync(userId, model);
             if (response.Success)
                 return Success(message: response.Message);
+
+            return Error(response.Message, response.InternalMessage);
+        }
+
+        [HttpGet("{userId}/company")]
+        [Authorize]
+        public async Task<IActionResult> GetCompany([FromRoute] Guid userId)
+        {
+            var response = await _userService.GetCompanyAsync(userId);
+            if (response.Success)
+                return Success(data: response.Data);
+
+            return Error(response.Message, response.InternalMessage, code: 404);
+        }
+
+        [HttpPost("{userId}/company")]
+        [Authorize]
+        public async Task<IActionResult> UpdateCompany([FromRoute] Guid userId, UpdateCompanyModel model)
+        {
+            var response = await _userService.UpdateCompanyAsync(userId, model);
+            if (response.Success)
+                return Success(data: response.Data);
 
             return Error(response.Message, response.InternalMessage);
         }

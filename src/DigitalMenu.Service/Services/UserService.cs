@@ -244,5 +244,43 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<UserDTO>(true, "password changed successfully");
         }
+
+        public async Task<ServiceResponse<CompanyDTO>> GetCompanyAsync(Guid userId)
+        {
+            var user = await _unitOfWork.UserRepository.Find(x => x.Id == userId).Include(x => x.Company).FirstOrDefaultAsync();
+            if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
+            if (user.Company == null) return new ServiceResponse<CompanyDTO>(false, "company not found");
+            var dto = _mapper.Map<CompanyDTO>(user.Company);
+
+            System.Console.WriteLine(dto.Name);
+
+            return new ServiceResponse<CompanyDTO>(true) { Data = dto };
+        }
+
+        public async Task<ServiceResponse<CompanyDTO>> UpdateCompanyAsync(Guid userId, UpdateCompanyModel model)
+        {
+            if (model == null) return new ServiceResponse<CompanyDTO>(false);
+            var user = await _unitOfWork.UserRepository.Find(x => x.Id == userId).Include(x => x.Company).FirstOrDefaultAsync();
+            if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
+            var data = new CompanyDTO();
+
+            if (user.Company != null)
+            {
+                user.Company.Name = model.Name;
+                user.Company.Slug = model.Slug;
+                data = _mapper.Map<CompanyDTO>(user.Company);
+            }
+            else
+            {
+                var company = _mapper.Map<Company>(model);
+                user.Company = company;
+                data = _mapper.Map<CompanyDTO>(company);
+            }
+
+            _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<CompanyDTO>(true) { Data = data };
+        }
     }
 }

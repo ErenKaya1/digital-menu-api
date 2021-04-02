@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace DigitalMenu.Core.Model.User
 {
     public class UpdateProfileModel
@@ -9,5 +11,6 @@ namespace DigitalMenu.Core.Model.User
         public string PhoneNumber { get; set; }
         public string CompanyName { get; set; }
         public string CompanySlug { get; set; }
+        public IFormFile CompanyImageFile { get; set; }
     }
 }

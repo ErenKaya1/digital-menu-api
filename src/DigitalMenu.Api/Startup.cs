@@ -1,6 +1,4 @@
 using DigitalMenu.Common.Extensions;
-using DigitalMenu.RabbitMQ.Consumer.Consumers;
-using DigitalMenu.Service.BackgroundServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

@@ -8,6 +8,20 @@ namespace DigitalMenu.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "company",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    CompanySlug = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    CompanyLogoName = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_company", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "culture",
                 columns: table => new
                 {
@@ -56,11 +70,18 @@ namespace DigitalMenu.Data.Migrations
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_user", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_user_company_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "company",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_user_role_RoleId",
                         column: x => x.RoleId,
@@ -223,8 +244,8 @@ namespace DigitalMenu.Data.Migrations
                 columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
                 values: new object[,]
                 {
-                    { new Guid("ae5ec309-4efb-47ec-8c20-30dcf91832bc"), "tr", true },
-                    { new Guid("51a7d260-021f-4d61-bd27-108961b7f596"), "en", false }
+                    { new Guid("927db5da-5f6d-485b-b574-cea96d1cb1e5"), "tr", true },
+                    { new Guid("0df1122e-57ac-4ef4-b23a-472f5fc402e1"), "en", false }
                 });
 
             migrationBuilder.InsertData(
@@ -233,13 +254,13 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("2be51e99-953d-4611-a3b6-61d59b378428"), "Customer" }
+                    { new Guid("0a925d77-76e2-4c47-b0f6-99ddb0b6460d"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
-                columns: new[] { "Id", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("03ca55dd-cfbb-4720-b9f0-e3f75b6d3502"), new DateTime(2021, 4, 1, 11, 59, 26, 676, DateTimeKind.Utc).AddTicks(3027), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
+                values: new object[] { new Guid("78f160ca-91b1-4c2a-975e-9d9369657b4f"), null, new DateTime(2021, 4, 2, 16, 36, 10, 944, DateTimeKind.Utc).AddTicks(3512), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",
@@ -293,6 +314,11 @@ namespace DigitalMenu.Data.Migrations
                 column: "SubscriptionTypeFeatureId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_user_CompanyId",
+                table: "user",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_user_EmailAddress",
                 table: "user",
                 column: "EmailAddress",
@@ -335,6 +361,9 @@ namespace DigitalMenu.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "subscription_type_feature");
+
+            migrationBuilder.DropTable(
+                name: "company");
 
             migrationBuilder.DropTable(
                 name: "role");

@@ -19,6 +19,28 @@ namespace DigitalMenu.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.Company", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CompanyLogoName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CompanyName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("CompanySlug")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("company");
+                });
+
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Culture", b =>
                 {
                     b.Property<Guid>("Id")
@@ -40,13 +62,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("096844c8-3212-4c0f-b03b-30627be365f6"),
+                            Id = new Guid("927db5da-5f6d-485b-b574-cea96d1cb1e5"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("e4976b11-c24c-4d5c-a9c4-bdf3a04d8117"),
+                            Id = new Guid("0df1122e-57ac-4ef4-b23a-472f5fc402e1"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -78,7 +100,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("59c5e17e-37f6-44c3-b4d2-e8437915cd22"),
+                            Id = new Guid("0a925d77-76e2-4c47-b0f6-99ddb0b6460d"),
                             RoleName = "Customer"
                         });
                 });
@@ -89,16 +111,8 @@ namespace DigitalMenu.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CompanyImageName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CompanyName")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("CompanySlug")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -135,6 +149,8 @@ namespace DigitalMenu.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("EmailAddress")
                         .IsUnique();
 
@@ -148,8 +164,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7e301004-18b5-45e0-9b3b-dfdc913fd423"),
-                            CreatedAt = new DateTime(2021, 4, 1, 23, 58, 22, 887, DateTimeKind.Utc).AddTicks(3887),
+                            Id = new Guid("78f160ca-91b1-4c2a-975e-9d9369657b4f"),
+                            CreatedAt = new DateTime(2021, 4, 2, 16, 36, 10, 944, DateTimeKind.Utc).AddTicks(3512),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -350,11 +366,17 @@ namespace DigitalMenu.Data.Migrations
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.DMUser", b =>
                 {
+                    b.HasOne("DigitalMenu.Entity.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("DigitalMenu.Entity.Entities.DMRole", "Role")
                         .WithMany("User")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("Role");
                 });

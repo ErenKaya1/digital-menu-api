@@ -50,7 +50,7 @@ namespace DigitalMenu.Api.Controllers
                     PhoneNumber = response.Data.PhoneNumber,
                     CompanyName = "",
                     CompanySlug = "",
-                    CompanyImageName = "",
+                    CompanyImageName = ""
                 }
             };
 
@@ -75,6 +75,8 @@ namespace DigitalMenu.Api.Controllers
                     LastName = response.Data.LastName,
                     EmailAddress = response.Data.EmailAddress,
                     PhoneNumber = response.Data.PhoneNumber,
+                    CompanyName = "",
+                    CompanySlug = "",
                 }
             };
 
@@ -141,8 +143,10 @@ namespace DigitalMenu.Api.Controllers
 
         [HttpPut("{userId}/update")]
         [Authorize]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> UpdateProfile([FromRoute] Guid userId, [FromBody] UpdateProfileModel model)
         {
+            System.Console.WriteLine(Request.Form.Files.Count);
             var response = await _userService.UpdateUserAsync(userId, model);
             if (response.Success)
             {

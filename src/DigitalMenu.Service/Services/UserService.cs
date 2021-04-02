@@ -220,8 +220,6 @@ namespace DigitalMenu.Service.Services
             userEntity.LastName = model.LastName;
             userEntity.EmailAddress = model.EmailAddress;
             userEntity.PhoneNumber = model.PhoneNumber;
-            userEntity.CompanyName = model.CompanyName;
-            userEntity.CompanySlug = model.CompanySlug;
 
             // generate new jwt token
             var jwtToken = _tokenService.GenerateJwtToken(userEntity);

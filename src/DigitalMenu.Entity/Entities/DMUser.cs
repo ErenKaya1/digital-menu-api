@@ -36,20 +36,14 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [StringLength(200)]
-        public string CompanyName { get; set; }
-
-        [StringLength(200)]
-        public string CompanySlug { get; set; }
-
-        public string CompanyImageName { get; set; }
-
         [Required]
         public Guid RoleId { get; set; }
+        public Guid? CompanyId { get; set; }
 
         public List<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
         public List<Subscription> Subscription { get; set; }
         public List<ResetPasswordToken> ResetPasswordToken { get; set; }
         public DMRole Role { get; set; }
+        public Company Company { get; set; }
     }
 }

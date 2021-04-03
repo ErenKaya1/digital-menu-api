@@ -188,7 +188,7 @@ namespace DigitalMenu.Api.Controllers
 
         [HttpPost("{userId}/company")]
         [Authorize]
-        public async Task<IActionResult> UpdateCompany([FromRoute] Guid userId, UpdateCompanyModel model)
+        public async Task<IActionResult> UpdateCompany([FromRoute] Guid userId, [FromForm] UpdateCompanyModel model)
         {
             var response = await _userService.UpdateCompanyAsync(userId, model);
             if (response.Success)

@@ -57,6 +57,7 @@ namespace DigitalMenu.Common.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISubscriptionTypeService, SubscriptionTypeService>();
             services.AddScoped<ISubscriptionService, SubscriptionService>();
+            services.AddScoped<IImageService, ImageService>();
         }
 
         public static void ConfigureAutoMapper(this IServiceCollection services, IConfiguration configuration)

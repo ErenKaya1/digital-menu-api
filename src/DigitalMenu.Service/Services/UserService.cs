@@ -30,6 +30,7 @@ namespace DigitalMenu.Service.Services
         private readonly IRabbitMQService _rabbitMQService;
         private readonly IDataProtector _dataProtector;
         private readonly IOptions<MailSettings> _mailSettings;
+        private readonly IImageService _imageService;
 
         public UserService(IUnitOfWork unitOfWork,
                            IHasher hasher,
@@ -38,7 +39,8 @@ namespace DigitalMenu.Service.Services
                            IEncryption encryption,
                            IRabbitMQService rabbitMQService,
                            IDataProtectionProvider dataProtectionProvider,
-                           IOptions<MailSettings> mailSettings)
+                           IOptions<MailSettings> mailSettings,
+                           IImageService imageService)
         {
             _unitOfWork = unitOfWork;
             _hasher = hasher;
@@ -48,6 +50,7 @@ namespace DigitalMenu.Service.Services
             _rabbitMQService = rabbitMQService;
             _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionKeys.ResetPasswordTokenKey);
             _mailSettings = mailSettings;
+            _imageService = imageService;
         }
 
         public async Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress)
@@ -251,8 +254,7 @@ namespace DigitalMenu.Service.Services
             if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
             if (user.Company == null) return new ServiceResponse<CompanyDTO>(false, "company not found");
             var dto = _mapper.Map<CompanyDTO>(user.Company);
-
-            System.Console.WriteLine(dto.Name);
+            dto.LogoName = "https://localhost:5001/logo/" + dto.LogoName;
 
             return new ServiceResponse<CompanyDTO>(true) { Data = dto };
         }
@@ -275,6 +277,13 @@ namespace DigitalMenu.Service.Services
                 var company = _mapper.Map<Company>(model);
                 user.Company = company;
                 data = _mapper.Map<CompanyDTO>(company);
+            }
+
+            if (model.LogoFile != null)
+            {
+                user.Company.LogoName = model.LogoFile.FileName;
+                await _imageService.SaveCompanyLogoAsync(model.LogoFile, true);
+                data.LogoName = model.LogoFile.FileName;
             }
 
             _unitOfWork.UserRepository.Update(user);

@@ -13,5 +13,6 @@ namespace DigitalMenu.Repository.Contracts
         IRepository<Subscription> SubscriptionRepository { get; }
         IRepository<ResetPasswordToken> ResetPasswordTokenRepository { get; }
         IRepository<SubscriptionType> SubscriptionTypeRepository { get; }
+        IRepository<Category> CategoryRepository { get; }
     }
 }

@@ -8,7 +8,7 @@ using DigitalMenu.Entity.Entities;
 using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace src.DigitalMenu.Api.Controllers
+namespace DigitalMenu.Api.Controllers
 {
     public class SubscriptionController : BaseController
     {

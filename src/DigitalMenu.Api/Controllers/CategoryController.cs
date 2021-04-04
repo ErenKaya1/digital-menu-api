@@ -23,13 +23,19 @@ namespace DigitalMenu.Api.Controllers
         {
             var response = await _categoryService.InsertCategoryAsync(model, userId);
             if (response.Success)
-            {
                 return Success();
-            }
             else
-            {
                 return Error();
-            }
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetAllCategories([FromRoute] Guid userId)
+        {
+            var response = await _categoryService.GetCategories(userId);
+            if (response.Success)
+                return Success(data: response.Data);
+
+            return Error(code: 404);
         }
     }
 }

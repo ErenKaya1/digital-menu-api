@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalMenu.Core.Model.Category;
+using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Service.Services
 {
@@ -47,6 +49,25 @@ namespace DigitalMenu.Service.Services
             await _unitOfWork.SaveChangesAsync();
 
             return new ServiceResponse<object>(true);
+        }
+
+        public async Task<ServiceResponse<List<CategoryDTO>>> GetCategories(Guid userId)
+        {
+            var entities = await _unitOfWork.CategoryRepository
+                            .Find(x => x.UserId == userId)
+                            .Include(x => x.CategoryTranslation)
+                            .Select(x => new CategoryDTO
+                            {
+                                Id = x.Id,
+                                NameTR = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name,
+                                NameEN = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en") == null
+                                         ? x.CategoryTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Name
+                                         : x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
+                                ImagePath = x.HasImage ? $"https://localhost:5001/{userId}/category/{x.ImageName}" : ""
+                            })
+                            .ToListAsync();
+
+            return new ServiceResponse<List<CategoryDTO>>(true) { Data = entities };
         }
     }
 }

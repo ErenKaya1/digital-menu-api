@@ -15,6 +15,10 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public Guid CultureId { get; set; }
 
+        [Required]
+        public Guid CategoryId { get; set; }
+
         public Culture Culture { get; set; }
+        public Category Category { get; set; }
     }
 }

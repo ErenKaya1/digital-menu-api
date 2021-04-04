@@ -3,15 +3,17 @@ using System;
 using DigitalMenu.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    partial class DMContextModelSnapshot : ModelSnapshot
+    [Migration("20210404205520_RelationshipCategory")]
+    partial class RelationshipCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +46,7 @@ namespace DigitalMenu.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CultureId")
@@ -107,13 +109,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("81f890a8-45b9-4796-9253-da7de161b99a"),
+                            Id = new Guid("ad7c4670-184a-4b10-b6df-de3b29d4d370"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("fd6b5879-0b38-4749-a09b-df9055f1ba96"),
+                            Id = new Guid("96cb7eb2-1e3d-44ab-b655-136209100c65"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -145,7 +147,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d03b46d8-e95e-4bac-8be1-c99e9066e51c"),
+                            Id = new Guid("de193ab2-f676-4a57-a2bb-482f7de41e39"),
                             RoleName = "Customer"
                         });
                 });
@@ -209,8 +211,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b513e4a5-c1dc-419a-a6e1-aa336ccdd20c"),
-                            CreatedAt = new DateTime(2021, 4, 4, 21, 35, 28, 207, DateTimeKind.Utc).AddTicks(3791),
+                            Id = new Guid("670abb2c-1b58-4897-b74c-65e8322d3fbe"),
+                            CreatedAt = new DateTime(2021, 4, 4, 20, 55, 20, 386, DateTimeKind.Utc).AddTicks(8173),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -477,19 +479,15 @@ namespace DigitalMenu.Data.Migrations
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.CategoryTranslation", b =>
                 {
-                    b.HasOne("DigitalMenu.Entity.Entities.Category", "Category")
+                    b.HasOne("DigitalMenu.Entity.Entities.Category", null)
                         .WithMany("CategoryTranslation")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("DigitalMenu.Entity.Entities.Culture", "Culture")
                         .WithMany()
                         .HasForeignKey("CultureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("Culture");
                 });

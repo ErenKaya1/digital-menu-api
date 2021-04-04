@@ -17,16 +17,39 @@ namespace DigitalMenu.Service.Services
             _wwwRootPath = _hostEnvironment.WebRootPath;
         }
 
-        public async Task SaveCompanyLogoAsync(IFormFile file, bool replace)
+        public async Task<bool> SaveCompanyLogoAsync(IFormFile file, bool replace)
         {
-            if (!IsImage(file)) return;
+            if (!IsImage(file)) return false;
             var imagePath = Path.Combine(_wwwRootPath, "logo", file.FileName);
 
             if (replace)
                 File.Delete(imagePath);
 
             using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
                 await file.CopyToAsync(stream);
+                stream.Close();
+            }
+
+            return true;
+        }
+
+        public async Task<bool> SaveCategoryImageAsync(IFormFile file, System.Guid userId)
+        {
+            if (!IsImage(file)) return false;
+            var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "category");
+            if (!Directory.Exists(imagesPath))
+                Directory.CreateDirectory(imagesPath);
+
+            var imagePath = Path.Combine(imagesPath, file.FileName);
+
+            using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+                stream.Close();
+            }
+
+            return true;
         }
 
         private bool IsImage(IFormFile file)

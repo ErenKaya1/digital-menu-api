@@ -281,9 +281,11 @@ namespace DigitalMenu.Service.Services
 
             if (model.LogoFile != null)
             {
-                user.Company.LogoName = model.LogoFile.FileName;
-                await _imageService.SaveCompanyLogoAsync(model.LogoFile, true);
-                data.LogoName = model.LogoFile.FileName;
+                if (await _imageService.SaveCompanyLogoAsync(model.LogoFile, true))
+                {
+                    user.Company.LogoName = model.LogoFile.FileName;
+                    data.LogoName = model.LogoFile.FileName;
+                }
             }
 
             _unitOfWork.UserRepository.Update(user);

@@ -5,12 +5,15 @@ using DigitalMenu.Entity.Entities.Base;
 
 namespace DigitalMenu.Entity.Entities
 {
-    [Table("category_translation")]
-    public class CategoryTranslation : BaseEntity
+    [Table("product_translation")]
+    public class ProductTranslation : BaseEntity
     {
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
+
+        [Required]
+        public string Description { get; set; }
 
         [Required]
         public Guid CultureId { get; set; }

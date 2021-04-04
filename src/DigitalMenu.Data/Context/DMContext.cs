@@ -77,5 +77,7 @@ namespace DigitalMenu.Data.Context
         public DbSet<SubscriptionTypeFeature> SubscriptionTypeFeature { get; set; }
         public DbSet<SubscriptionTypeFeatureTranslation> SubscriptionTypeFeatureTranslation { get; set; }
         public DbSet<Company> Company { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<CategoryTranslation> CategoryTranslation { get; set; }
     }
 }

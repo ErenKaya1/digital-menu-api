@@ -8,5 +8,6 @@ namespace DigitalMenu.Service.Contracts
     {
         Task<bool> SaveCompanyLogoAsync(IFormFile file, bool replace);
         Task<bool> SaveCategoryImageAsync(IFormFile file, Guid userId);
+        Task<bool> ReplaceCategoryImageAsync(IFormFile newFile, Guid userId, string oldFileName);
     }
 }

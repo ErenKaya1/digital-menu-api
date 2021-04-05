@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using DigitalMenu.Core.Cache;
 using DigitalMenu.Service.BackgroundServices;
 using DigitalMenu.RabbitMQ.Consumer.Consumers;
+using DigitalMenu.Core.Model.Category;
 
 namespace DigitalMenu.Common.Extensions
 {

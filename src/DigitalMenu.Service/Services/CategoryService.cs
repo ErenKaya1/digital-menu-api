@@ -37,7 +37,7 @@ namespace DigitalMenu.Service.Services
             var translations = new List<CategoryTranslation>
             {
                 new CategoryTranslation { Id = Guid.NewGuid(), CategoryId = entityId, Name = model.NameTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
-                new CategoryTranslation { Id = Guid.NewGuid(), CategoryId = entityId, Name = model.NameEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "en").Id }
+                new CategoryTranslation { Id = Guid.NewGuid(), CategoryId = entityId, Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty: model.NameEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "en").Id }
             };
 
             if (model.ImageFile != null)
@@ -51,7 +51,7 @@ namespace DigitalMenu.Service.Services
             return new ServiceResponse<object>(true);
         }
 
-        public async Task<ServiceResponse<List<CategoryDTO>>> GetCategories(Guid userId)
+        public async Task<ServiceResponse<List<CategoryDTO>>> GetCategoriesAsync(Guid userId)
         {
             var entities = await _unitOfWork.CategoryRepository
                             .Find(x => x.UserId == userId)
@@ -68,6 +68,24 @@ namespace DigitalMenu.Service.Services
                             .ToListAsync();
 
             return new ServiceResponse<List<CategoryDTO>>(true) { Data = entities };
+        }
+
+        public async Task<ServiceResponse<object>> UpdateCategoryAsync(UpdateCategoryModel model, Guid userId)
+        {
+            var entity = await _unitOfWork.CategoryRepository.Find(x => x.Id == model.Id && x.UserId == userId).Include(x => x.CategoryTranslation).FirstOrDefaultAsync();
+            if (entity == null) return new ServiceResponse<object>(false, "category not found");
+
+            entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name = model.NameTR;
+            entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty : model.NameEN;
+
+            if (model.ImageFile != null)
+                if (await _imageService.ReplaceCategoryImageAsync(model.ImageFile, userId, entity.ImageName))
+                    entity.ImageName = model.ImageFile.FileName;
+
+            _unitOfWork.CategoryRepository.Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<object>(true);
         }
     }
 }

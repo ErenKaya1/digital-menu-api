@@ -9,6 +9,7 @@ namespace DigitalMenu.Service.Contracts
     public interface ICategoryService
     {
         Task<ServiceResponse<object>> InsertCategoryAsync(NewCategoryModel model, Guid userId);
-        Task<ServiceResponse<List<CategoryDTO>>> GetCategories(Guid userId);
+        Task<ServiceResponse<List<CategoryDTO>>> GetCategoriesAsync(Guid userId);
+        Task<ServiceResponse<object>> UpdateCategoryAsync(UpdateCategoryModel model, Guid userId);
     }
 }

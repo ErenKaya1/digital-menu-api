@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using DigitalMenu.Service.Contracts;
@@ -34,7 +35,7 @@ namespace DigitalMenu.Service.Services
             return true;
         }
 
-        public async Task<bool> SaveCategoryImageAsync(IFormFile file, System.Guid userId)
+        public async Task<bool> SaveCategoryImageAsync(IFormFile file, Guid userId)
         {
             if (!IsImage(file)) return false;
             var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "category");
@@ -46,6 +47,30 @@ namespace DigitalMenu.Service.Services
             using (var stream = new FileStream(imagePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
+                stream.Close();
+            }
+
+            return true;
+        }
+
+        public async Task<bool> ReplaceCategoryImageAsync(IFormFile newFile, Guid userId, string oldFileName)
+        {
+            if (!IsImage(newFile)) return false;
+            var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "category");
+            if (!Directory.Exists(imagesPath))
+                Directory.CreateDirectory(imagesPath);
+
+            if (!string.IsNullOrEmpty(oldFileName))
+            {
+                var oldImagePath = Path.Combine(imagesPath, oldFileName);
+                if (File.Exists(oldImagePath))
+                    File.Delete(oldImagePath);
+            }
+
+            var newImagePath = Path.Combine(imagesPath, newFile.FileName);
+            using (var stream = new FileStream(newImagePath, FileMode.Create))
+            {
+                await newFile.CopyToAsync(stream);
                 stream.Close();
             }
 

@@ -31,11 +31,20 @@ namespace DigitalMenu.Api.Controllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetAllCategories([FromRoute] Guid userId)
         {
-            var response = await _categoryService.GetCategories(userId);
+            var response = await _categoryService.GetCategoriesAsync(userId);
             if (response.Success)
                 return Success(data: response.Data);
 
             return Error(code: 404);
+        }
+
+        [HttpPut("{userId}/update")]
+        public async Task<IActionResult> UpdateCategory([FromRoute] Guid userId, [FromForm] UpdateCategoryModel model)
+        {
+            var response = await _categoryService.UpdateCategoryAsync(model, userId);
+            if (response.Success)
+                return Success();
+            return Error();
         }
     }
 }

@@ -11,5 +11,6 @@ namespace DigitalMenu.Service.Contracts
         Task<ServiceResponse<object>> InsertCategoryAsync(NewCategoryModel model, Guid userId);
         Task<ServiceResponse<List<CategoryDTO>>> GetCategoriesAsync(Guid userId);
         Task<ServiceResponse<object>> UpdateCategoryAsync(UpdateCategoryModel model, Guid userId);
+        Task<ServiceResponse<object>> DeleteCategoryAsync(Guid categoryId, Guid userId);
     }
 }

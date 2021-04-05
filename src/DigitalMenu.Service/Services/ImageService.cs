@@ -77,6 +77,13 @@ namespace DigitalMenu.Service.Services
             return true;
         }
 
+        public void DeleteCategoryImageAsync(Guid userId, string imageName)
+        {
+            var imagePath = Path.Combine(_wwwRootPath, userId.ToString(), "category", imageName);
+            if (File.Exists(imagePath))
+                File.Delete(imagePath);
+        }
+
         private bool IsImage(IFormFile file)
         {
             switch (Path.GetExtension(file.FileName).ToLower())

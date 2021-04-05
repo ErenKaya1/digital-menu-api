@@ -87,5 +87,18 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<object>(true);
         }
+
+        public async Task<ServiceResponse<object>> DeleteCategoryAsync(Guid categoryId, Guid userId)
+        {
+            var entity = await _unitOfWork.CategoryRepository.FindOneAsync(x => x.Id == categoryId && x.UserId == userId);
+            if(entity == null) return new ServiceResponse<object>(false);
+            if (entity.HasImage)
+                _imageService.DeleteCategoryImageAsync(userId, entity.ImageName);
+
+            _unitOfWork.CategoryRepository.Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<object>(true);
+        }
     }
 }

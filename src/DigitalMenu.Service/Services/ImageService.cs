@@ -106,5 +106,22 @@ namespace DigitalMenu.Service.Services
                     return false;
             }
         }
+
+        public async Task<bool> SaveProductImageAsync(IFormFile file)
+        {
+            if (!IsImage(file)) return false;
+            var imagesPath = Path.Combine(_wwwRootPath, "product");
+            if (!Directory.Exists(imagesPath))
+                Directory.CreateDirectory(imagesPath);
+            var imagePath = Path.Combine(imagesPath, file.FileName);
+
+            using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+                stream.Close();
+            }
+
+            return true;
+        }
     }
 }

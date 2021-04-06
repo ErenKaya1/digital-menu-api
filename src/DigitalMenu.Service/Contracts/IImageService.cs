@@ -10,5 +10,6 @@ namespace DigitalMenu.Service.Contracts
         Task<bool> SaveCategoryImageAsync(IFormFile file, Guid userId);
         Task<bool> ReplaceCategoryImageAsync(IFormFile newFile, Guid userId, string oldFileName);
         void DeleteCategoryImageAsync(Guid userId, string imageName);
+        Task<bool> SaveProductImageAsync(IFormFile file);
     }
 }

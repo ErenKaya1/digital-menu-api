@@ -16,8 +16,12 @@ namespace DigitalMenu.Entity.Entities
         public string Description { get; set; }
 
         [Required]
+        public Guid ProductId { get; set; }
+
+        [Required]
         public Guid CultureId { get; set; }
 
         public Culture Culture { get; set; }
+        public Product Product { get; set; }
     }
 }

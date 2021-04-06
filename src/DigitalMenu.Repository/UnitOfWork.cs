@@ -22,6 +22,7 @@ namespace DigitalMenu.Repository
         private IRepository<Category> _categoryRepository;
         private IRepository<CategoryTranslation> _categoryTranslationRepository;
         private IRepository<Culture> _cultureRepository;
+        private IRepository<Product> _productRepository;
 
         public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext, _encryption);
         public IRepository<RefreshToken> RefreshTokenRepository => _refreshTokenRepository ??= new Repository<RefreshToken>(_dbContext, _encryption);
@@ -32,6 +33,7 @@ namespace DigitalMenu.Repository
         public IRepository<Category> CategoryRepository => _categoryRepository ??= new Repository<Category>(_dbContext, _encryption);
         public IRepository<CategoryTranslation> CategoryTranslationRepository => _categoryTranslationRepository ??= new Repository<CategoryTranslation>(_dbContext, _encryption);
         public IRepository<Culture> CultureRepository => _cultureRepository ??= new Repository<Culture>(_dbContext, _encryption);
+        public IRepository<Product> ProductRepository => _productRepository ??= new Repository<Product>(_dbContext, _encryption);
 
         public UnitOfWork(DMContext dbContext, IEncryption encryption)
         {

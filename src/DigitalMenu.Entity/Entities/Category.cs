@@ -9,6 +9,7 @@ namespace DigitalMenu.Entity.Entities
     [Table("category")]
     public class Category : BaseEntity
     {
+        [StringLength(200)]
         public string ImageName { get; set; }
 
         [Required]

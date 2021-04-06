@@ -15,6 +15,7 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public int Order { get; set; }
         
+        [StringLength(200)]
         public string ImageName { get; set; }
 
 

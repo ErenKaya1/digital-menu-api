@@ -79,5 +79,7 @@ namespace DigitalMenu.Data.Context
         public DbSet<Company> Company { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<CategoryTranslation> CategoryTranslation { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<ProductTranslation> ProductTranslation { get; set; }
     }
 }

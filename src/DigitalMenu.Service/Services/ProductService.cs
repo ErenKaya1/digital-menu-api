@@ -61,7 +61,7 @@ namespace DigitalMenu.Service.Services
             };
 
             if (model.ImageFile != null)
-                if (await _imageService.SaveProductImageAsync(model.ImageFile))
+                if (await _imageService.SaveProductImageAsync(model.ImageFile, userId))
                     entity.ImageName = model.ImageFile.FileName;
 
             _unitOfWork.ProductRepository.Add(entity);
@@ -125,10 +125,11 @@ namespace DigitalMenu.Service.Services
             if (subscription.SubscriptionType.SubscriptionTypeFeature.FirstOrDefault(x => x.SubscriptionFeatureName == SubscriptionFeatureName.Product).IsUnlimited)
                 return SubscriptionCheckResult.Success;
 
-            // subscription status check / active => true / expired, suspended => false
+            // subscription status check
             if (subscription.SubscriptionStatus == SubscriptionStatus.Expired)
                 return SubscriptionCheckResult.Expired;
 
+            // subscription status check
             if (subscription.SubscriptionStatus == SubscriptionStatus.Suspended)
                 return SubscriptionCheckResult.Suspended;
 

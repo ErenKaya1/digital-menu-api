@@ -85,10 +85,10 @@ namespace DigitalMenu.Service.Services
                 File.Delete(imagePath);
         }
 
-        public async Task<bool> SaveProductImageAsync(IFormFile file)
+        public async Task<bool> SaveProductImageAsync(IFormFile file, Guid userId)
         {
             if (!file.IsImage()) return false;
-            var imagesPath = Path.Combine(_wwwRootPath, "product");
+            var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "product");
             if (!Directory.Exists(imagesPath))
                 Directory.CreateDirectory(imagesPath);
             var imagePath = Path.Combine(imagesPath, file.FileName);

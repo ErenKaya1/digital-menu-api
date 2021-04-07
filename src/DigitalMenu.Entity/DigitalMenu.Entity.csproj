@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DigitalMenu.Core\DigitalMenu.Core.csproj" />
+    <ProjectReference Include="..\DigitalMenu.Common\DigitalMenu.Common.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

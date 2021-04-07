@@ -1,5 +1,5 @@
 using System;
-using DigitalMenu.Entity.Enum;
+using DigitalMenu.Common.Enum;
 
 namespace DigitalMenu.Entity.DTOs
 {

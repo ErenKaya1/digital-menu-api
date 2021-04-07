@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalMenu.Api.Controllers.Base;
+using DigitalMenu.Common.Enum;
 using DigitalMenu.Data.Context;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Service.Contracts;
@@ -38,6 +39,7 @@ namespace DigitalMenu.Api.Controllers
                     Id = Guid.Parse("41cdda69-aa5f-496f-8c1a-3f26d1a32dae"),
                     TotalValue = 20,
                     IsUnlimited = false,
+                    SubscriptionFeatureName = SubscriptionFeatureName.Product,
                     SubscriptionTypeFeatureTranslation = new List<SubscriptionTypeFeatureTranslation>
                     {
                         new SubscriptionTypeFeatureTranslation
@@ -65,6 +67,7 @@ namespace DigitalMenu.Api.Controllers
                     Id = Guid.Parse("9abf06ab-0c1a-4c63-a141-e512fe306c1e"),
                     TotalValue = 40,
                     IsUnlimited = false,
+                    SubscriptionFeatureName = SubscriptionFeatureName.Product,
                     SubscriptionTypeFeatureTranslation = new List<SubscriptionTypeFeatureTranslation>
                     {
                         new SubscriptionTypeFeatureTranslation
@@ -91,6 +94,7 @@ namespace DigitalMenu.Api.Controllers
                 {
                     Id = Guid.Parse("da12028f-418a-4bd2-9617-27c4aec8372c"),
                     IsUnlimited = true,
+                    SubscriptionFeatureName = SubscriptionFeatureName.Product,
                     SubscriptionTypeFeatureTranslation = new List<SubscriptionTypeFeatureTranslation>
                     {
                         new SubscriptionTypeFeatureTranslation

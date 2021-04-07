@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using DigitalMenu.Common.Enum;
 using DigitalMenu.Entity.Entities.Base;
 
 namespace DigitalMenu.Entity.Entities
@@ -11,6 +12,7 @@ namespace DigitalMenu.Entity.Entities
         public int? TotalValue { get; set; }
         public int? ValueUsed { get; set; }
         public int? ValueRemained { get; set; }
+        public SubscriptionFeatureName SubscriptionFeatureName { get; set; }
         public List<SubscriptionTypeFeatureTranslation> SubscriptionTypeFeatureTranslation { get; set; }
     }
 }

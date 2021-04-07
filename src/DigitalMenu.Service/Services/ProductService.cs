@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DigitalMenu.Common.Enum;
 using DigitalMenu.Core.Model.Product;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
@@ -26,6 +27,7 @@ namespace DigitalMenu.Service.Services
         public async Task<ServiceResponse<object>> InsertProductAsync(Guid userId, NewProductModel model)
         {
             if (model == null) return new ServiceResponse<object>(false);
+            if (!await CheckSubscriptionAsync(userId)) return new ServiceResponse<object>(false);
             var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
 
             if (menu == null)
@@ -63,6 +65,48 @@ namespace DigitalMenu.Service.Services
             await _unitOfWork.SaveChangesAsync();
 
             return new ServiceResponse<object>(true);
+        }
+
+        private async Task<bool> CheckSubscriptionAsync(Guid userId)
+        {
+            var subscription = await _unitOfWork.SubscriptionRepository
+                            .Find(x => x.UserId == userId)
+                            .Include(x => x.User)
+                            .Include(x => x.SubscriptionType)
+                            .ThenInclude(x => x.SubscriptionTypeFeature)
+                            .FirstOrDefaultAsync();
+
+            var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+
+            // first time
+            if (menu == null)
+                return true;
+
+            // trial mode check
+            if (subscription.IsTrialMode)
+                return true;
+
+            // unlimited feature (premium subscription) check
+            if (subscription.SubscriptionType.SubscriptionTypeFeature.FirstOrDefault(x => x.SubscriptionFeatureName == SubscriptionFeatureName.Product).IsUnlimited)
+                return true;
+
+            // subscription status check / active => true / expired, suspended => false
+            if (subscription.SubscriptionStatus == SubscriptionStatus.Expired)
+            {
+
+                return false;
+            }
+
+            if (subscription.SubscriptionStatus == SubscriptionStatus.Suspended)
+            {
+                
+            }
+
+            // remained value check
+            if (menu.ProductCount >= subscription.SubscriptionType.SubscriptionTypeFeature.FirstOrDefault(x => x.SubscriptionFeatureName == SubscriptionFeatureName.Product).TotalValue)
+                return false;
+
+            return true;
         }
     }
 }

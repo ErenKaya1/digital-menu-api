@@ -1,5 +1,5 @@
-﻿using DigitalMenu.Entity.Entities.Base;
-using DigitalMenu.Entity.Enum;
+﻿using DigitalMenu.Common.Enum;
+using DigitalMenu.Entity.Entities.Base;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

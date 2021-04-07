@@ -44,5 +44,14 @@ namespace DigitalMenu.Api.Controllers
                 return Success();
             return Error(response.Message, response.InternalMessage);
         }
+
+        [HttpDelete("{userId}/{productId}")]
+        public async Task<IActionResult> DeleteProduct([FromRoute] Guid userId, [FromRoute] Guid productId)
+        {
+            var response = await _productService.DeleteProductAsync(userId, productId);
+            if (response.Success)
+                return Success();
+            return Error(response.Message, response.InternalMessage);
+        }
     }
 }

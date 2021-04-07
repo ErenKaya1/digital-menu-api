@@ -166,5 +166,20 @@ namespace DigitalMenu.Service.Services
 
             return SubscriptionCheckResult.Success;
         }
+
+        public async Task<ServiceResponse<object>> DeleteProductAsync(Guid userId, Guid productId)
+        {
+            var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+            if (menu == null) return new ServiceResponse<object>(false, "menu not found");
+            var entity = await _unitOfWork.ProductRepository.FindOneAsync(x => x.Id == productId && x.Menu.UserId == userId);
+            if (entity == null) return new ServiceResponse<object>(false, "product not found");
+
+            if (entity.HasImage)
+                _imageService.DeleteProductImage(userId, entity.ImageName);
+            _unitOfWork.ProductRepository.Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<object>(true);
+        }
     }
 }

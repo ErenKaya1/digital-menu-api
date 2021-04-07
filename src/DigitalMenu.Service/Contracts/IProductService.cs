@@ -11,5 +11,6 @@ namespace DigitalMenu.Service.Contracts
         Task<ServiceResponse<object>> InsertProductAsync(Guid userId, NewProductModel model);
         Task<ServiceResponse<List<ProductDTO>>> GetProductsAsync(Guid userId);
         Task<ServiceResponse<object>> UpdateProductAsync(Guid userId, UpdateProductModel model);
+        Task<ServiceResponse<object>> DeleteProductAsync(Guid userId, Guid productId);
     }
 }

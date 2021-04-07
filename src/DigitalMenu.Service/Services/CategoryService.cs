@@ -93,7 +93,7 @@ namespace DigitalMenu.Service.Services
             var entity = await _unitOfWork.CategoryRepository.FindOneAsync(x => x.Id == categoryId && x.UserId == userId);
             if(entity == null) return new ServiceResponse<object>(false);
             if (entity.HasImage)
-                _imageService.DeleteCategoryImageAsync(userId, entity.ImageName);
+                _imageService.DeleteCategoryImage(userId, entity.ImageName);
 
             _unitOfWork.CategoryRepository.Delete(entity);
             await _unitOfWork.SaveChangesAsync();

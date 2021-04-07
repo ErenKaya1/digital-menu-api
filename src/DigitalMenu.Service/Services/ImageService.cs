@@ -78,7 +78,7 @@ namespace DigitalMenu.Service.Services
             return true;
         }
 
-        public void DeleteCategoryImageAsync(Guid userId, string imageName)
+        public void DeleteCategoryImage(Guid userId, string imageName)
         {
             var imagePath = Path.Combine(_wwwRootPath, userId.ToString(), "category", imageName);
             if (File.Exists(imagePath))
@@ -124,6 +124,13 @@ namespace DigitalMenu.Service.Services
             }
 
             return true;
+        }
+
+        public void DeleteProductImage(Guid userId, string imageName)
+        {
+            var imagePath = Path.Combine(_wwwRootPath, userId.ToString(), "product", imageName);
+            if (File.Exists(imagePath))
+                File.Delete(imagePath);
         }
     }
 }

@@ -108,13 +108,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("48736a92-2bd7-4d88-b7a3-24169326fc30"),
+                            Id = new Guid("abdcc14f-bc95-457b-98b7-703b20b876b2"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("36548bdf-46ba-4037-8763-822b7e5dce68"),
+                            Id = new Guid("0cdca127-8dcf-423a-8402-863a0f70e3e1"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -146,7 +146,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c0f3539a-6174-4065-85e0-3b1a0d33d6f1"),
+                            Id = new Guid("a3e5dae1-d975-472e-9b46-6dfc2c8995aa"),
                             RoleName = "Customer"
                         });
                 });
@@ -210,8 +210,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9f1efb1f-8be8-4bc0-a407-7ad3b674feb5"),
-                            CreatedAt = new DateTime(2021, 4, 7, 11, 15, 10, 707, DateTimeKind.Utc).AddTicks(1069),
+                            Id = new Guid("204fb38b-4e15-438b-bcdd-aeb347b9974f"),
+                            CreatedAt = new DateTime(2021, 4, 7, 13, 55, 47, 430, DateTimeKind.Utc).AddTicks(7154),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210406221100_initial")]
+    [Migration("20210407135547_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,13 +110,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6d51e3e6-5813-403d-83fe-94395d17eb4b"),
+                            Id = new Guid("abdcc14f-bc95-457b-98b7-703b20b876b2"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("0e396a8c-582b-4d7a-b5aa-5a7660b4204b"),
+                            Id = new Guid("0cdca127-8dcf-423a-8402-863a0f70e3e1"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -148,7 +148,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("be6bf99f-b026-4ec4-bdcc-93be9119859d"),
+                            Id = new Guid("a3e5dae1-d975-472e-9b46-6dfc2c8995aa"),
                             RoleName = "Customer"
                         });
                 });
@@ -179,9 +179,6 @@ namespace DigitalMenu.Data.Migrations
                         .HasMaxLength(16)
                         .HasColumnType("character varying(16)");
 
-                    b.Property<Guid?>("MenuId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
@@ -205,8 +202,6 @@ namespace DigitalMenu.Data.Migrations
                     b.HasIndex("EmailAddress")
                         .IsUnique();
 
-                    b.HasIndex("MenuId");
-
                     b.HasIndex("RoleId");
 
                     b.HasIndex("UserName")
@@ -217,8 +212,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d3d5b3b1-3ae6-421d-be98-9f9c41d0d3b7"),
-                            CreatedAt = new DateTime(2021, 4, 6, 22, 10, 59, 884, DateTimeKind.Utc).AddTicks(407),
+                            Id = new Guid("204fb38b-4e15-438b-bcdd-aeb347b9974f"),
+                            CreatedAt = new DateTime(2021, 4, 7, 13, 55, 47, 430, DateTimeKind.Utc).AddTicks(7154),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -241,7 +236,12 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<string>("QrCodeColor")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("menu");
                 });
@@ -259,7 +259,7 @@ namespace DigitalMenu.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid?>("MenuId")
+                    b.Property<Guid>("MenuId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Order")
@@ -428,6 +428,9 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<bool>("IsUnlimited")
                         .HasColumnType("boolean");
 
+                    b.Property<byte>("SubscriptionFeatureName")
+                        .HasColumnType("smallint");
+
                     b.Property<Guid?>("SubscriptionTypeId")
                         .HasColumnType("uuid");
 
@@ -531,10 +534,6 @@ namespace DigitalMenu.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("DigitalMenu.Entity.Entities.Menu", "Menu")
-                        .WithMany()
-                        .HasForeignKey("MenuId");
-
                     b.HasOne("DigitalMenu.Entity.Entities.DMRole", "Role")
                         .WithMany("User")
                         .HasForeignKey("RoleId")
@@ -543,9 +542,18 @@ namespace DigitalMenu.Data.Migrations
 
                     b.Navigation("Company");
 
-                    b.Navigation("Menu");
-
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.Menu", b =>
+                {
+                    b.HasOne("DigitalMenu.Entity.Entities.DMUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Product", b =>
@@ -556,11 +564,15 @@ namespace DigitalMenu.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DigitalMenu.Entity.Entities.Menu", null)
+                    b.HasOne("DigitalMenu.Entity.Entities.Menu", "Menu")
                         .WithMany("Product")
-                        .HasForeignKey("MenuId");
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Menu");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.ProductTranslation", b =>

@@ -26,5 +26,14 @@ namespace DigitalMenu.Api.Controllers
                 return Success();
             return Error(response.Message);
         }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetAllProducts([FromRoute] Guid userId)
+        {
+            var response = await _productService.GetProductsAsync(userId);
+            if (response.Success)
+                return Success(data: response.Data);
+            return Error();
+        }
     }
 }

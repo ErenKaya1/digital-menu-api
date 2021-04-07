@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitalMenu.Common.Enum;
 using DigitalMenu.Core.Model.Product;
+using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
@@ -70,6 +71,37 @@ namespace DigitalMenu.Service.Services
             return new ServiceResponse<object>(true);
         }
 
+        public async Task<ServiceResponse<List<ProductDTO>>> GetProductsAsync(Guid userId)
+        {
+            var menu = await _unitOfWork.MenuRepository
+                        .Find(x => x.UserId == userId)
+                        .Include(x => x.Product)
+                        .ThenInclude(x => x.ProductTranslation)
+                        .ThenInclude(x => x.Culture)
+                        .FirstOrDefaultAsync();
+
+            if (menu == null) return new ServiceResponse<List<ProductDTO>>(false) { Data = new List<ProductDTO>() };
+            if (menu.Product == null) return new ServiceResponse<List<ProductDTO>>(false) { Data = new List<ProductDTO>() };
+
+            var entities = menu.Product.Select(x => new ProductDTO
+            {
+                Id = x.Id,
+                Price = x.Price,
+                NameTR = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name,
+                NameEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en") == null
+                         ? x.ProductTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Name
+                         : x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
+                DescriptionTR = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
+                DescriptionEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en") == null
+                                ? x.ProductTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Description
+                                : x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
+                CategoryId = x.CategoryId,
+                ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/product/{x.ImageName}" : string.Empty
+            }).ToList();
+
+            return new ServiceResponse<List<ProductDTO>>(true) { Data = entities };
+        }
+
         private async Task<SubscriptionCheckResult> CheckSubscriptionAsync(Guid userId)
         {
             var subscription = await _unitOfWork.SubscriptionRepository
@@ -101,7 +133,6 @@ namespace DigitalMenu.Service.Services
                 return SubscriptionCheckResult.Suspended;
 
             // remained value check
-            System.Console.WriteLine(menu.ProductCount);
             if (menu.ProductCount >= subscription.SubscriptionType.SubscriptionTypeFeature.FirstOrDefault(x => x.SubscriptionFeatureName == SubscriptionFeatureName.Product).TotalValue)
                 return SubscriptionCheckResult.MaxValue;
 

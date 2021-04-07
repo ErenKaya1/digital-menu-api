@@ -35,19 +35,6 @@ namespace DigitalMenu.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "menu",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    QrCode = table.Column<string>(type: "text", nullable: true),
-                    QrCodeColor = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_menu", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "role",
                 columns: table => new
                 {
@@ -84,8 +71,7 @@ namespace DigitalMenu.Data.Migrations
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true),
-                    MenuId = table.Column<Guid>(type: "uuid", nullable: true)
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,12 +80,6 @@ namespace DigitalMenu.Data.Migrations
                         name: "FK_user_company_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "company",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_user_menu_MenuId",
-                        column: x => x.MenuId,
-                        principalTable: "menu",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -119,6 +99,7 @@ namespace DigitalMenu.Data.Migrations
                     TotalValue = table.Column<int>(type: "integer", nullable: true),
                     ValueUsed = table.Column<int>(type: "integer", nullable: true),
                     ValueRemained = table.Column<int>(type: "integer", nullable: true),
+                    SubscriptionFeatureName = table.Column<byte>(type: "smallint", nullable: false),
                     SubscriptionTypeId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -171,6 +152,26 @@ namespace DigitalMenu.Data.Migrations
                     table.PrimaryKey("PK_category", x => x.Id);
                     table.ForeignKey(
                         name: "FK_category_user_UserId",
+                        column: x => x.UserId,
+                        principalTable: "user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "menu",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    QrCode = table.Column<string>(type: "text", nullable: true),
+                    QrCodeColor = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_menu", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_menu_user_UserId",
                         column: x => x.UserId,
                         principalTable: "user",
                         principalColumn: "Id",
@@ -313,7 +314,7 @@ namespace DigitalMenu.Data.Migrations
                     Order = table.Column<int>(type: "integer", nullable: false),
                     ImageName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    MenuId = table.Column<Guid>(type: "uuid", nullable: true)
+                    MenuId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -329,7 +330,7 @@ namespace DigitalMenu.Data.Migrations
                         column: x => x.MenuId,
                         principalTable: "menu",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -364,8 +365,8 @@ namespace DigitalMenu.Data.Migrations
                 columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
                 values: new object[,]
                 {
-                    { new Guid("6d51e3e6-5813-403d-83fe-94395d17eb4b"), "tr", true },
-                    { new Guid("0e396a8c-582b-4d7a-b5aa-5a7660b4204b"), "en", false }
+                    { new Guid("abdcc14f-bc95-457b-98b7-703b20b876b2"), "tr", true },
+                    { new Guid("0cdca127-8dcf-423a-8402-863a0f70e3e1"), "en", false }
                 });
 
             migrationBuilder.InsertData(
@@ -374,13 +375,13 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("be6bf99f-b026-4ec4-bdcc-93be9119859d"), "Customer" }
+                    { new Guid("a3e5dae1-d975-472e-9b46-6dfc2c8995aa"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
-                columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "MenuId", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("d3d5b3b1-3ae6-421d-be98-9f9c41d0d3b7"), null, new DateTime(2021, 4, 6, 22, 10, 59, 884, DateTimeKind.Utc).AddTicks(407), "test@gmail.com", "admin", "test", null, "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
+                values: new object[] { new Guid("204fb38b-4e15-438b-bcdd-aeb347b9974f"), null, new DateTime(2021, 4, 7, 13, 55, 47, 430, DateTimeKind.Utc).AddTicks(7154), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_category_UserId",
@@ -396,6 +397,11 @@ namespace DigitalMenu.Data.Migrations
                 name: "IX_category_translation_CultureId",
                 table: "category_translation",
                 column: "CultureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_menu_UserId",
+                table: "menu",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_product_CategoryId",
@@ -480,11 +486,6 @@ namespace DigitalMenu.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_user_MenuId",
-                table: "user",
-                column: "MenuId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_user_RoleId",
                 table: "user",
                 column: "RoleId");
@@ -532,6 +533,9 @@ namespace DigitalMenu.Data.Migrations
                 name: "category");
 
             migrationBuilder.DropTable(
+                name: "menu");
+
+            migrationBuilder.DropTable(
                 name: "subscription_type");
 
             migrationBuilder.DropTable(
@@ -539,9 +543,6 @@ namespace DigitalMenu.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "company");
-
-            migrationBuilder.DropTable(
-                name: "menu");
 
             migrationBuilder.DropTable(
                 name: "role");

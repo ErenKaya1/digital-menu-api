@@ -63,7 +63,7 @@ namespace DigitalMenu.Service.Services
                                 NameEN = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en") == null
                                          ? x.CategoryTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Name
                                          : x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
-                                ImagePath = x.HasImage ? $"https://localhost:5001/{userId}/category/{x.ImageName}" : ""
+                                ImagePath = x.HasImage ? $"https://localhost:5001/{userId}/category/{x.ImageName}" : string.Empty
                             })
                             .ToListAsync();
 

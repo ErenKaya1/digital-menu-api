@@ -33,7 +33,6 @@ namespace DigitalMenu.Service.Services
                 return new ServiceResponse<object>(false, ((int)subscriptionStatus).ToString());
 
             var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
-
             if (menu == null)
             {
                 menu = new Menu
@@ -57,7 +56,7 @@ namespace DigitalMenu.Service.Services
             var translations = new List<ProductTranslation>
             {
                 new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = model.NameTR, Description = string.IsNullOrEmpty(model.DescriptionTR) ? string.Empty : model.DescriptionTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
-                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty : model.NameEN, Description = string.IsNullOrEmpty(model.DescriptionEN) ? string.Empty : model.DescriptionEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id }
+                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty : model.NameEN, Description = string.IsNullOrEmpty(model.DescriptionEN) ? string.Empty : model.DescriptionEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "en").Id }
             };
 
             if (model.ImageFile != null)
@@ -100,6 +99,34 @@ namespace DigitalMenu.Service.Services
             }).ToList();
 
             return new ServiceResponse<List<ProductDTO>>(true) { Data = entities };
+        }
+
+        public async Task<ServiceResponse<object>> UpdateProductAsync(Guid userId, UpdateProductModel model)
+        {
+            if (model == null) return new ServiceResponse<object>(false, "model was null");
+            var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+            if (menu == null) return new ServiceResponse<object>(false, "menu not found");
+            var entity = await _unitOfWork.ProductRepository
+                        .Find(x => x.MenuId == menu.Id && x.Id == model.Id)
+                        .Include(x => x.ProductTranslation)
+                        .ThenInclude(x => x.Culture)
+                        .FirstOrDefaultAsync();
+            if (entity == null) return new ServiceResponse<object>(false, "product not found");
+
+            entity.Price = model.Price;
+            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name = model.NameTR;
+            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description = string.IsNullOrEmpty(model.DescriptionTR) ? string.Empty : model.DescriptionTR;
+            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty : model.NameEN;
+            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description = string.IsNullOrEmpty(model.DescriptionEN) ? string.Empty : model.DescriptionEN;
+
+            if (model.ImageFile != null)
+                if (await _imageService.ReplaceProductImageAsync(model.ImageFile, userId, entity.ImageName))
+                    entity.ImageName = model.ImageFile.FileName;
+
+            _unitOfWork.ProductRepository.Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ServiceResponse<object>(true);
         }
 
         private async Task<SubscriptionCheckResult> CheckSubscriptionAsync(Guid userId)

@@ -35,5 +35,14 @@ namespace DigitalMenu.Api.Controllers
                 return Success(data: response.Data);
             return Error();
         }
+
+        [HttpPut("{userId}/update")]
+        public async Task<IActionResult> UpdateProduct([FromRoute] Guid userId, [FromForm] UpdateProductModel model)
+        {
+            var response = await _productService.UpdateProductAsync(userId, model);
+            if (response.Success)
+                return Success();
+            return Error(response.Message, response.InternalMessage);
+        }
     }
 }

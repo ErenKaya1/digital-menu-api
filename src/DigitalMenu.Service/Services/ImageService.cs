@@ -101,5 +101,29 @@ namespace DigitalMenu.Service.Services
 
             return true;
         }
+
+        public async Task<bool> ReplaceProductImageAsync(IFormFile newFile, Guid userId, string oldFileName)
+        {
+            if (!newFile.IsImage()) return false;
+            var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "product");
+            if (!Directory.Exists(imagesPath))
+                Directory.CreateDirectory(imagesPath);
+
+            if (!string.IsNullOrEmpty(oldFileName))
+            {
+                var oldImagePath = Path.Combine(imagesPath, oldFileName);
+                if (File.Exists(oldImagePath))
+                    File.Delete(oldImagePath);
+            }
+
+            var newImagePath = Path.Combine(imagesPath, newFile.FileName);
+            using (var stream = new FileStream(newImagePath, FileMode.Create))
+            {
+                await newFile.CopyToAsync(stream);
+                stream.Close();
+            }
+
+            return true;
+        }
     }
 }

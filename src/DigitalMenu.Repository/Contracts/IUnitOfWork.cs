@@ -18,5 +18,6 @@ namespace DigitalMenu.Repository.Contracts
         IRepository<Culture> CultureRepository { get; }
         IRepository<Product> ProductRepository { get; }
         IRepository<ProductTranslation> ProductTranslationRepository { get; }
+        IRepository<Menu> MenuRepository { get; }
     }
 }

@@ -9,11 +9,13 @@ namespace DigitalMenu.Entity.Entities
     [Table("menu")]
     public class Menu : BaseEntity
     {
-        [Required]
-        public Guid UserId { get; set; }
         public string QrCode { get; set; }
         public string QrCodeColor { get; set; }
 
+        [Required]
+        public Guid UserId { get; set; }
+
+        public int ProductCount => Product.Count;
         public List<Product> Product { get; set; }
         public DMUser User { get; set; }
     }

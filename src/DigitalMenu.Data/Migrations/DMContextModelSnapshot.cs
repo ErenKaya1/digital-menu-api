@@ -108,13 +108,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e2a641cc-2bce-469b-85a2-866535ec879e"),
+                            Id = new Guid("0f49113d-663f-45ce-bc68-3753a7b95dd4"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("cf9799f0-d5ca-401a-b588-991c3746f0b7"),
+                            Id = new Guid("dbc05a64-b659-43f3-8eca-63011d5972e3"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -146,7 +146,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("83651d50-b01e-496f-9f6a-2152f0b2b55d"),
+                            Id = new Guid("b43aba37-1fdc-432f-9372-6ec93df80f08"),
                             RoleName = "Customer"
                         });
                 });
@@ -210,8 +210,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e8ff5d29-f482-4fa2-9f37-ea1d54b6da54"),
-                            CreatedAt = new DateTime(2021, 4, 6, 22, 5, 15, 693, DateTimeKind.Utc).AddTicks(192),
+                            Id = new Guid("4d83795a-5486-484a-a62f-6395872097f3"),
+                            CreatedAt = new DateTime(2021, 4, 7, 0, 32, 23, 426, DateTimeKind.Utc).AddTicks(909),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -257,7 +257,7 @@ namespace DigitalMenu.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid?>("MenuId")
+                    b.Property<Guid>("MenuId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Order")
@@ -559,11 +559,15 @@ namespace DigitalMenu.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DigitalMenu.Entity.Entities.Menu", null)
+                    b.HasOne("DigitalMenu.Entity.Entities.Menu", "Menu")
                         .WithMany("Product")
-                        .HasForeignKey("MenuId");
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Menu");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.ProductTranslation", b =>

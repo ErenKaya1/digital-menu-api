@@ -14,16 +14,19 @@ namespace DigitalMenu.Entity.Entities
 
         [Required]
         public int Order { get; set; }
-        
+
         [StringLength(200)]
         public string ImageName { get; set; }
-
 
         [Required]
         public Guid CategoryId { get; set; }
 
+        [Required]
+        public Guid MenuId { get; set; }
+
         public bool HasImage => !string.IsNullOrEmpty(ImageName);
         public List<ProductTranslation> ProductTranslation { get; set; }
         public Category Category { get; set; }
+        public Menu Menu { get; set; }
     }
 }

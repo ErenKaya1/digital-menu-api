@@ -35,6 +35,19 @@ namespace DigitalMenu.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "menu",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    QrCode = table.Column<string>(type: "text", nullable: true),
+                    QrCodeColor = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_menu", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "role",
                 columns: table => new
                 {
@@ -71,7 +84,8 @@ namespace DigitalMenu.Data.Migrations
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true)
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true),
+                    MenuId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -80,6 +94,12 @@ namespace DigitalMenu.Data.Migrations
                         name: "FK_user_company_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "company",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_user_menu_MenuId",
+                        column: x => x.MenuId,
+                        principalTable: "menu",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -134,6 +154,25 @@ namespace DigitalMenu.Data.Migrations
                         name: "FK_subscription_type_translation_subscription_type_Subscriptio~",
                         column: x => x.SubscriptionTypeId,
                         principalTable: "subscription_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "category",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ImageName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_category", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_category_user_UserId",
+                        column: x => x.UserId,
+                        principalTable: "user",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -239,13 +278,94 @@ namespace DigitalMenu.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "category_translation",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CultureId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_category_translation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_category_translation_category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "category",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_category_translation_culture_CultureId",
+                        column: x => x.CultureId,
+                        principalTable: "culture",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "product",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    ImageName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MenuId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_product", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_product_category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "category",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_product_menu_MenuId",
+                        column: x => x.MenuId,
+                        principalTable: "menu",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "product_translation",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CultureId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_product_translation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_product_translation_culture_CultureId",
+                        column: x => x.CultureId,
+                        principalTable: "culture",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_product_translation_product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "culture",
                 columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
                 values: new object[,]
                 {
-                    { new Guid("fdca6ecd-af69-4215-b610-92ba075605a8"), "tr", true },
-                    { new Guid("36ff9ab1-6e68-4500-8fb9-f6bcc5d013bf"), "en", false }
+                    { new Guid("6d51e3e6-5813-403d-83fe-94395d17eb4b"), "tr", true },
+                    { new Guid("0e396a8c-582b-4d7a-b5aa-5a7660b4204b"), "en", false }
                 });
 
             migrationBuilder.InsertData(
@@ -254,13 +374,48 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("98b5f41c-6092-425e-8768-9a682505b0c6"), "Customer" }
+                    { new Guid("be6bf99f-b026-4ec4-bdcc-93be9119859d"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
-                columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("c52ff520-8b03-4c39-bf5d-2d723dd7db80"), null, new DateTime(2021, 4, 2, 16, 40, 28, 976, DateTimeKind.Utc).AddTicks(3500), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "MenuId", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
+                values: new object[] { new Guid("d3d5b3b1-3ae6-421d-be98-9f9c41d0d3b7"), null, new DateTime(2021, 4, 6, 22, 10, 59, 884, DateTimeKind.Utc).AddTicks(407), "test@gmail.com", "admin", "test", null, "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_category_UserId",
+                table: "category",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_category_translation_CategoryId",
+                table: "category_translation",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_category_translation_CultureId",
+                table: "category_translation",
+                column: "CultureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_CategoryId",
+                table: "product",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_MenuId",
+                table: "product",
+                column: "MenuId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_translation_CultureId",
+                table: "product_translation",
+                column: "CultureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_translation_ProductId",
+                table: "product_translation",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_token_UserId",
@@ -325,6 +480,11 @@ namespace DigitalMenu.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_user_MenuId",
+                table: "user",
+                column: "MenuId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_user_RoleId",
                 table: "user",
                 column: "RoleId");
@@ -338,6 +498,12 @@ namespace DigitalMenu.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "category_translation");
+
+            migrationBuilder.DropTable(
+                name: "product_translation");
+
             migrationBuilder.DropTable(
                 name: "refresh_token");
 
@@ -354,7 +520,7 @@ namespace DigitalMenu.Data.Migrations
                 name: "subsctiption_type_feature_translation");
 
             migrationBuilder.DropTable(
-                name: "user");
+                name: "product");
 
             migrationBuilder.DropTable(
                 name: "culture");
@@ -363,13 +529,22 @@ namespace DigitalMenu.Data.Migrations
                 name: "subscription_type_feature");
 
             migrationBuilder.DropTable(
-                name: "company");
-
-            migrationBuilder.DropTable(
-                name: "role");
+                name: "category");
 
             migrationBuilder.DropTable(
                 name: "subscription_type");
+
+            migrationBuilder.DropTable(
+                name: "user");
+
+            migrationBuilder.DropTable(
+                name: "company");
+
+            migrationBuilder.DropTable(
+                name: "menu");
+
+            migrationBuilder.DropTable(
+                name: "role");
         }
     }
 }

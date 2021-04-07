@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalMenu.Data.Migrations
 {
     [DbContext(typeof(DMContext))]
-    [Migration("20210404001417_AddedProductTable")]
-    partial class AddedProductTable
+    [Migration("20210406221100_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,9 +28,15 @@ namespace DigitalMenu.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ImageName")
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("category");
                 });
@@ -41,7 +47,7 @@ namespace DigitalMenu.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CategoryId")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CultureId")
@@ -104,13 +110,13 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("30dd4d7e-f227-404e-8d59-f4df305ef095"),
+                            Id = new Guid("6d51e3e6-5813-403d-83fe-94395d17eb4b"),
                             CultureCode = "tr",
                             IsDefaultCulture = true
                         },
                         new
                         {
-                            Id = new Guid("5af19ecd-739e-41f8-b51d-770ac75607de"),
+                            Id = new Guid("0e396a8c-582b-4d7a-b5aa-5a7660b4204b"),
                             CultureCode = "en",
                             IsDefaultCulture = false
                         });
@@ -142,7 +148,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4a61fea9-19e1-4161-8688-542e2a7454e7"),
+                            Id = new Guid("be6bf99f-b026-4ec4-bdcc-93be9119859d"),
                             RoleName = "Customer"
                         });
                 });
@@ -173,6 +179,9 @@ namespace DigitalMenu.Data.Migrations
                         .HasMaxLength(16)
                         .HasColumnType("character varying(16)");
 
+                    b.Property<Guid?>("MenuId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
@@ -196,6 +205,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasIndex("EmailAddress")
                         .IsUnique();
 
+                    b.HasIndex("MenuId");
+
                     b.HasIndex("RoleId");
 
                     b.HasIndex("UserName")
@@ -206,8 +217,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c309dd75-1e23-4eb0-af44-ae670fe65dc5"),
-                            CreatedAt = new DateTime(2021, 4, 4, 0, 14, 17, 606, DateTimeKind.Utc).AddTicks(5515),
+                            Id = new Guid("d3d5b3b1-3ae6-421d-be98-9f9c41d0d3b7"),
+                            CreatedAt = new DateTime(2021, 4, 6, 22, 10, 59, 884, DateTimeKind.Utc).AddTicks(407),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -216,6 +227,23 @@ namespace DigitalMenu.Data.Migrations
                             RoleId = new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"),
                             UserName = "admintest"
                         });
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.Menu", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("QrCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("QrCodeColor")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("menu");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Product", b =>
@@ -228,7 +256,11 @@ namespace DigitalMenu.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ImageName")
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid?>("MenuId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Order")
                         .HasColumnType("integer");
@@ -239,6 +271,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("MenuId");
 
                     b.ToTable("product");
                 });
@@ -261,7 +295,7 @@ namespace DigitalMenu.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid?>("ProductId")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -461,17 +495,32 @@ namespace DigitalMenu.Data.Migrations
                     b.ToTable("subscription_type_translation");
                 });
 
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.Category", b =>
+                {
+                    b.HasOne("DigitalMenu.Entity.Entities.DMUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DigitalMenu.Entity.Entities.CategoryTranslation", b =>
                 {
-                    b.HasOne("DigitalMenu.Entity.Entities.Category", null)
+                    b.HasOne("DigitalMenu.Entity.Entities.Category", "Category")
                         .WithMany("CategoryTranslation")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DigitalMenu.Entity.Entities.Culture", "Culture")
                         .WithMany()
                         .HasForeignKey("CultureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Culture");
                 });
@@ -482,6 +531,10 @@ namespace DigitalMenu.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CompanyId");
 
+                    b.HasOne("DigitalMenu.Entity.Entities.Menu", "Menu")
+                        .WithMany()
+                        .HasForeignKey("MenuId");
+
                     b.HasOne("DigitalMenu.Entity.Entities.DMRole", "Role")
                         .WithMany("User")
                         .HasForeignKey("RoleId")
@@ -489,6 +542,8 @@ namespace DigitalMenu.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+
+                    b.Navigation("Menu");
 
                     b.Navigation("Role");
                 });
@@ -501,6 +556,10 @@ namespace DigitalMenu.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DigitalMenu.Entity.Entities.Menu", null)
+                        .WithMany("Product")
+                        .HasForeignKey("MenuId");
+
                     b.Navigation("Category");
                 });
 
@@ -512,11 +571,15 @@ namespace DigitalMenu.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DigitalMenu.Entity.Entities.Product", null)
+                    b.HasOne("DigitalMenu.Entity.Entities.Product", "Product")
                         .WithMany("ProductTranslation")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Culture");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.RefreshToken", b =>
@@ -622,6 +685,11 @@ namespace DigitalMenu.Data.Migrations
                     b.Navigation("ResetPasswordToken");
 
                     b.Navigation("Subscription");
+                });
+
+            modelBuilder.Entity("DigitalMenu.Entity.Entities.Menu", b =>
+                {
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Product", b =>

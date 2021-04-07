@@ -6,6 +6,7 @@ using DigitalMenu.Core.Model.Product;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Service.Services
 {
@@ -25,17 +26,31 @@ namespace DigitalMenu.Service.Services
         public async Task<ServiceResponse<object>> InsertProductAsync(Guid userId, NewProductModel model)
         {
             if (model == null) return new ServiceResponse<object>(false);
+            var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+
+            if (menu == null)
+            {
+                menu = new Menu
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId
+                };
+
+                _unitOfWork.MenuRepository.Add(menu);
+            }
+
             var entityId = Guid.NewGuid();
             var entity = new Product
             {
                 Id = entityId,
                 Price = model.Price,
-                CategoryId = model.CategoryId
+                CategoryId = model.CategoryId,
+                MenuId = menu.Id
             };
 
             var translations = new List<ProductTranslation>
             {
-                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = model.NameTR, Description = model.DescriptionTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
+                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = model.NameTR, Description = string.IsNullOrEmpty(model.DescriptionTR) ? string.Empty : model.DescriptionTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
                 new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty : model.NameEN, Description = string.IsNullOrEmpty(model.DescriptionEN) ? string.Empty : model.DescriptionEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id }
             };
 

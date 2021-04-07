@@ -27,7 +27,10 @@ namespace DigitalMenu.Service.Services
         public async Task<ServiceResponse<object>> InsertProductAsync(Guid userId, NewProductModel model)
         {
             if (model == null) return new ServiceResponse<object>(false);
-            if (!await CheckSubscriptionAsync(userId)) return new ServiceResponse<object>(false);
+            var subscriptionStatus = await CheckSubscriptionAsync(userId);
+            if (subscriptionStatus != SubscriptionCheckResult.Success)
+                return new ServiceResponse<object>(false, ((int)subscriptionStatus).ToString());
+
             var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
 
             if (menu == null)
@@ -67,7 +70,7 @@ namespace DigitalMenu.Service.Services
             return new ServiceResponse<object>(true);
         }
 
-        private async Task<bool> CheckSubscriptionAsync(Guid userId)
+        private async Task<SubscriptionCheckResult> CheckSubscriptionAsync(Guid userId)
         {
             var subscription = await _unitOfWork.SubscriptionRepository
                             .Find(x => x.UserId == userId)
@@ -76,37 +79,33 @@ namespace DigitalMenu.Service.Services
                             .ThenInclude(x => x.SubscriptionTypeFeature)
                             .FirstOrDefaultAsync();
 
-            var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+            var menu = await _unitOfWork.MenuRepository.Find(x => x.UserId == userId).Include(x => x.Product).FirstOrDefaultAsync();
 
-            // first time
+            // first product
             if (menu == null)
-                return true;
+                return SubscriptionCheckResult.Success;
 
             // trial mode check
             if (subscription.IsTrialMode)
-                return true;
+                return SubscriptionCheckResult.Success;
 
             // unlimited feature (premium subscription) check
             if (subscription.SubscriptionType.SubscriptionTypeFeature.FirstOrDefault(x => x.SubscriptionFeatureName == SubscriptionFeatureName.Product).IsUnlimited)
-                return true;
+                return SubscriptionCheckResult.Success;
 
             // subscription status check / active => true / expired, suspended => false
             if (subscription.SubscriptionStatus == SubscriptionStatus.Expired)
-            {
-
-                return false;
-            }
+                return SubscriptionCheckResult.Expired;
 
             if (subscription.SubscriptionStatus == SubscriptionStatus.Suspended)
-            {
-                
-            }
+                return SubscriptionCheckResult.Suspended;
 
             // remained value check
+            System.Console.WriteLine(menu.ProductCount);
             if (menu.ProductCount >= subscription.SubscriptionType.SubscriptionTypeFeature.FirstOrDefault(x => x.SubscriptionFeatureName == SubscriptionFeatureName.Product).TotalValue)
-                return false;
+                return SubscriptionCheckResult.MaxValue;
 
-            return true;
+            return SubscriptionCheckResult.Success;
         }
     }
 }

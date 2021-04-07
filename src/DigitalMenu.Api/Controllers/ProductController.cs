@@ -21,11 +21,10 @@ namespace DigitalMenu.Api.Controllers
         [HttpPost("{userId}")]
         public async Task<IActionResult> InsertProduct([FromRoute] Guid userId, [FromForm] NewProductModel model)
         {
-            System.Console.WriteLine(model.CategoryId);
             var response = await _productService.InsertProductAsync(userId, model);
             if (response.Success)
                 return Success();
-            return Error();
+            return Error(response.Message);
         }
     }
 }

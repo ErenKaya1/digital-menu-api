@@ -5,20 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DigitalMenu.Data\DigitalMenu.Data.csproj" />
-    <ProjectReference Include="..\DigitalMenu.Core\DigitalMenu.Core.csproj" />
-    <ProjectReference Include="..\DigitalMenu.Repository\DigitalMenu.Repository.csproj" />
-    <ProjectReference Include="..\DigitalMenu.Service\DigitalMenu.Service.csproj" />
-    <ProjectReference Include="..\DigitalMenu.RabbitMQ.Consumer\DigitalMenu.RabbitMQ.Consumer.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using DigitalMenu.Common.Extensions;
 using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +21,7 @@ namespace DigitalMenu.Service.Services
 
         public async Task<bool> SaveCompanyLogoAsync(IFormFile file, bool replace)
         {
-            if (!IsImage(file)) return false;
+            if (!file.IsImage()) return false;
             var imagePath = Path.Combine(_wwwRootPath, "logo", file.FileName);
 
             if (replace)
@@ -37,7 +38,7 @@ namespace DigitalMenu.Service.Services
 
         public async Task<bool> SaveCategoryImageAsync(IFormFile file, Guid userId)
         {
-            if (!IsImage(file)) return false;
+            if (!file.IsImage()) return false;
             var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "category");
             if (!Directory.Exists(imagesPath))
                 Directory.CreateDirectory(imagesPath);
@@ -55,7 +56,7 @@ namespace DigitalMenu.Service.Services
 
         public async Task<bool> ReplaceCategoryImageAsync(IFormFile newFile, Guid userId, string oldFileName)
         {
-            if (!IsImage(newFile)) return false;
+            if (!newFile.IsImage()) return false;
             var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "category");
             if (!Directory.Exists(imagesPath))
                 Directory.CreateDirectory(imagesPath);
@@ -84,32 +85,9 @@ namespace DigitalMenu.Service.Services
                 File.Delete(imagePath);
         }
 
-        private bool IsImage(IFormFile file)
-        {
-            switch (Path.GetExtension(file.FileName).ToLower())
-            {
-                case ".png":
-                case ".jpg":
-                case ".jpeg":
-                case ".jfif":
-                case ".gif":
-                case ".tiff":
-                case ".pjp":
-                case ".svg":
-                case ".bmp":
-                case ".webp":
-                case ".ico":
-                case ".tif":
-                case ".avif":
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         public async Task<bool> SaveProductImageAsync(IFormFile file)
         {
-            if (!IsImage(file)) return false;
+            if (!file.IsImage()) return false;
             var imagesPath = Path.Combine(_wwwRootPath, "product");
             if (!Directory.Exists(imagesPath))
                 Directory.CreateDirectory(imagesPath);

@@ -14,5 +14,6 @@ namespace DigitalMenu.Entity.Entities
         public string Slug { get; set; }
 
         public string LogoName { get; set; }
+        public bool HasLogo => !string.IsNullOrEmpty(LogoName);
     }
 }

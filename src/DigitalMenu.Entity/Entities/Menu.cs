@@ -9,8 +9,14 @@ namespace DigitalMenu.Entity.Entities
     [Table("menu")]
     public class Menu : BaseEntity
     {
-        public string QrCode { get; set; }
+        [StringLength(20)]
         public string QrCodeColor { get; set; }
+
+        [StringLength(20)]
+        public string QrCodeBackgroundColor { get; set; }
+
+        public int QrCodeScale { get; set; } = 4;
+        public int QrCodeMargin { get; set; } = 4;
 
         [Required]
         public Guid UserId { get; set; }

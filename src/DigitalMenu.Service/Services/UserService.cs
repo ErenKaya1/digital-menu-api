@@ -81,6 +81,15 @@ namespace DigitalMenu.Service.Services
 
             _unitOfWork.SubscriptionRepository.Add(subscription);
 
+            // generate empty menu
+            var menu = new Menu
+            {
+                Id = Guid.NewGuid(),
+                UserId = entity.Id
+            };
+
+            _unitOfWork.MenuRepository.Add(menu);
+
             // generate jwt and refresh token
             var jwtToken = _tokenService.GenerateJwtToken(entity);
             var refreshToken = _tokenService.GenerateRefreshToken(ipAddress);
@@ -254,7 +263,7 @@ namespace DigitalMenu.Service.Services
             if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
             if (user.Company == null) return new ServiceResponse<CompanyDTO>(false, "company not found");
             var dto = _mapper.Map<CompanyDTO>(user.Company);
-            dto.LogoName = "https://localhost:5001/logo/" + dto.LogoName;
+            dto.LogoName = user.Company.HasLogo ? "https://localhost:5001/logo/" + dto.LogoName : null;
 
             return new ServiceResponse<CompanyDTO>(true) { Data = dto };
         }

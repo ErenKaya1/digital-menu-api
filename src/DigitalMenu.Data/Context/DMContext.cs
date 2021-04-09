@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DigitalMenu.Data.Extensions;
 using DigitalMenu.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -20,50 +21,7 @@ namespace DigitalMenu.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DMRole>().HasIndex(x => x.RoleName).IsUnique();
-            modelBuilder.Entity<DMRole>().HasData(
-                new DMRole
-                {
-                    Id = Guid.Parse("b19ebe2e-0dad-4445-896c-b0b2d0a33157"),
-                    RoleName = "Admin"
-                },
-                new DMRole
-                {
-                    Id = Guid.NewGuid(),
-                    RoleName = "Customer"
-                }
-            );
-
-            modelBuilder.Entity<DMUser>().HasIndex(x => x.UserName).IsUnique();
-            modelBuilder.Entity<DMUser>().HasIndex(x => x.EmailAddress).IsUnique();
-            modelBuilder.Entity<DMUser>().HasData(
-                new DMUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "admintest",
-                    FirstName = "admin",
-                    LastName = "test",
-                    EmailAddress = "test@gmail.com", // 7kZ70Fsg/M1ldDvytd2IRgGLScOsY7TbRdiVV0/1UNc=
-                    PhoneNumber = "123456789", // vcX83jUAd/UJxiqFkb6nQP2bAAjt87nF
-                    CreatedAt = DateTime.UtcNow,
-                    PasswordHash = "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", // admintest123
-                    RoleId = Guid.Parse("b19ebe2e-0dad-4445-896c-b0b2d0a33157") // admin
-                });
-
-            modelBuilder.Entity<Culture>().HasData(
-                new Culture
-                {
-                    Id = Guid.NewGuid(),
-                    CultureCode = "tr",
-                    IsDefaultCulture = true
-                },
-                new Culture
-                {
-                    Id = Guid.NewGuid(),
-                    CultureCode = "en",
-                    IsDefaultCulture = false
-                }
-            );
+            modelBuilder.Seed();
         }
 
         public DbSet<DMUser> User { get; set; }

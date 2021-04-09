@@ -1,9 +1,10 @@
 using System.IO;
+using DigitalMenu.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace DigitalMenu.Data.Context
+namespace DigitalMenu.Data.Factory
 {
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DMContext>
     {

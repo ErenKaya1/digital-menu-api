@@ -97,10 +97,8 @@ namespace DigitalMenu.Data.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     IsUnlimited = table.Column<bool>(type: "boolean", nullable: false),
                     TotalValue = table.Column<int>(type: "integer", nullable: true),
-                    ValueUsed = table.Column<int>(type: "integer", nullable: true),
-                    ValueRemained = table.Column<int>(type: "integer", nullable: true),
-                    SubscriptionFeatureName = table.Column<byte>(type: "smallint", nullable: false),
-                    SubscriptionTypeId = table.Column<Guid>(type: "uuid", nullable: true)
+                    SubscriptionTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SubscriptionFeatureName = table.Column<byte>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,7 +108,7 @@ namespace DigitalMenu.Data.Migrations
                         column: x => x.SubscriptionTypeId,
                         principalTable: "subscription_type",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,8 +161,6 @@ namespace DigitalMenu.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    QrCode = table.Column<string>(type: "text", nullable: true),
-                    QrCodeColor = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -339,7 +335,7 @@ namespace DigitalMenu.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     CultureId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -365,8 +361,8 @@ namespace DigitalMenu.Data.Migrations
                 columns: new[] { "Id", "CultureCode", "IsDefaultCulture" },
                 values: new object[,]
                 {
-                    { new Guid("abdcc14f-bc95-457b-98b7-703b20b876b2"), "tr", true },
-                    { new Guid("0cdca127-8dcf-423a-8402-863a0f70e3e1"), "en", false }
+                    { new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "tr", true },
+                    { new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "en", false }
                 });
 
             migrationBuilder.InsertData(
@@ -375,13 +371,59 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("a3e5dae1-d975-472e-9b46-6dfc2c8995aa"), "Customer" }
+                    { new Guid("b3f2a938-b945-4ba3-bc43-55475ab6d32d"), "Customer" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "subscription_type",
+                columns: new[] { "Id", "Price" },
+                values: new object[,]
+                {
+                    { new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), 5.0 },
+                    { new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), 10.0 },
+                    { new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), 20.0 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "subscription_type_feature",
+                columns: new[] { "Id", "IsUnlimited", "SubscriptionFeatureName", "SubscriptionTypeId", "TotalValue" },
+                values: new object[,]
+                {
+                    { new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae"), false, (byte)0, new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), 20 },
+                    { new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e"), false, (byte)0, new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), 40 },
+                    { new Guid("da12028f-418a-4bd2-9617-27c4aec8372c"), true, (byte)0, new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "subscription_type_translation",
+                columns: new[] { "Id", "CultureId", "SubscriptionTypeId", "Title" },
+                values: new object[,]
+                {
+                    { new Guid("d1c038a6-e02c-43cb-83c3-4a5f28c3452f"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), "Giriş" },
+                    { new Guid("3749f946-5b8d-4a9e-90cf-fdbdcced13ac"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), "Starter" },
+                    { new Guid("5dae9e33-78f4-4732-bdb0-964104a49164"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), "Ekonomik" },
+                    { new Guid("e3b70e7f-3b69-4915-a43a-bdef248328cf"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), "Economic" },
+                    { new Guid("8eca658d-7d6d-4496-ab9c-a7faab0687ba"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), "Premium" },
+                    { new Guid("6991fa00-f585-42e9-ba34-8de98348e3dd"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), "Premium" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("204fb38b-4e15-438b-bcdd-aeb347b9974f"), null, new DateTime(2021, 4, 7, 13, 55, 47, 430, DateTimeKind.Utc).AddTicks(7154), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("a37e8130-bcd5-4dac-b390-be6c30dc1759"), null, new DateTime(2021, 4, 9, 13, 30, 58, 395, DateTimeKind.Utc).AddTicks(9177), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+
+            migrationBuilder.InsertData(
+                table: "subsctiption_type_feature_translation",
+                columns: new[] { "Id", "CultureId", "Name", "SubscriptionTypeFeatureId" },
+                values: new object[,]
+                {
+                    { new Guid("2db4ed5d-12f9-4c58-acbc-ba3366c775f2"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae") },
+                    { new Guid("485713bd-9af6-4ac1-93f5-91f66e113f05"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae") },
+                    { new Guid("53a011b6-475a-4710-89b2-591a638a596c"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e") },
+                    { new Guid("7a3d5683-fd69-4cb8-a142-ab1b4425cad6"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e") },
+                    { new Guid("f0ddb9b6-6300-4c55-806f-199152001c4b"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("da12028f-418a-4bd2-9617-27c4aec8372c") },
+                    { new Guid("a7477822-c30e-4c0f-895b-88b10fa817b2"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("da12028f-418a-4bd2-9617-27c4aec8372c") }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_category_UserId",

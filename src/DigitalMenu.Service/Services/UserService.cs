@@ -55,7 +55,7 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress)
         {
-            // check if username and email are valid
+            // check if username and email are receivable
             if (await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName || x.EmailAddress == _encryption.EncryptText(model.EmailAddress)).AnyAsync())
                 return new ServiceResponse<UserDTO>(false, "register failed", "username or email is already taken");
 

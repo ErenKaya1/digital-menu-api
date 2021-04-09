@@ -8,9 +8,14 @@ namespace DigitalMenu.Entity.Entities
     [Table("category_translation")]
     public class CategoryTranslation : BaseEntity
     {
-        [Required]
+        private string _name;
+
         [StringLength(50)]
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value ?? string.Empty; }
+        }
 
         [Required]
         public Guid CultureId { get; set; }

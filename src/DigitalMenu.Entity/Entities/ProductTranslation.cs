@@ -8,11 +8,13 @@ namespace DigitalMenu.Entity.Entities
     [Table("product_translation")]
     public class ProductTranslation : BaseEntity
     {
-        [Required]
-        [StringLength(50)]
-        public string Name { get; set; }
+        private string _name;
+        private string _description;
 
-        public string Description { get; set; }
+        [StringLength(50)]
+        public string Name { get { return _name; } set { _name = value ?? string.Empty; } }
+
+        public string Description { get { return _description; } set { _description = value ?? string.Empty; } }
 
         [Required]
         public Guid ProductId { get; set; }

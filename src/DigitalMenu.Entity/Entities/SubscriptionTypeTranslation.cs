@@ -15,11 +15,14 @@ namespace DigitalMenu.Entity.Entities
         [JsonIgnore]
         public override Guid Id { get; set; }
 
+        [StringLength(20)]
         public string Title { get; set; }
 
+        [Required]
         [JsonIgnore]
         public Guid CultureId { get; set; }
 
+        [Required]
         [JsonIgnore]
         public Guid SubscriptionTypeId { get; set; }
 

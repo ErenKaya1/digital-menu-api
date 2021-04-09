@@ -55,8 +55,8 @@ namespace DigitalMenu.Service.Services
 
             var translations = new List<ProductTranslation>
             {
-                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = model.NameTR, Description = string.IsNullOrEmpty(model.DescriptionTR) ? string.Empty : model.DescriptionTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
-                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty : model.NameEN, Description = string.IsNullOrEmpty(model.DescriptionEN) ? string.Empty : model.DescriptionEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "en").Id }
+                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = model.NameTR, Description = model.DescriptionTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
+                new ProductTranslation { Id = Guid.NewGuid(), ProductId = entityId, Name = model.NameEN, Description = model.DescriptionEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "en").Id }
             };
 
             if (model.ImageFile != null)
@@ -87,13 +87,9 @@ namespace DigitalMenu.Service.Services
                 Id = x.Id,
                 Price = x.Price,
                 NameTR = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name,
-                NameEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en") == null
-                         ? x.ProductTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Name
-                         : x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
+                NameEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
                 DescriptionTR = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
-                DescriptionEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en") == null
-                                ? x.ProductTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Description
-                                : x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
+                DescriptionEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
                 CategoryId = x.CategoryId,
                 ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/product/{x.ImageName}" : string.Empty
             }).ToList();
@@ -115,9 +111,9 @@ namespace DigitalMenu.Service.Services
 
             entity.Price = model.Price;
             entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name = model.NameTR;
-            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description = string.IsNullOrEmpty(model.DescriptionTR) ? string.Empty : model.DescriptionTR;
-            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name = string.IsNullOrEmpty(model.NameEN) ? string.Empty : model.NameEN;
-            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description = string.IsNullOrEmpty(model.DescriptionEN) ? string.Empty : model.DescriptionEN;
+            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description = model.DescriptionTR;
+            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name = model.NameEN;
+            entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description = model.DescriptionEN;
 
             if (model.ImageFile != null)
                 if (await _imageService.ReplaceProductImageAsync(model.ImageFile, userId, entity.ImageName))

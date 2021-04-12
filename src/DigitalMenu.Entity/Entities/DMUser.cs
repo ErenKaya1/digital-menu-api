@@ -11,15 +11,15 @@ namespace DigitalMenu.Entity.Entities
     public class DMUser : BaseEntity
     {
         [Required]
-        [StringLength(16)]
+        [StringLength(30)]
         public string UserName { get; set; }
 
         [Required]
-        [StringLength(16)]
+        [StringLength(30)]
         public string FirstName { get; set; }
 
         [Required]
-        [StringLength(16)]
+        [StringLength(30)]
         public string LastName { get; set; }
 
         [Required]
@@ -29,7 +29,6 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public string PasswordHash { get; set; }
 
-        [Required]
         [Encrypted]
         public string PhoneNumber { get; set; }
 
@@ -38,6 +37,7 @@ namespace DigitalMenu.Entity.Entities
 
         [Required]
         public Guid RoleId { get; set; }
+
         public Guid? CompanyId { get; set; }
 
         public List<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();

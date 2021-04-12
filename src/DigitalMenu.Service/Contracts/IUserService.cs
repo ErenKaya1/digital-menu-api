@@ -1,5 +1,4 @@
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Entity.DTOs;

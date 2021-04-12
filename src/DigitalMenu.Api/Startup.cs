@@ -1,3 +1,4 @@
+using DigitalMenu.Middleware.CustomMiddlewares;
 using DigitalMenu.RabbitMQ.Consumer.Consumers;
 using DigitalMenu.Service.BackgroundServices;
 using DigitalMenu.Service.Extensions;
@@ -65,10 +66,12 @@ namespace DigitalMenu.Api
             {
                 builder
                     .WithOrigins("http://localhost:8080")
+                    .WithExposedHeaders("X-New-Jwt-Token")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
             });
+            app.UseMiddleware<RefreshTokenMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
 

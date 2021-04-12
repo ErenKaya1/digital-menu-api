@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web;
 using DigitalMenu.Api.Controllers.Base;
+using DigitalMenu.Common.Helper;
 using DigitalMenu.Core.Constants;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
@@ -33,9 +34,9 @@ namespace DigitalMenu.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var response = await _userService.InsertUserAsync(model, GetClientIpAddress());
+            var response = await _userService.InsertUserAsync(model, HttpHelper.GetClientIpAddress(HttpContext));
             if (!response.Success) return Error(response.Message, response.InternalMessage, code: 409);
-            SetTokenCookie(response.Data.RefreshToken, false);
+            HttpHelper.SetRefreshTokenCookie(HttpContext, response.Data.RefreshToken, false);
 
             var data = new
             {
@@ -57,9 +58,9 @@ namespace DigitalMenu.Api.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] LoginModel model)
         {
-            var response = await _userService.AuthenticateAsync(model, GetClientIpAddress());
+            var response = await _userService.AuthenticateAsync(model, HttpHelper.GetClientIpAddress(HttpContext));
             if (!response.Success) return Error(response.Message, response.InternalMessage, code: 401);
-            SetTokenCookie(response.Data.RefreshToken, model.IsPersistent);
+            HttpHelper.SetRefreshTokenCookie(HttpContext, response.Data.RefreshToken, model.IsPersistent);
 
             var data = new
             {
@@ -78,38 +79,11 @@ namespace DigitalMenu.Api.Controllers
             return Success(data: data);
         }
 
-        [HttpGet("refresh-token")]
-        public async Task<IActionResult> RefreshToken()
-        {
-            var refreshToken = Request.Cookies["refreshToken"];
-            if (string.IsNullOrEmpty(refreshToken)) return Error("no token found", code: 404);
-            var response = await _userService.RefreshTokenAsync(refreshToken, GetClientIpAddress());
-            if (!response.Success) return Error(response.Message, response.InternalMessage);
-            SetTokenCookie(response.Data.RefreshToken, true);
-
-            var data = new
-            {
-                token = response.Data.AccessToken,
-                refreshToken = response.Data.RefreshToken,
-                User = new
-                {
-                    UserId = response.Data.Id,
-                    Username = response.Data.UserName,
-                    FirstName = response.Data.FirstName,
-                    LastName = response.Data.LastName,
-                    EmailAddress = response.Data.EmailAddress,
-                    PhoneNumber = response.Data.PhoneNumber,
-                }
-            };
-
-            return Success(data: data);
-        }
-
         [HttpDelete("logout/{userId}")]
         public async Task<IActionResult> Logout([FromRoute] string userId)
         {
             Response.Cookies.Delete("refreshToken");
-            await _tokenService.RevokeRefreshTokensAsync(Guid.Parse(userId), GetClientIpAddress());
+            await _tokenService.RevokeRefreshTokensAsync(Guid.Parse(userId), HttpHelper.GetClientIpAddress(HttpContext));
             return Success();
         }
 

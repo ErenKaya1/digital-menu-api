@@ -9,4 +9,8 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DigitalMenu.Service\DigitalMenu.Service.csproj" />
+  </ItemGroup>
+
 </Project>

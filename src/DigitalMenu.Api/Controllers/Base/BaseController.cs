@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DigitalMenu.Core.Model.ApiReturn;
-using DigitalMenu.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,30 +16,6 @@ namespace DigitalMenu.Api.Controllers.Base
             if (Request.Headers.ContainsKey("X-Language"))
                 return Request.Headers["X-Language"];
             return "tr";
-        }
-
-
-        [NonAction]
-        protected void SetTokenCookie(string token, bool isPersistent)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                Secure = true,
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = isPersistent ? DateTime.UtcNow.AddDays(14) : null,
-            };
-
-            HttpContext.Response.Cookies.Append("refreshToken", token, cookieOptions);
-        }
-
-        [NonAction]
-        protected string GetClientIpAddress()
-        {
-            if (Request.Headers.ContainsKey("X-Forwarded-For"))
-                return Request.Headers["X-Forwarded-For"];
-            else
-                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
 
         [NonAction]

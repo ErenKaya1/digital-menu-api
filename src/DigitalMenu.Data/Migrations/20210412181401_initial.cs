@@ -63,12 +63,12 @@ namespace DigitalMenu.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserName = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
-                    FirstName = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
+                    UserName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     EmailAddress = table.Column<string>(type: "text", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: true)
@@ -371,7 +371,7 @@ namespace DigitalMenu.Data.Migrations
                 values: new object[,]
                 {
                     { new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "Admin" },
-                    { new Guid("39c3ebd6-afbc-4493-bcc6-79e01574b79a"), "Customer" }
+                    { new Guid("78af4ed0-5e2d-458d-be24-d359a5767696"), "Customer" }
                 });
 
             migrationBuilder.InsertData(
@@ -399,30 +399,30 @@ namespace DigitalMenu.Data.Migrations
                 columns: new[] { "Id", "CultureId", "SubscriptionTypeId", "Title" },
                 values: new object[,]
                 {
-                    { new Guid("387917e2-c4c5-46c6-96f8-7bad9d91c071"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), "Giriş" },
-                    { new Guid("c18c9f59-86ef-454c-baa8-0e4bf470b03c"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), "Starter" },
-                    { new Guid("f7c0fe8b-8b14-43df-95db-fe572dff1538"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), "Ekonomik" },
-                    { new Guid("58927704-6745-41ea-a931-e509855561f6"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), "Economic" },
-                    { new Guid("90b0eb4d-2642-4d84-9837-9e11829b111e"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), "Premium" },
-                    { new Guid("9ce18c56-b2f7-42dd-b729-6b6abdc4839a"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), "Premium" }
+                    { new Guid("9074f770-b8bb-4e36-a361-6d1736aa5425"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), "Giriş" },
+                    { new Guid("422dc0ae-b400-4b0a-90d9-f7063d3bb67f"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("638885d5-6b38-4c01-903a-449c676b86f5"), "Starter" },
+                    { new Guid("e1368cea-e96f-47c9-9b8d-7b067bc0429d"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), "Ekonomik" },
+                    { new Guid("34acf7dc-e6eb-4042-8a03-a0378146afc5"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"), "Economic" },
+                    { new Guid("88b5ed11-3a91-4a0f-98d1-0bcacc093165"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), "Premium" },
+                    { new Guid("e5576b7f-ab0e-4fdd-9a5e-fbe6fae659c6"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"), "Premium" }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "CompanyId", "CreatedAt", "EmailAddress", "FirstName", "LastName", "PasswordHash", "PhoneNumber", "RoleId", "UserName" },
-                values: new object[] { new Guid("bbb1adb6-36a2-4d80-bad9-8ca3da2a1aab"), null, new DateTime(2021, 4, 9, 14, 9, 14, 179, DateTimeKind.Utc).AddTicks(972), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
+                values: new object[] { new Guid("2d6ebd8b-e864-461c-828b-76e191ba9418"), null, new DateTime(2021, 4, 12, 18, 14, 1, 195, DateTimeKind.Utc).AddTicks(1952), "test@gmail.com", "admin", "test", "JaXGmn0+qpLRduAniDSq4Jn3PoaW+oh/hQJiNptum+Y=", "123456789", new Guid("b19ebe2e-0dad-4445-896c-b0b2d0a33157"), "admintest" });
 
             migrationBuilder.InsertData(
                 table: "subsctiption_type_feature_translation",
                 columns: new[] { "Id", "CultureId", "Name", "SubscriptionTypeFeatureId" },
                 values: new object[,]
                 {
-                    { new Guid("568e759e-3644-4aa9-89f1-e7d08107e116"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae") },
-                    { new Guid("b977af20-96e8-43c3-8dd1-6e8b16f8f5be"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae") },
-                    { new Guid("9bc9c832-600b-4e04-a845-4173743a1cee"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e") },
-                    { new Guid("987d4e27-cf6f-41e9-8650-aa7b1a186af3"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e") },
-                    { new Guid("11b0143d-9263-4705-bd38-b1b0c09be803"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("da12028f-418a-4bd2-9617-27c4aec8372c") },
-                    { new Guid("21f10fca-9de5-45d5-8bf9-51bf8f95034f"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("da12028f-418a-4bd2-9617-27c4aec8372c") }
+                    { new Guid("3f25993b-5a1d-4864-b800-954051662c0d"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae") },
+                    { new Guid("ff3697f9-ccdc-447d-add1-85eae4af8d47"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae") },
+                    { new Guid("f93a844f-0b5d-4fba-946d-c19f96efa651"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e") },
+                    { new Guid("dffe27c3-e538-4b93-81b7-0c42e0b9722b"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e") },
+                    { new Guid("e56cc052-a186-45dd-950e-9e47138be8c7"), new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"), "Ürün", new Guid("da12028f-418a-4bd2-9617-27c4aec8372c") },
+                    { new Guid("549e2512-83af-408d-8f54-f92e1c49ec37"), new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"), "Product", new Guid("da12028f-418a-4bd2-9617-27c4aec8372c") }
                 });
 
             migrationBuilder.CreateIndex(

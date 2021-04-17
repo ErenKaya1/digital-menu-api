@@ -295,7 +295,7 @@ namespace DigitalMenu.Service.Services
 
             if (model.LogoFile != null)
             {
-                if (await _imageService.SaveCompanyLogoAsync(model.LogoFile, true))
+                if (await _imageService.SaveCompanyLogoAsync(model.LogoFile, userId, true))
                 {
                     user.Company.LogoName = model.LogoFile.FileName;
                     data.LogoName = model.LogoFile.FileName;

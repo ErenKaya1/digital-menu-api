@@ -12,8 +12,11 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public Guid UserId { get; set; }
 
+        public Guid? CompanyId { get; set; }
+
         public int ProductCount => Product.Count;
         public List<Product> Product { get; set; }
         public DMUser User { get; set; }
+        public Company Company { get; set; }
     }
 }

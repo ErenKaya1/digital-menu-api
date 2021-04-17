@@ -21,6 +21,10 @@ namespace DigitalMenu.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DMRole>().HasIndex(x => x.RoleName).IsUnique();
+            modelBuilder.Entity<DMUser>().HasIndex(x => x.UserName).IsUnique();
+            modelBuilder.Entity<DMUser>().HasIndex(x => x.EmailAddress).IsUnique();
+            modelBuilder.Entity<Company>().HasIndex(x => x.Slug).IsUnique();
             modelBuilder.Seed();
         }
 

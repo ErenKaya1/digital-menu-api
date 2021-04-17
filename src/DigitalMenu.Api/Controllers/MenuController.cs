@@ -1,16 +1,27 @@
 using System.Threading.Tasks;
 using DigitalMenu.Api.Controllers.Base;
+using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalMenu.Api.Controllers
 {
     public class MenuController : BaseController
     {
+        private readonly IMenuService _menuService;
+
+        public MenuController(IMenuService menuService)
+        {
+            _menuService = menuService;
+        }
+
         [HttpGet("{companySlug}")]
         public async Task<IActionResult> GetMenu(string companySlug)
         {
-            System.Console.WriteLine(companySlug);
-            return Success();
+            var response = await _menuService.GetMenuByCompanySlugAsync(companySlug, GetCurrentLanguage());
+            if (response.Success)
+                return Success(data: response.Data);
+
+            return Error();
         }
     }
 }

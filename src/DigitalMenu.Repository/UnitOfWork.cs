@@ -25,6 +25,7 @@ namespace DigitalMenu.Repository
         private IRepository<Product> _productRepository;
         private IRepository<ProductTranslation> _productTranslationRepository;
         private IRepository<Menu> _menuRepository;
+        private IRepository<Company> _companyRepository;
 
         public IRepository<DMUser> UserRepository => _userRepository ??= new Repository<DMUser>(_dbContext, _encryption);
         public IRepository<RefreshToken> RefreshTokenRepository => _refreshTokenRepository ??= new Repository<RefreshToken>(_dbContext, _encryption);
@@ -38,6 +39,7 @@ namespace DigitalMenu.Repository
         public IRepository<Product> ProductRepository => _productRepository ??= new Repository<Product>(_dbContext, _encryption);
         public IRepository<ProductTranslation> ProductTranslationRepository => _productTranslationRepository ??= new Repository<ProductTranslation>(_dbContext, _encryption);
         public IRepository<Menu> MenuRepository => _menuRepository ??= new Repository<Menu>(_dbContext, _encryption);
+        public IRepository<Company> CompanyRepository => _companyRepository ??= new Repository<Company>(_dbContext, _encryption);
 
         public UnitOfWork(DMContext dbContext, IEncryption encryption)
         {

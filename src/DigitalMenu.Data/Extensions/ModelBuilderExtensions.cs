@@ -9,8 +9,6 @@ namespace DigitalMenu.Data.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DMRole>().HasIndex(x => x.RoleName).IsUnique();
-
             // default roles
             modelBuilder.Entity<DMRole>().HasData(
                 new DMRole
@@ -24,9 +22,7 @@ namespace DigitalMenu.Data.Extensions
                     RoleName = "Customer"
                 }
             );
-
-            modelBuilder.Entity<DMUser>().HasIndex(x => x.UserName).IsUnique();
-            modelBuilder.Entity<DMUser>().HasIndex(x => x.EmailAddress).IsUnique();
+            
             modelBuilder.Entity<DMUser>().HasData(
                 new DMUser
                 {

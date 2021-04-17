@@ -29,6 +29,8 @@ namespace DigitalMenu.Service.Extensions
             services.AddDbContext<DMContext>(options =>
             {
                 options.UseNpgsql(connectionString);
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
             });
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalMenu.Core.Cache;
+using DigitalMenu.Core.Constants;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
@@ -26,9 +27,9 @@ namespace DigitalMenu.Service.Services
             var entities = new List<SubscriptionTypeDTO>();
 
             // SubscriptionTypes_tr, SubscriptionTypes_en
-            if (_redisCacheService.IsSet("SubscriptionTypes_" + cultureCode))
+            if (_redisCacheService.IsSet(RedisKeyPrefixes.SUBSCRIPTIONTYPES + cultureCode))
             {
-                entities = _redisCacheService.Get<List<SubscriptionTypeDTO>>("SubscriptionTypes_" + cultureCode);
+                entities = _redisCacheService.Get<List<SubscriptionTypeDTO>>(RedisKeyPrefixes.SUBSCRIPTIONTYPES + cultureCode);
             }
             else
             {

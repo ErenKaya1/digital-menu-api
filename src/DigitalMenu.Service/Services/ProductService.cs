@@ -32,6 +32,7 @@ namespace DigitalMenu.Service.Services
             if (subscriptionStatus != SubscriptionCheckResult.Success)
                 return new ServiceResponse<object>(false, ((int)subscriptionStatus).ToString());
 
+            var user = await _unitOfWork.UserRepository.Find(x => x.Id == userId).Include(x => x.Company).FirstOrDefaultAsync();
             var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
             if (menu == null)
             {
@@ -40,6 +41,9 @@ namespace DigitalMenu.Service.Services
                     Id = Guid.NewGuid(),
                     UserId = userId
                 };
+
+                if (user.Company != null)
+                    menu.CompanyId = user.CompanyId;
 
                 _unitOfWork.MenuRepository.Add(menu);
             }

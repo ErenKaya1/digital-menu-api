@@ -284,6 +284,11 @@ namespace DigitalMenu.Service.Services
             else
             {
                 var company = _mapper.Map<Company>(model);
+
+                var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+                menu.Company = company;
+                _unitOfWork.MenuRepository.Update(menu);
+
                 user.Company = company;
                 data = _mapper.Map<CompanyDTO>(company);
             }

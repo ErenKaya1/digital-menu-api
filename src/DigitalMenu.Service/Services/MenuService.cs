@@ -53,17 +53,17 @@ namespace DigitalMenu.Service.Services
                     Categories = categories.Select(x => new CategoryDTO
                     {
                         Id = x.Id,
-                        Name = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode) == null
+                        Name = string.IsNullOrEmpty(x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name)
                                ? x.CategoryTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Name
                                : x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name,
                         ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/category/{x.ImageName}" : string.Empty,
                         Products = x.Product.Select(x => new ProductDTO
                         {
                             Id = x.Id,
-                            Name = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode) == null
+                            Name = string.IsNullOrEmpty(x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name)
                                    ? x.ProductTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Name
                                    : x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name,
-                            Description = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode) == null
+                            Description = string.IsNullOrEmpty(x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Description)
                                           ? x.ProductTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Description
                                           : x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Description,
                             Price = x.Price,

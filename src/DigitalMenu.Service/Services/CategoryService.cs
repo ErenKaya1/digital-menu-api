@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DigitalMenu.Core.Cache;
+using DigitalMenu.Core.Constants;
 using DigitalMenu.Core.Model.Category;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
@@ -16,12 +18,14 @@ namespace DigitalMenu.Service.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly List<Culture> _cultures;
         private readonly IImageService _imageService;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public CategoryService(IUnitOfWork unitOfWork, IImageService imageService)
+        public CategoryService(IUnitOfWork unitOfWork, IImageService imageService, IRedisCacheService redisCacheService)
         {
             _unitOfWork = unitOfWork;
             _cultures = _unitOfWork.CultureRepository.FindAll().ToList();
             _imageService = imageService;
+            _redisCacheService = redisCacheService;
         }
 
         public async Task<ServiceResponse<object>> InsertCategoryAsync(NewCategoryModel model, Guid userId)
@@ -47,6 +51,10 @@ namespace DigitalMenu.Service.Services
             _unitOfWork.CategoryRepository.Add(entity);
             _unitOfWork.CategoryTranslationRepository.AddRange(translations);
             await _unitOfWork.SaveChangesAsync();
+
+            // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
 
             return new ServiceResponse<object>(true);
         }
@@ -83,18 +91,26 @@ namespace DigitalMenu.Service.Services
             _unitOfWork.CategoryRepository.Update(entity);
             await _unitOfWork.SaveChangesAsync();
 
+            // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
+
             return new ServiceResponse<object>(true);
         }
 
         public async Task<ServiceResponse<object>> DeleteCategoryAsync(Guid categoryId, Guid userId)
         {
             var entity = await _unitOfWork.CategoryRepository.FindOneAsync(x => x.Id == categoryId && x.UserId == userId);
-            if(entity == null) return new ServiceResponse<object>(false);
+            if (entity == null) return new ServiceResponse<object>(false);
             if (entity.HasImage)
                 _imageService.DeleteCategoryImage(userId, entity.ImageName);
 
             _unitOfWork.CategoryRepository.Delete(entity);
             await _unitOfWork.SaveChangesAsync();
+
+             // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
 
             return new ServiceResponse<object>(true);
         }

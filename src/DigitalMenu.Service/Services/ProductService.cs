@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalMenu.Common.Enum;
+using DigitalMenu.Core.Cache;
+using DigitalMenu.Core.Constants;
 using DigitalMenu.Core.Model.Product;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
@@ -17,12 +19,14 @@ namespace DigitalMenu.Service.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly List<Culture> _cultures;
         private readonly IImageService _imageService;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public ProductService(IUnitOfWork unitOfWork, IImageService imageService)
+        public ProductService(IUnitOfWork unitOfWork, IImageService imageService, IRedisCacheService redisCacheService)
         {
             _unitOfWork = unitOfWork;
             _cultures = _unitOfWork.CultureRepository.FindAll().ToList();
             _imageService = imageService;
+            _redisCacheService = redisCacheService;
         }
 
         public async Task<ServiceResponse<object>> InsertProductAsync(Guid userId, NewProductModel model)
@@ -71,6 +75,10 @@ namespace DigitalMenu.Service.Services
             _unitOfWork.ProductTranslationRepository.AddRange(translations);
             await _unitOfWork.SaveChangesAsync();
 
+            // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
+
             return new ServiceResponse<object>(true);
         }
 
@@ -93,7 +101,7 @@ namespace DigitalMenu.Service.Services
                 NameTR = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name,
                 NameEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
                 DescriptionTR = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
-                DescriptionEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
+                DescriptionEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
                 CategoryId = x.CategoryId,
                 ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/product/{x.ImageName}" : string.Empty
             }).ToList();
@@ -125,6 +133,10 @@ namespace DigitalMenu.Service.Services
 
             _unitOfWork.ProductRepository.Update(entity);
             await _unitOfWork.SaveChangesAsync();
+
+            // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
 
             return new ServiceResponse<object>(true);
         }
@@ -178,6 +190,10 @@ namespace DigitalMenu.Service.Services
                 _imageService.DeleteProductImage(userId, entity.ImageName);
             _unitOfWork.ProductRepository.Delete(entity);
             await _unitOfWork.SaveChangesAsync();
+
+            // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
 
             return new ServiceResponse<object>(true);
         }

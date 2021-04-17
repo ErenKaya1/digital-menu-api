@@ -3,4 +3,4 @@
 #### Todos
 
 - [ ] Refresh Token için IsPersistent kontrolü
-- [ ] Kategori, ürün ve işletme bilgileri güncellendiğinde cache temizlenecek
+- [x] Kategori, ürün ve işletme bilgileri güncellendiğinde cache temizlenecek

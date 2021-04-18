@@ -48,7 +48,7 @@ namespace DigitalMenu.Service.Services
 
                 dto = new MenuDTO
                 {
-                    CompanyLogo = menu.Company.LogoName,
+                    CompanyLogo = menu.Company.HasLogo ? $"https://localhost:5001/{menu.UserId}/logo/{menu.Company.LogoName}" : string.Empty,
                     CompanyName = menu.Company.Name,
                     Categories = categories.Select(x => new CategoryDTO
                     {

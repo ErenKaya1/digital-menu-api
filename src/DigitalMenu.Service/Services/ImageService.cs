@@ -23,11 +23,11 @@ namespace DigitalMenu.Service.Services
         {
             if (!file.IsImage()) return false;
 
-            var directoryPath = Path.Combine(_wwwRootPath, userId.ToString());
+            var directoryPath = Path.Combine(_wwwRootPath, userId.ToString(), "logo");
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
 
-            var imagePath = Path.Combine(_wwwRootPath, userId.ToString(), "logo" + Path.GetExtension(file.FileName).ToLower());
+            var imagePath = Path.Combine(directoryPath, file.FileName);
             if (replace)
                 File.Delete(imagePath);
 

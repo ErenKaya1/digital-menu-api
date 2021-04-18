@@ -44,5 +44,6 @@ namespace DigitalMenu.Data.Context
         public DbSet<Product> Product { get; set; }
         public DbSet<ProductTranslation> ProductTranslation { get; set; }
         public DbSet<Menu> Menu { get; set; }
+        public DbSet<ExchangeType> ExchangeType { get; set; }
     }
 }

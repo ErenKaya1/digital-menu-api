@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
 using DigitalMenu.Common.Enum;
+using DigitalMenu.Core.Cache;
 using DigitalMenu.Core.Constants;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
@@ -31,6 +32,7 @@ namespace DigitalMenu.Service.Services
         private readonly IDataProtector _dataProtector;
         private readonly IOptions<MailSettings> _mailSettings;
         private readonly IImageService _imageService;
+        private readonly IRedisCacheService _redisCacheService;
 
         public UserService(IUnitOfWork unitOfWork,
                            IHasher hasher,
@@ -40,7 +42,8 @@ namespace DigitalMenu.Service.Services
                            IRabbitMQService rabbitMQService,
                            IDataProtectionProvider dataProtectionProvider,
                            IOptions<MailSettings> mailSettings,
-                           IImageService imageService)
+                           IImageService imageService,
+                           IRedisCacheService redisCacheService)
         {
             _unitOfWork = unitOfWork;
             _hasher = hasher;
@@ -51,6 +54,7 @@ namespace DigitalMenu.Service.Services
             _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionKeys.ResetPasswordTokenKey);
             _mailSettings = mailSettings;
             _imageService = imageService;
+            _redisCacheService = redisCacheService;
         }
 
         public async Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress)
@@ -304,6 +308,10 @@ namespace DigitalMenu.Service.Services
 
             _unitOfWork.UserRepository.Update(user);
             await _unitOfWork.SaveChangesAsync();
+
+            // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
 
             return new ServiceResponse<CompanyDTO>(true) { Data = data };
         }

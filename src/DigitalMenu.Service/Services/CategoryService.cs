@@ -108,7 +108,7 @@ namespace DigitalMenu.Service.Services
             _unitOfWork.CategoryRepository.Delete(entity);
             await _unitOfWork.SaveChangesAsync();
 
-             // clear cache
+            // clear cache
             _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
             _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
 

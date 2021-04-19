@@ -17,7 +17,8 @@ namespace DigitalMenu.Api.Controllers
         [HttpGet("{companySlug}")]
         public async Task<IActionResult> GetMenu(string companySlug)
         {
-            var response = await _menuService.GetMenuByCompanySlugAsync(companySlug, GetCurrentLanguage());
+            var currency = Request.Headers["X-Currency"];
+            var response = await _menuService.GetMenuByCompanySlugAsync(companySlug, GetCurrentLanguage(), currency);
             if (response.Success)
                 return Success(data: response.Data);
 

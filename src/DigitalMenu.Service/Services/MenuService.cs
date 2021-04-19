@@ -20,7 +20,7 @@ namespace DigitalMenu.Service.Services
             _redisCacheService = redisCacheService;
         }
 
-        public async Task<ServiceResponse<MenuDTO>> GetMenuByCompanySlugAsync(string companySlug, string cultureCode)
+        public async Task<ServiceResponse<MenuDTO>> GetMenuByCompanySlugAsync(string companySlug, string cultureCode, string currency)
         {
             var menu = await _unitOfWork.MenuRepository
                         .Find(x => x.Company.Slug == companySlug)
@@ -74,6 +74,26 @@ namespace DigitalMenu.Service.Services
                 };
 
                 _redisCacheService.Set(redisKey, dto);
+            }
+
+            System.Console.WriteLine(currency);
+            switch (currency)
+            {
+                case "usd":
+                    var USDtoTRY = _redisCacheService.Get<string>(RedisKeyPrefixes.USDtoTRY);
+                    System.Console.WriteLine(USDtoTRY);
+                    foreach (var category in dto.Categories)
+                        foreach (var product in category.Products)
+                            product.Price *= double.Parse(USDtoTRY);
+                    break;
+                case "eur":
+                    var EURtoTRY = _redisCacheService.Get<string>(RedisKeyPrefixes.EURtoTRY);
+                    System.Console.WriteLine(EURtoTRY);
+                    foreach (var category in dto.Categories)
+                        foreach (var product in category.Products)
+                            product.Price *= double.Parse(EURtoTRY);
+
+                    break;
             }
 
             return new ServiceResponse<MenuDTO>(true) { Data = dto };

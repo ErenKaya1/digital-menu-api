@@ -76,7 +76,6 @@ namespace DigitalMenu.Service.Services
                 _redisCacheService.Set(redisKey, dto);
             }
 
-            System.Console.WriteLine(currency);
             switch (currency)
             {
                 case "usd":
@@ -84,14 +83,14 @@ namespace DigitalMenu.Service.Services
                     System.Console.WriteLine(USDtoTRY);
                     foreach (var category in dto.Categories)
                         foreach (var product in category.Products)
-                            product.Price *= double.Parse(USDtoTRY);
+                            product.Price = double.Parse((product.Price / double.Parse(USDtoTRY)).ToString("n2"));
                     break;
                 case "eur":
                     var EURtoTRY = _redisCacheService.Get<string>(RedisKeyPrefixes.EURtoTRY);
                     System.Console.WriteLine(EURtoTRY);
                     foreach (var category in dto.Categories)
                         foreach (var product in category.Products)
-                            product.Price *= double.Parse(EURtoTRY);
+                            product.Price = double.Parse((product.Price / double.Parse(EURtoTRY)).ToString("n2"));
 
                     break;
             }

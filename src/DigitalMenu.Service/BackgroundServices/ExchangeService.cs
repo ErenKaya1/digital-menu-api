@@ -94,7 +94,8 @@ namespace DigitalMenu.Service.BackgroundServices
                     }
                 }
 
-                await Task.Delay(180000, _cancellationToken);
+                // 1 hour delay
+                await Task.Delay(3600000, _cancellationToken);
             }
         }
 

@@ -1,3 +1,4 @@
+using System;
 using DigitalMenu.Middleware.CustomMiddlewares;
 using DigitalMenu.RabbitMQ.Consumer.Consumers;
 using DigitalMenu.Service.BackgroundServices;
@@ -46,7 +47,8 @@ namespace DigitalMenu.Api
             services.ConfigureRabbitMQ(Configuration);
             services.ConfigureRedis(Configuration);
             services.AddHostedService<EmailSender>();
-            services.AddHostedService<SubscriptionReminder>();
+            services.ConfigureBackgroundServices(Configuration);
+            services.ConfigureHttpClients(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

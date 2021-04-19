@@ -18,6 +18,7 @@ using System;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.RabbitMQ;
 using DigitalMenu.Core.Cache;
+using DigitalMenu.Service.BackgroundServices;
 
 namespace DigitalMenu.Service.Extensions
 {
@@ -141,6 +142,20 @@ namespace DigitalMenu.Service.Extensions
                 port: string.IsNullOrEmpty(configuration["RedisConfig:Port"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Port"]),
                 timeout: string.IsNullOrEmpty(configuration["RedisConfig:Timeout"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Timeout"])
             ));
+        }
+
+        public static void ConfigureBackgroundServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHostedService<SubscriptionReminder>();
+            services.AddHostedService<ExchangeService>();
+        }
+
+        public static void ConfigureHttpClients(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient("exchange", options =>
+            {
+                options.BaseAddress = new Uri("https://www.doviz.com");
+            });
         }
     }
 }

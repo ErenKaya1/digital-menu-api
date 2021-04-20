@@ -40,8 +40,8 @@ namespace DigitalMenu.Service.Services
 
             var translations = new List<CategoryTranslation>
             {
-                new CategoryTranslation { Id = Guid.NewGuid(), CategoryId = entityId, Name = model.NameTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
-                new CategoryTranslation { Id = Guid.NewGuid(), CategoryId = entityId, Name = model.NameEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "en").Id }
+                new CategoryTranslation { Id = Guid.NewGuid(), CategoryId = entityId, Name = model.NameTR, Description = model.DescriptionTR, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "tr").Id },
+                new CategoryTranslation { Id = Guid.NewGuid(), CategoryId = entityId, Name = model.NameEN, Description = model.DescriptionEN, CultureId = _cultures.FirstOrDefault(x => x.CultureCode == "en").Id }
             };
 
             if (model.ImageFile != null)
@@ -69,6 +69,8 @@ namespace DigitalMenu.Service.Services
                                 Id = x.Id,
                                 NameTR = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name,
                                 NameEN = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
+                                DescriptionTR = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
+                                DescriptionEN = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
                                 ImagePath = x.HasImage ? $"https://localhost:5001/{userId}/category/{x.ImageName}" : string.Empty
                             })
                             .ToListAsync();
@@ -83,6 +85,8 @@ namespace DigitalMenu.Service.Services
 
             entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name = model.NameTR;
             entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name = model.NameEN;
+            entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description = model.DescriptionTR;
+            entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description = model.DescriptionEN;
 
             if (model.ImageFile != null)
                 if (await _imageService.ReplaceCategoryImageAsync(model.ImageFile, userId, entity.ImageName))

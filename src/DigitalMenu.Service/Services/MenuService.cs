@@ -56,6 +56,9 @@ namespace DigitalMenu.Service.Services
                         Name = string.IsNullOrEmpty(x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name)
                                ? x.CategoryTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Name
                                : x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Name,
+                        Description = string.IsNullOrEmpty(x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Description)
+                                      ? x.CategoryTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Description
+                                      : x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Description,
                         ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/category/{x.ImageName}" : string.Empty,
                         Products = x.Product.Select(x => new ProductDTO
                         {

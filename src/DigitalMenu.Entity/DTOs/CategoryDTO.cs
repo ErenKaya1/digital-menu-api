@@ -10,6 +10,7 @@ namespace DigitalMenu.Entity.DTOs
         public string Name { get; set; }
         public string NameTR { get; set; }
         public string NameEN { get; set; }
+        public string Description { get; set; }
         public string DescriptionTR { get; set; }
         public string DescriptionEN { get; set; }
         public string ImagePath { get; set; }

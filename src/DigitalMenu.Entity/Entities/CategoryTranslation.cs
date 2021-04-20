@@ -9,13 +9,12 @@ namespace DigitalMenu.Entity.Entities
     public class CategoryTranslation : BaseEntity
     {
         private string _name;
+        private string _description;
 
         [StringLength(50)]
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value ?? string.Empty; }
-        }
+        public string Name { get { return _name; } set { _name = value ?? string.Empty; } }
+
+        public string Description { get { return _description; } set { _name = value ?? string.Empty; } }
 
         [Required]
         public Guid CultureId { get; set; }

@@ -6,17 +6,11 @@ using DigitalMenu.Entity.Entities.Base;
 
 namespace DigitalMenu.Entity.Entities
 {
-    [Table("product")]
-    public class Product : BaseEntity
+    [Table("product_group")]
+    public class ProductGroup : BaseEntity
     {
         [Required]
         public double Price { get; set; }
-
-        [Required]
-        public int Order { get; set; }
-
-        [StringLength(200)]
-        public string ImageName { get; set; }
 
         [Required]
         public Guid CategoryId { get; set; }
@@ -24,12 +18,12 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public Guid MenuId { get; set; }
 
-        public Guid? ProductGroupId { get; set; }
+        [StringLength(200)]
+        public string ImageName { get; set; }
 
-        public bool HasImage => !string.IsNullOrEmpty(ImageName);
+        public List<Product> Product { get; set; }
         public List<ProductTranslation> ProductTranslation { get; set; }
         public Category Category { get; set; }
         public Menu Menu { get; set; }
-        public ProductGroup ProductGroup { get; set; }
     }
 }

@@ -24,12 +24,10 @@ namespace DigitalMenu.Entity.Entities
         [Required]
         public Guid MenuId { get; set; }
 
-        public Guid? ProductGroupId { get; set; }
-
         public bool HasImage => !string.IsNullOrEmpty(ImageName);
         public List<ProductTranslation> ProductTranslation { get; set; }
         public Category Category { get; set; }
         public Menu Menu { get; set; }
-        public ProductGroup ProductGroup { get; set; }
+        public List<ProductGroup> ProductGroup { get; set; }
     }
 }

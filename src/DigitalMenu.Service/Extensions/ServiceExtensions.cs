@@ -61,6 +61,7 @@ namespace DigitalMenu.Service.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IPaymentService, PaymentService>();
         }
 
         public static void ConfigureAutoMapper(this IServiceCollection services, IConfiguration configuration)

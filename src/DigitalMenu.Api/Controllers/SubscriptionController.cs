@@ -13,13 +13,13 @@ namespace DigitalMenu.Api.Controllers
 {
     public class SubscriptionController : BaseController
     {
-        private readonly DMContext _dbContext;
         private readonly ISubscriptionTypeService _subscriptionTypeService;
+        private readonly ISubscriptionService _subscriptionService;
 
-        public SubscriptionController(DMContext dbContext, ISubscriptionTypeService subscriptionTypeService)
+        public SubscriptionController(ISubscriptionTypeService subscriptionTypeService, ISubscriptionService subscriptionService)
         {
-            _dbContext = dbContext;
             _subscriptionTypeService = subscriptionTypeService;
+            _subscriptionService = subscriptionService;
         }
 
         [HttpGet("types")]
@@ -27,6 +27,16 @@ namespace DigitalMenu.Api.Controllers
         {
             var response = await _subscriptionTypeService.GetSubscriptionTypesAsync(GetCurrentLanguage());
             return Success(data: response.Data);
+        }
+
+        [HttpGet("check/{userId}")]
+        public async Task<IActionResult> CheckSubscriptionStatus([FromRoute] Guid userId)
+        {
+            var response = await _subscriptionService.CheckSubscriptionAsync(userId);
+            if (response.Success)
+                return Success(data: response.Data, message: response.Message);
+
+            return Error(response.Message, response.InternalMessage);
         }
     }
 }

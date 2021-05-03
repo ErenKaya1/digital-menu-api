@@ -58,5 +58,18 @@ namespace DigitalMenu.Service.Services
 
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task<ServiceResponse<SubscriptionStatus>> CheckSubscriptionAsync(Guid userId)
+        {
+            var subscription = await _unitOfWork.SubscriptionRepository.FindOneAsync(x => x.UserId == userId);
+
+            if (subscription.IsExpired)
+                return new ServiceResponse<SubscriptionStatus>(true, "Expired");
+
+            if (subscription.IsSuspended)
+                return new ServiceResponse<SubscriptionStatus>(true, "Suspended");
+
+            return new ServiceResponse<SubscriptionStatus>(true, "Success");
+        }
     }
 }

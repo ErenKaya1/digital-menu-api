@@ -79,7 +79,7 @@ namespace DigitalMenu.Service.Services
                 IsSubscriptionReminderMailSent = false,
                 StartDate = DateTime.UtcNow.Date,
                 EndDate = DateTime.UtcNow.Date.AddDays(14),
-                SubscriptionStatus = SubscriptionStatus.Active,
+                IsSuspended = false,
                 UserId = entity.Id,
             };
 

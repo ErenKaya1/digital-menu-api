@@ -9,7 +9,8 @@ namespace DigitalMenu.Entity.DTOs
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Guid UserId { get; set; }
-        public SubscriptionStatus SubscriptionStatus { get; set; }
+        public bool IsExpired { get; set; }
+        public bool IsSuspended { get; set; }
         public bool IsTrialMode { get; set; }
         public bool IsSubscriptionReminderMailSent { get; set; }
         public Guid? SubscriptionTypeId { get; set; }

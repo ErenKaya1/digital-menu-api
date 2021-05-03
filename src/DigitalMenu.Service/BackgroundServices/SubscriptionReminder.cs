@@ -49,6 +49,7 @@ namespace DigitalMenu.Service.BackgroundServices
 
                     foreach (var subscription in subscriptions.Result.Data)
                     {
+                        if (subscription.IsExpired) continue;
                         if (DateTime.UtcNow.AddDays(3) >= subscription.EndDate && !subscription.IsSubscriptionReminderMailSent)
                         {
                             mailTo.Add(subscription.EmailAddress);

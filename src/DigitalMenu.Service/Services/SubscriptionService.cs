@@ -28,7 +28,7 @@ namespace DigitalMenu.Service.Services
         public async Task<ServiceResponse<List<SubscriptionDTO>>> GetAllAsync()
         {
             var entities = await _unitOfWork.SubscriptionRepository
-                .Find(x => x.SubscriptionStatus == SubscriptionStatus.Active)
+                .Find(x => !x.IsSuspended)
                 .Include(x => x.User)
                 .Select(x => new SubscriptionDTO
                 {
@@ -37,8 +37,8 @@ namespace DigitalMenu.Service.Services
                     EndDate = x.EndDate,
                     IsTrialMode = x.IsTrialMode,
                     IsSubscriptionReminderMailSent = x.IsSubscriptionReminderMailSent,
-                    SubscriptionStatus = x.SubscriptionStatus,
                     SubscriptionTypeId = x.SubscriptionTypeId,
+                    IsExpired = x.IsExpired,
                     UserId = x.UserId,
                     FirstName = x.User.FirstName,
                     LastName = x.User.LastName,

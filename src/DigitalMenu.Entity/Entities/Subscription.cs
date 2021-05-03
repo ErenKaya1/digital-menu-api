@@ -21,15 +21,16 @@ namespace DigitalMenu.Entity.Entities
         public Guid UserId { get; set; }
 
         [Required]
-        public SubscriptionStatus SubscriptionStatus { get; set; }
+        public bool IsTrialMode { get; set; }
 
         [Required]
-        public bool IsTrialMode { get; set; }
+        public bool IsSuspended { get; set; }
 
         [Required]
         public bool IsSubscriptionReminderMailSent { get; set; }
 
         public Guid? SubscriptionTypeId { get; set; }
+        public bool IsExpired => DateTime.UtcNow.Date >= EndDate.Date;
 
         public DMUser User { get; set; }
         public SubscriptionType SubscriptionType { get; set; }

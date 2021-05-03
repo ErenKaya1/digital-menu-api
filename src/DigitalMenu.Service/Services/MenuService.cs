@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DigitalMenu.Common.Enum;
 using DigitalMenu.Core.Cache;
 using DigitalMenu.Core.Constants;
 using DigitalMenu.Entity.DTOs;
@@ -26,6 +28,14 @@ namespace DigitalMenu.Service.Services
                         .Find(x => x.Company.Slug == companySlug)
                         .Include(x => x.Company)
                         .FirstOrDefaultAsync();
+
+            // check subscription
+            var subscriptionStatus = await CheckSubscriptionAsync(menu.UserId);
+            Console.WriteLine(subscriptionStatus);
+            if (subscriptionStatus != SubscriptionCheckResult.Success)
+            {
+                return new ServiceResponse<MenuDTO>(false, ((int)subscriptionStatus).ToString());
+            }
 
             var dto = new MenuDTO();
             var redisKey = RedisKeyPrefixes.MENU + menu.UserId.ToString() + "_" + cultureCode;
@@ -83,14 +93,12 @@ namespace DigitalMenu.Service.Services
             {
                 case "usd":
                     var USDtoTRY = _redisCacheService.Get<string>(RedisKeyPrefixes.USDtoTRY);
-                    System.Console.WriteLine(USDtoTRY);
                     foreach (var category in dto.Categories)
                         foreach (var product in category.Products)
                             product.Price = double.Parse((product.Price / double.Parse(USDtoTRY)).ToString("n2"));
                     break;
                 case "eur":
                     var EURtoTRY = _redisCacheService.Get<string>(RedisKeyPrefixes.EURtoTRY);
-                    System.Console.WriteLine(EURtoTRY);
                     foreach (var category in dto.Categories)
                         foreach (var product in category.Products)
                             product.Price = double.Parse((product.Price / double.Parse(EURtoTRY)).ToString("n2"));
@@ -99,6 +107,21 @@ namespace DigitalMenu.Service.Services
             }
 
             return new ServiceResponse<MenuDTO>(true) { Data = dto };
+        }
+
+        private async Task<SubscriptionCheckResult> CheckSubscriptionAsync(Guid userId)
+        {
+            var subscription = await _unitOfWork.SubscriptionRepository.Find(x => x.UserId == userId).Include(x => x.SubscriptionType).FirstOrDefaultAsync();
+
+            // subscription status check
+            if (subscription.IsExpired)
+                return SubscriptionCheckResult.Expired;
+
+            // subscription status check
+            if (subscription.IsSuspended)
+                return SubscriptionCheckResult.Suspended;
+
+            return SubscriptionCheckResult.Success;
         }
     }
 }

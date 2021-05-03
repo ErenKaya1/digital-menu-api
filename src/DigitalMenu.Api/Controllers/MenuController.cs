@@ -22,7 +22,7 @@ namespace DigitalMenu.Api.Controllers
             if (response.Success)
                 return Success(data: response.Data);
 
-            return Error();
+            return Error(response.Message, response.InternalMessage);
         }
     }
 }

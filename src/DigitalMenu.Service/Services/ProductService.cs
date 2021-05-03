@@ -165,11 +165,11 @@ namespace DigitalMenu.Service.Services
                 return SubscriptionCheckResult.Success;
 
             // subscription status check
-            if (subscription.SubscriptionStatus == SubscriptionStatus.Expired)
+            if (subscription.IsExpired)
                 return SubscriptionCheckResult.Expired;
 
             // subscription status check
-            if (subscription.SubscriptionStatus == SubscriptionStatus.Suspended)
+            if (subscription.IsSuspended)
                 return SubscriptionCheckResult.Suspended;
 
             // remained value check

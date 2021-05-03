@@ -151,7 +151,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0b1ab195-cf69-480d-ad60-38ba7c58a8e6"),
+                            Id = new Guid("47c78660-31f0-4158-8ca6-82ec9b904993"),
                             RoleName = "Customer"
                         });
                 });
@@ -214,8 +214,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e2c0a28b-fbf2-4fe2-9d65-b5bd473d2ad6"),
-                            CreatedAt = new DateTime(2021, 5, 3, 13, 26, 5, 356, DateTimeKind.Utc).AddTicks(6760),
+                            Id = new Guid("e5ac5f54-5a51-4d94-be70-9e9dfaa81acb"),
+                            CreatedAt = new DateTime(2021, 5, 3, 22, 49, 42, 862, DateTimeKind.Utc).AddTicks(2490),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -427,6 +427,9 @@ namespace DigitalMenu.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsSubscriptionReminderMailSent")
                         .HasColumnType("boolean");
 
@@ -562,42 +565,42 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d85207c4-17b6-4067-86e7-5d4dddfdcb9e"),
+                            Id = new Guid("296b3ff4-6865-4f89-b67b-505f59fd4103"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             Name = "Ürün",
                             SubscriptionTypeFeatureId = new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae")
                         },
                         new
                         {
-                            Id = new Guid("f43f1ad3-23e3-446c-a510-1eb8e6d98612"),
+                            Id = new Guid("7480ffd2-205a-46c9-b728-e072d2792d36"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             Name = "Product",
                             SubscriptionTypeFeatureId = new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae")
                         },
                         new
                         {
-                            Id = new Guid("e1f80c7a-2b99-43ae-8f01-5dbe2c88b7ea"),
+                            Id = new Guid("098d679a-6a3d-4f6c-b4ca-7771b3383024"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             Name = "Ürün",
                             SubscriptionTypeFeatureId = new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e")
                         },
                         new
                         {
-                            Id = new Guid("bd2235f4-3f98-49eb-822a-6f093bcf7e1d"),
+                            Id = new Guid("1a6f629e-4350-426d-b1ca-9dc7f7cd63eb"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             Name = "Product",
                             SubscriptionTypeFeatureId = new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e")
                         },
                         new
                         {
-                            Id = new Guid("3b24ee4a-ef64-41c3-b135-7ba8f983bf24"),
+                            Id = new Guid("93cadc92-8d5f-41de-a4ae-58d23e85bbce"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             Name = "Ürün",
                             SubscriptionTypeFeatureId = new Guid("da12028f-418a-4bd2-9617-27c4aec8372c")
                         },
                         new
                         {
-                            Id = new Guid("fb3ef704-12c1-450a-ad55-a3da7903fe97"),
+                            Id = new Guid("8daff81b-fcf4-4010-8dcc-1798f0e9b81d"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             Name = "Product",
                             SubscriptionTypeFeatureId = new Guid("da12028f-418a-4bd2-9617-27c4aec8372c")
@@ -631,42 +634,42 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("68d85aa2-0472-44fe-8ccd-0a229e6e3778"),
+                            Id = new Guid("1b304f3a-0fff-4c55-8da9-f97acc4b678c"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             SubscriptionTypeId = new Guid("638885d5-6b38-4c01-903a-449c676b86f5"),
                             Title = "Giriş"
                         },
                         new
                         {
-                            Id = new Guid("003643de-4723-49f3-837a-53e23fe9b06b"),
+                            Id = new Guid("bdf250ed-f1a9-44a4-8356-17cd91f66c00"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             SubscriptionTypeId = new Guid("638885d5-6b38-4c01-903a-449c676b86f5"),
                             Title = "Starter"
                         },
                         new
                         {
-                            Id = new Guid("2413125b-9a4b-424e-a8fc-4d6979f5abd5"),
+                            Id = new Guid("e22270be-ed2e-4feb-b978-ac7527707b72"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             SubscriptionTypeId = new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"),
                             Title = "Ekonomik"
                         },
                         new
                         {
-                            Id = new Guid("8d3387dd-8e2a-4f4d-a0fa-6697e7aab758"),
+                            Id = new Guid("d9d2be6b-64f4-4ce6-b2f8-4c21fba8f416"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             SubscriptionTypeId = new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"),
                             Title = "Economic"
                         },
                         new
                         {
-                            Id = new Guid("c556e224-3f9d-4d6e-9a1e-6eb0dcf25e83"),
+                            Id = new Guid("15c40564-2dd8-4be2-a004-b6ad76d6a836"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             SubscriptionTypeId = new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"),
                             Title = "Premium"
                         },
                         new
                         {
-                            Id = new Guid("35ea51a8-a167-45bf-a34f-68ad50c1c809"),
+                            Id = new Guid("6af4216d-86a8-4ce0-af4e-97f034102995"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             SubscriptionTypeId = new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"),
                             Title = "Premium"

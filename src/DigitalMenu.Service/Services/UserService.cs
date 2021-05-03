@@ -80,6 +80,7 @@ namespace DigitalMenu.Service.Services
                 StartDate = DateTime.UtcNow.Date,
                 EndDate = DateTime.UtcNow.Date.AddDays(14),
                 IsSuspended = false,
+                IsCurrent = true,
                 UserId = entity.Id,
             };
 

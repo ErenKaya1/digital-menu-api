@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DigitalMenu.Api.Controllers.Base;
-using DigitalMenu.Common.Enum;
-using DigitalMenu.Data.Context;
-using DigitalMenu.Entity.Entities;
+using DigitalMenu.Core.Model.Subscription;
 using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +33,19 @@ namespace DigitalMenu.Api.Controllers
                 return Success(data: response.Data, message: response.Message);
 
             return Error(response.Message, response.InternalMessage);
+        }
+
+        [HttpPost("{userId}")]
+        public async Task<IActionResult> RenewSubscription([FromRoute] Guid userId, [FromForm] RenewSubscriptionModel model)
+        {
+            System.Console.WriteLine(model.CardHolder);
+            System.Console.WriteLine(model.CardNumber);
+            System.Console.WriteLine(model.CardMonth);
+            System.Console.WriteLine(model.CardYear);
+            System.Console.WriteLine(model.CardCvv);
+            System.Console.WriteLine(model.SubscriptionTypeId);
+
+            return Success();
         }
     }
 }

@@ -144,7 +144,7 @@ namespace DigitalMenu.Service.Services
         private async Task<SubscriptionCheckResult> CheckSubscriptionAsync(Guid userId)
         {
             var subscription = await _unitOfWork.SubscriptionRepository
-                            .Find(x => x.UserId == userId)
+                            .Find(x => x.UserId == userId && x.IsCurrent)
                             .Include(x => x.User)
                             .Include(x => x.SubscriptionType)
                             .ThenInclude(x => x.SubscriptionTypeFeature)

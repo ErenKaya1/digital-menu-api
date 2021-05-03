@@ -7,3 +7,4 @@
 - [x] Menu sayfasında abonelik kontrolü
 - [x] Kategori Açıklaması
 - [ ] Abonelik kontrolü için base class
+- [ ] Database otomatik olusturma

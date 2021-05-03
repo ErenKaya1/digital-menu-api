@@ -1,5 +1,4 @@
-﻿using DigitalMenu.Common.Enum;
-using DigitalMenu.Entity.Entities.Base;
+﻿using DigitalMenu.Entity.Entities.Base;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -25,6 +24,9 @@ namespace DigitalMenu.Entity.Entities
 
         [Required]
         public bool IsSuspended { get; set; }
+
+        [Required]
+        public bool IsCurrent { get; set; }
 
         [Required]
         public bool IsSubscriptionReminderMailSent { get; set; }

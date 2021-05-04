@@ -12,6 +12,6 @@ namespace DigitalMenu.Service.Contracts
         Task<ServiceResponse<List<SubscriptionDTO>>> GetAllAsync();
         Task UpdateReminderMailSentStatusByIdAsync(Guid id);
         Task<ServiceResponse<SubscriptionStatus>> CheckSubscriptionAsync(Guid userId);
-        Task<ServiceResponse<object>> RenewSubscription(Guid userId, RenewSubscriptionModel model);
+        Task<ServiceResponse<object>> RenewSubscriptionAsync(Guid userId, RenewSubscriptionModel model, string ipAddress);
     }
 }

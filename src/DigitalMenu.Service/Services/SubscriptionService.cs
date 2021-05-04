@@ -19,12 +19,14 @@ namespace DigitalMenu.Service.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IEncryption _encryption;
+        private readonly IPaymentService _paymentService;
 
-        public SubscriptionService(IUnitOfWork unitOfWork, IMapper mapper, IEncryption encryption)
+        public SubscriptionService(IUnitOfWork unitOfWork, IMapper mapper, IEncryption encryption, IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _encryption = encryption;
+            _paymentService = paymentService;
         }
 
         public async Task<ServiceResponse<List<SubscriptionDTO>>> GetAllAsync()
@@ -63,7 +65,7 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<SubscriptionStatus>> CheckSubscriptionAsync(Guid userId)
         {
-            var subscription = await _unitOfWork.SubscriptionRepository.FindOneAsync(x => x.UserId == userId);
+            var subscription = await _unitOfWork.SubscriptionRepository.FindOneAsync(x => x.UserId == userId && x.IsCurrent);
 
             if (subscription.IsExpired)
                 return new ServiceResponse<SubscriptionStatus>(true, "Expired");
@@ -74,9 +76,10 @@ namespace DigitalMenu.Service.Services
             return new ServiceResponse<SubscriptionStatus>(true, "Success");
         }
 
-        public async Task<ServiceResponse<object>> RenewSubscription(Guid userId, RenewSubscriptionModel model)
+        public async Task<ServiceResponse<object>> RenewSubscriptionAsync(Guid userId, RenewSubscriptionModel model, string ipAddress)
         {
-            
+            var paymentResponse = await _paymentService.PayAsync(userId, model, ipAddress);
+            if (!paymentResponse.Success) return new ServiceResponse<object>(false, paymentResponse.Message);
 
             var oldSubscription = await _unitOfWork.SubscriptionRepository.Find(x => x.UserId == userId && x.IsCurrent).FirstOrDefaultAsync();
             oldSubscription.IsCurrent = false;
@@ -85,7 +88,7 @@ namespace DigitalMenu.Service.Services
             {
                 Id = Guid.NewGuid(),
                 StartDate = DateTime.UtcNow.Date,
-                EndDate = DateTime.UtcNow.Date.AddDays(14),
+                EndDate = DateTime.UtcNow.Date.AddMonths(1),
                 IsCurrent = true,
                 IsSubscriptionReminderMailSent = false,
                 IsSuspended = false,
@@ -97,6 +100,7 @@ namespace DigitalMenu.Service.Services
             _unitOfWork.SubscriptionRepository.Update(oldSubscription);
             _unitOfWork.SubscriptionRepository.Add(newSubscription);
 
+            await _paymentService.InsertPaymentAsync(userId, newSubscription.Id, paymentResponse.Data);
             await _unitOfWork.SaveChangesAsync();
 
             return new ServiceResponse<object>(true);

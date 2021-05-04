@@ -268,7 +268,7 @@ namespace DigitalMenu.Service.Services
             if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
             if (user.Company == null) return new ServiceResponse<CompanyDTO>(false, "company not found");
             var dto = _mapper.Map<CompanyDTO>(user.Company);
-            dto.LogoName = user.Company.HasLogo ? "https://localhost:5001/logo/" + dto.LogoName : null;
+            dto.LogoName = user.Company.HasLogo ? $"https://localhost:5001/{userId}/logo/{dto.LogoName}" : null;
 
             return new ServiceResponse<CompanyDTO>(true) { Data = dto };
         }

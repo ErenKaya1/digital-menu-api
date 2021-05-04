@@ -14,6 +14,42 @@ namespace DigitalMenu.Entity.Entities
 
         public Guid? CompanyId { get; set; }
 
+        [Required]
+        [StringLength(10)]
+        public string BackgroundColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string TextColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string PriceColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string CategoryDescriptionColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string SelectedCategoryBorderColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string ProductBackgroundColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string LanguageCurrencyBackgroundColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string LanguageCurrencyTextColor { get; set; }
+
+        [Required]
+        [StringLength(10)]
+        public string LinkColor { get; set; }
+
         public int ProductCount => Product.Count + ProductGroup.Count;
         public List<Product> Product { get; set; }
         public List<ProductGroup> ProductGroup { get; set; }

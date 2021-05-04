@@ -31,11 +31,8 @@ namespace DigitalMenu.Service.Services
 
             // check subscription
             var subscriptionStatus = await CheckSubscriptionAsync(menu.UserId);
-            Console.WriteLine(subscriptionStatus);
             if (subscriptionStatus != SubscriptionCheckResult.Success)
-            {
                 return new ServiceResponse<MenuDTO>(false, ((int)subscriptionStatus).ToString());
-            }
 
             var dto = new MenuDTO();
             var redisKey = RedisKeyPrefixes.MENU + menu.UserId.ToString() + "_" + cultureCode;
@@ -111,7 +108,7 @@ namespace DigitalMenu.Service.Services
 
         private async Task<SubscriptionCheckResult> CheckSubscriptionAsync(Guid userId)
         {
-            var subscription = await _unitOfWork.SubscriptionRepository.Find(x => x.UserId == userId && x.IsCurrent).Include(x => x.SubscriptionType).FirstOrDefaultAsync();
+            var subscription = await _unitOfWork.SubscriptionRepository.Find(x => x.UserId == userId && x.IsCurrent).FirstOrDefaultAsync();
 
             // subscription status check
             if (subscription.IsExpired)

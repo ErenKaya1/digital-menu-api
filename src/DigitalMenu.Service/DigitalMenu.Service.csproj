@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.32" />
+    <PackageReference Include="Iyzipay" Version="2.1.39" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
   </ItemGroup>
 

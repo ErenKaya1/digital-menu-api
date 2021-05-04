@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DigitalMenu.Core.Model.ApiReturn;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalMenu.Api.Controllers.Base

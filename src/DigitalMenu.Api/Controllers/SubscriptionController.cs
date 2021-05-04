@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DigitalMenu.Api.Controllers.Base;
+using DigitalMenu.Common.Helper;
 using DigitalMenu.Core.Model.Subscription;
 using DigitalMenu.Service.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -38,14 +39,12 @@ namespace DigitalMenu.Api.Controllers
         [HttpPost("{userId}")]
         public async Task<IActionResult> RenewSubscription([FromRoute] Guid userId, [FromForm] RenewSubscriptionModel model)
         {
-            System.Console.WriteLine(model.CardHolder);
-            System.Console.WriteLine(model.CardNumber);
-            System.Console.WriteLine(model.CardMonth);
-            System.Console.WriteLine(model.CardYear);
-            System.Console.WriteLine(model.CardCvv);
-            System.Console.WriteLine(model.SubscriptionTypeId);
+            var ipAddress = HttpHelper.GetClientIpAddress(HttpContext);
+            var response = await _subscriptionService.RenewSubscriptionAsync(userId, model, ipAddress);
+            if (response.Success)
+                return Success();
 
-            return Success();
+            return Error(response.Message);
         }
     }
 }

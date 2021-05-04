@@ -158,5 +158,10 @@ namespace DigitalMenu.Service.Extensions
                 options.BaseAddress = new Uri("https://www.doviz.com");
             });
         }
+
+        public static void ConfigureIyzico(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<IyzicoConfig>(configuration.GetSection("IyzicoConfig"));
+        }
     }
 }

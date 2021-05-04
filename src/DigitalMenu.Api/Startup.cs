@@ -49,6 +49,7 @@ namespace DigitalMenu.Api
             services.AddHostedService<EmailSender>();
             services.ConfigureBackgroundServices(Configuration);
             services.ConfigureHttpClients(Configuration);
+            services.ConfigureIyzico(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

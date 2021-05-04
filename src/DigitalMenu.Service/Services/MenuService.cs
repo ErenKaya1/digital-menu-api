@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DigitalMenu.Common.Enum;
 using DigitalMenu.Core.Cache;
 using DigitalMenu.Core.Constants;
+using DigitalMenu.Core.Model.Menu;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
@@ -15,11 +17,13 @@ namespace DigitalMenu.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRedisCacheService _redisCacheService;
+        private readonly IMapper _mapper;
 
-        public MenuService(IUnitOfWork unitOfWork, IRedisCacheService redisCacheService)
+        public MenuService(IUnitOfWork unitOfWork, IRedisCacheService redisCacheService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _redisCacheService = redisCacheService;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResponse<MenuDTO>> GetMenuByCompanySlugAsync(string companySlug, string cultureCode, string currency)
@@ -28,6 +32,8 @@ namespace DigitalMenu.Service.Services
                         .Find(x => x.Company.Slug == companySlug)
                         .Include(x => x.Company)
                         .FirstOrDefaultAsync();
+
+            if (menu == null) return new ServiceResponse<MenuDTO>(false, "menu was null");
 
             // check subscription
             var subscriptionStatus = await CheckSubscriptionAsync(menu.UserId);
@@ -57,6 +63,15 @@ namespace DigitalMenu.Service.Services
                 {
                     CompanyLogo = menu.Company.HasLogo ? $"https://localhost:5001/{menu.UserId}/logo/{menu.Company.LogoName}" : string.Empty,
                     CompanyName = menu.Company.Name,
+                    BackgroundColor = menu.BackgroundColor,
+                    TextColor = menu.TextColor,
+                    PriceColor = menu.PriceColor,
+                    CategoryDescriptionColor = menu.CategoryDescriptionColor,
+                    SelectedCategoryBorderColor = menu.SelectedCategoryBorderColor,
+                    ProductBackgroundColor = menu.ProductBackgroundColor,
+                    LanguageCurrencyBackgroundColor = menu.LanguageCurrencyBackgroundColor,
+                    LanguageCurrencyTextColor = menu.LanguageCurrencyTextColor,
+                    LinkColor = menu.LinkColor,
                     Categories = categories.Select(x => new CategoryDTO
                     {
                         Id = x.Id,
@@ -104,6 +119,40 @@ namespace DigitalMenu.Service.Services
             }
 
             return new ServiceResponse<MenuDTO>(true) { Data = dto };
+        }
+
+        public async Task<ServiceResponse<object>> UpdateMenuThemeAsync(Guid userId, MenuThemeModel model)
+        {
+            var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+            if (menu == null) return new ServiceResponse<object>(false, "menu was null");
+
+            menu.BackgroundColor = model.BackgroundColor;
+            menu.TextColor = model.TextColor;
+            menu.PriceColor = model.PriceColor;
+            menu.CategoryDescriptionColor = model.CategoryDescriptionColor;
+            menu.SelectedCategoryBorderColor = model.SelectedCategoryBorderColor;
+            menu.ProductBackgroundColor = model.ProductBackgroundColor;
+            menu.LanguageCurrencyBackgroundColor = model.LanguageCurrencyBackgroundColor;
+            menu.LanguageCurrencyTextColor = model.LanguageCurrencyTextColor;
+            menu.LinkColor = model.LinkColor;
+
+            _unitOfWork.MenuRepository.Update(menu);
+            await _unitOfWork.SaveChangesAsync();
+
+            // clear cache
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId + "_en");
+
+            return new ServiceResponse<object>(true);
+        }
+
+        public async Task<ServiceResponse<MenuThemeModel>> GetMenuThemeAsync(Guid userId)
+        {
+            var menu = await _unitOfWork.MenuRepository.FindOneAsync(x => x.UserId == userId);
+            if (menu == null) return new ServiceResponse<MenuThemeModel>(false, "menu was null");
+
+            var data = _mapper.Map<MenuThemeModel>(menu);
+            return new ServiceResponse<MenuThemeModel>(true) { Data = data };
         }
 
         private async Task<SubscriptionCheckResult> CheckSubscriptionAsync(Guid userId)

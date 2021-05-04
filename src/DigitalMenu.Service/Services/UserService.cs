@@ -90,7 +90,16 @@ namespace DigitalMenu.Service.Services
             var menu = new Menu
             {
                 Id = Guid.NewGuid(),
-                UserId = entity.Id
+                UserId = entity.Id,
+                BackgroundColor = DefaultMenuTheme.BackgroundColor,
+                TextColor = DefaultMenuTheme.TextColor,
+                PriceColor = DefaultMenuTheme.PriceColor,
+                CategoryDescriptionColor = DefaultMenuTheme.CategoryDescriptionColor,
+                SelectedCategoryBorderColor = DefaultMenuTheme.SelectedCategoryBorderColor,
+                ProductBackgroundColor = DefaultMenuTheme.ProductBackgroundColor,
+                LanguageCurrencyBackgroundColor = DefaultMenuTheme.LanguageCurrencyBackgroundColor,
+                LanguageCurrencyTextColor = DefaultMenuTheme.LanguageCurrencyTextColor,
+                LinkColor = DefaultMenuTheme.LinkColor,
             };
 
             _unitOfWork.MenuRepository.Add(menu);

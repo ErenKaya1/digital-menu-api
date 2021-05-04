@@ -43,7 +43,16 @@ namespace DigitalMenu.Service.Services
                 menu = new Menu
                 {
                     Id = Guid.NewGuid(),
-                    UserId = userId
+                    UserId = userId,
+                    BackgroundColor = DefaultMenuTheme.BackgroundColor,
+                    TextColor = DefaultMenuTheme.TextColor,
+                    PriceColor = DefaultMenuTheme.PriceColor,
+                    CategoryDescriptionColor = DefaultMenuTheme.CategoryDescriptionColor,
+                    SelectedCategoryBorderColor = DefaultMenuTheme.SelectedCategoryBorderColor,
+                    ProductBackgroundColor = DefaultMenuTheme.ProductBackgroundColor,
+                    LanguageCurrencyBackgroundColor = DefaultMenuTheme.LanguageCurrencyBackgroundColor,
+                    LanguageCurrencyTextColor = DefaultMenuTheme.LanguageCurrencyTextColor,
+                    LinkColor = DefaultMenuTheme.LinkColor,
                 };
 
                 if (user.Company != null)

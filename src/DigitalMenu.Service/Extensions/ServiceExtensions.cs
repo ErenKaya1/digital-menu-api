@@ -19,6 +19,7 @@ using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.RabbitMQ;
 using DigitalMenu.Core.Cache;
 using DigitalMenu.Service.BackgroundServices;
+using DigitalMenu.Core.Model.Menu;
 
 namespace DigitalMenu.Service.Extensions
 {
@@ -80,6 +81,8 @@ namespace DigitalMenu.Service.Extensions
                 config.CreateMap<CompanyDTO, Company>();
                 config.CreateMap<UpdateCompanyModel, Company>();
                 config.CreateMap<Company, UpdateCompanyModel>();
+                config.CreateMap<MenuThemeModel, Menu>();
+                config.CreateMap<Menu, MenuThemeModel>();
             });
         }
 

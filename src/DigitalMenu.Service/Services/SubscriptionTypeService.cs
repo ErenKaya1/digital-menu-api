@@ -58,7 +58,7 @@ namespace DigitalMenu.Service.Services
                                     })
                                     .ToListAsync();
 
-                _redisCacheService.Set("SubscriptionTypes_" + cultureCode, entities);
+                _redisCacheService.Set(RedisKeyPrefixes.SUBSCRIPTIONTYPES + cultureCode, entities);
             }
 
             return new ServiceResponse<List<SubscriptionTypeDTO>>(true) { Data = entities };

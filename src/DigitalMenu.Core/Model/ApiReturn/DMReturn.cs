@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DigitalMenu.Core.Enum;
 using Newtonsoft.Json;
 
 namespace DigitalMenu.Core.Model.ApiReturn
@@ -16,6 +17,8 @@ namespace DigitalMenu.Core.Model.ApiReturn
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public object Data { get; set; }
+
+        public ErrorCodes? ErrorCode { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<DMReturnError> Errors { get; set; }

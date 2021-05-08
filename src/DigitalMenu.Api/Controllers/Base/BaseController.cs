@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using DigitalMenu.Core.Enum;
 using DigitalMenu.Core.Model.ApiReturn;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +32,7 @@ namespace DigitalMenu.Api.Controllers.Base
         }
 
         [NonAction]
-        protected IActionResult Error(string message = default(string), string internalMessage = default(string), object data = default(object), int code = 400, List<DMReturnError> errors = null)
+        protected IActionResult Error(string message = default(string), string internalMessage = default(string), object data = default(object), int code = 400, List<DMReturnError> errors = null, ErrorCodes? errorCode = null)
         {
             var response = new DMReturn
             {
@@ -41,7 +41,8 @@ namespace DigitalMenu.Api.Controllers.Base
                 InternalMessage = internalMessage,
                 Data = data,
                 Code = code,
-                Errors = errors
+                Errors = errors,
+                ErrorCode = errorCode
             };
 
             switch (response.Code)

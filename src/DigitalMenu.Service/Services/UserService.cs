@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
-using DigitalMenu.Common.Enum;
 using DigitalMenu.Core.Cache;
 using DigitalMenu.Core.Constants;
+using DigitalMenu.Core.Enum;
 using DigitalMenu.Core.Model;
 using DigitalMenu.Core.Model.User;
 using DigitalMenu.Core.RabbitMQ;
@@ -60,8 +60,10 @@ namespace DigitalMenu.Service.Services
         public async Task<ServiceResponse<UserDTO>> InsertUserAsync(RegisterModel model, string ipAddress)
         {
             // check if username and email are receivable
-            if (await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName || x.EmailAddress == _encryption.EncryptText(model.EmailAddress)).AnyAsync())
-                return new ServiceResponse<UserDTO>(false, "register failed", "username or email is already taken");
+            if (await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName).AnyAsync())
+                return new ServiceResponse<UserDTO>(false, "register failed", errorCode: ErrorCodes.DuplicatedUsername);
+            else if (await _unitOfWork.UserRepository.Find(x => x.EmailAddress == _encryption.EncryptText(model.EmailAddress)).AnyAsync())
+                return new ServiceResponse<UserDTO>(false, "register failed", errorCode: ErrorCodes.DuplicatedEmailAddress);
 
             var entity = _mapper.Map<DMUser>(model);
             entity.Id = Guid.NewGuid();
@@ -287,8 +289,11 @@ namespace DigitalMenu.Service.Services
             if (model == null) return new ServiceResponse<CompanyDTO>(false);
             var user = await _unitOfWork.UserRepository.Find(x => x.Id == userId).Include(x => x.Company).FirstOrDefaultAsync();
             if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
-            var data = new CompanyDTO();
 
+            if (user.Company.Slug != model.Slug && await _unitOfWork.CompanyRepository.Find(x => x.Slug == model.Slug).AnyAsync())
+                return new ServiceResponse<CompanyDTO>(false, "slug already taken before", errorCode: ErrorCodes.DuplicatedCompanySlug);
+
+            var data = new CompanyDTO();
             if (user.Company != null)
             {
                 user.Company.Name = model.Name;

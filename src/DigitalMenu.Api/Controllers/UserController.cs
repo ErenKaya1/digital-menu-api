@@ -35,7 +35,7 @@ namespace DigitalMenu.Api.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var response = await _userService.InsertUserAsync(model, HttpHelper.GetClientIpAddress(HttpContext));
-            if (!response.Success) return Error(response.Message, response.InternalMessage, code: 409);
+            if (!response.Success) return Error(response.Message, response.InternalMessage, code: 409, errorCode: response.ErrorCode);
             HttpHelper.SetRefreshTokenCookie(HttpContext, response.Data.RefreshToken, false);
 
             var data = new
@@ -168,7 +168,7 @@ namespace DigitalMenu.Api.Controllers
             if (response.Success)
                 return Success(data: response.Data);
 
-            return Error(response.Message, response.InternalMessage);
+            return Error(response.Message, response.InternalMessage, errorCode: response.ErrorCode);
         }
     }
 }

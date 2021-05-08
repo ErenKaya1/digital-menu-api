@@ -28,6 +28,5 @@ namespace DigitalMenu.Entity.Entities
         public List<ProductTranslation> ProductTranslation { get; set; }
         public Category Category { get; set; }
         public Menu Menu { get; set; }
-        public List<ProductGroup> ProductGroup { get; set; }
     }
 }

@@ -151,7 +151,7 @@ namespace DigitalMenu.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("05211682-aba6-4126-97a7-a6eef03bcc76"),
+                            Id = new Guid("ed855383-423e-4d2c-8848-ad62dd27b566"),
                             RoleName = "Customer"
                         });
                 });
@@ -214,8 +214,8 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b2871959-6fcf-45d5-aa20-11fdf40d5074"),
-                            CreatedAt = new DateTime(2021, 5, 4, 15, 32, 53, 774, DateTimeKind.Utc).AddTicks(6715),
+                            Id = new Guid("9fd212ff-93d4-4256-a3fd-b8348306443c"),
+                            CreatedAt = new DateTime(2021, 5, 4, 22, 11, 27, 455, DateTimeKind.Utc).AddTicks(882),
                             EmailAddress = "test@gmail.com",
                             FirstName = "admin",
                             LastName = "test",
@@ -364,34 +364,6 @@ namespace DigitalMenu.Data.Migrations
                     b.ToTable("product");
                 });
 
-            modelBuilder.Entity("DigitalMenu.Entity.Entities.ProductGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ImageName")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<Guid>("MenuId")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("MenuId");
-
-                    b.ToTable("product_group");
-                });
-
             modelBuilder.Entity("DigitalMenu.Entity.Entities.ProductTranslation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -408,17 +380,12 @@ namespace DigitalMenu.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<Guid?>("ProductGroupId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CultureId");
-
-                    b.HasIndex("ProductGroupId");
 
                     b.HasIndex("ProductId");
 
@@ -634,42 +601,42 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("177324f1-e29f-49a5-b6c7-2e60ec287367"),
+                            Id = new Guid("8d8638ff-a286-456e-a144-49da8c486fd6"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             Name = "Ürün",
                             SubscriptionTypeFeatureId = new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae")
                         },
                         new
                         {
-                            Id = new Guid("9056d09f-fe81-4aed-9332-170b3360c9cf"),
+                            Id = new Guid("89758ecf-c880-42be-95f1-b862ff4f6cfc"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             Name = "Product",
                             SubscriptionTypeFeatureId = new Guid("41cdda69-aa5f-496f-8c1a-3f26d1a32dae")
                         },
                         new
                         {
-                            Id = new Guid("dd10cbdd-b85c-4ef2-830c-bf513a3b65e0"),
+                            Id = new Guid("e3d75f94-dfd4-4ec5-addf-056f17f61cfa"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             Name = "Ürün",
                             SubscriptionTypeFeatureId = new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e")
                         },
                         new
                         {
-                            Id = new Guid("3d5ed8b8-9c5f-454a-bfd8-5f2727985ed7"),
+                            Id = new Guid("7f3cbd21-ab0d-4d35-beba-7fdcde29227d"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             Name = "Product",
                             SubscriptionTypeFeatureId = new Guid("9abf06ab-0c1a-4c63-a141-e512fe306c1e")
                         },
                         new
                         {
-                            Id = new Guid("f810ce88-b84a-4c5c-b692-a4c3df49f24f"),
+                            Id = new Guid("680910a8-b5f3-4cdd-8ac2-dc7184ba4ffc"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             Name = "Ürün",
                             SubscriptionTypeFeatureId = new Guid("da12028f-418a-4bd2-9617-27c4aec8372c")
                         },
                         new
                         {
-                            Id = new Guid("4da5e5bb-44ae-489a-8d70-5dd64cc030bc"),
+                            Id = new Guid("7a2a6f18-085e-442f-b616-ad3c98f1860b"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             Name = "Product",
                             SubscriptionTypeFeatureId = new Guid("da12028f-418a-4bd2-9617-27c4aec8372c")
@@ -703,61 +670,46 @@ namespace DigitalMenu.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("68c19226-2381-4453-a145-3ff7e0974ca0"),
+                            Id = new Guid("1581d1d4-7f04-4fda-8ca0-badcfe39d0b0"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             SubscriptionTypeId = new Guid("638885d5-6b38-4c01-903a-449c676b86f5"),
                             Title = "Giriş"
                         },
                         new
                         {
-                            Id = new Guid("2e134c01-7795-4295-b38c-f2311b606276"),
+                            Id = new Guid("0ef28719-35b7-4ebc-81f3-fc91dd9c8a8b"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             SubscriptionTypeId = new Guid("638885d5-6b38-4c01-903a-449c676b86f5"),
                             Title = "Starter"
                         },
                         new
                         {
-                            Id = new Guid("fdf6cbcd-6b47-42d4-9687-ccf78b2a38c1"),
+                            Id = new Guid("9673f020-2321-47a3-a7a0-7edec9f8c19d"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             SubscriptionTypeId = new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"),
                             Title = "Ekonomik"
                         },
                         new
                         {
-                            Id = new Guid("f923231d-1767-4a9f-80e4-82b2e099e02f"),
+                            Id = new Guid("25b39718-9084-4eee-a803-613bd4811a3a"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             SubscriptionTypeId = new Guid("971daed0-4c56-4e5b-b9a9-74eb975c54eb"),
                             Title = "Economic"
                         },
                         new
                         {
-                            Id = new Guid("f5bcb688-1093-466f-86af-dc0afb6f8e30"),
+                            Id = new Guid("4bf5a21c-5545-4fea-b8cb-45fd490b0f6e"),
                             CultureId = new Guid("48c92719-ebe7-4b4c-9814-9c8f1a57b1ff"),
                             SubscriptionTypeId = new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"),
                             Title = "Premium"
                         },
                         new
                         {
-                            Id = new Guid("09522223-9b91-4c11-a573-2f3ec6f6f2ff"),
+                            Id = new Guid("f5f73ad9-3f13-4b4c-ac5d-3139ef135192"),
                             CultureId = new Guid("41d8d90c-2224-42fb-ac80-c27b87e74371"),
                             SubscriptionTypeId = new Guid("e0f8c62e-9769-4520-a46b-2d23f6abe7e3"),
                             Title = "Premium"
                         });
-                });
-
-            modelBuilder.Entity("ProductProductGroup", b =>
-                {
-                    b.Property<Guid>("ProductGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ProductGroupId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductProductGroup");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Category", b =>
@@ -862,25 +814,6 @@ namespace DigitalMenu.Data.Migrations
                     b.Navigation("Menu");
                 });
 
-            modelBuilder.Entity("DigitalMenu.Entity.Entities.ProductGroup", b =>
-                {
-                    b.HasOne("DigitalMenu.Entity.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DigitalMenu.Entity.Entities.Menu", "Menu")
-                        .WithMany("ProductGroup")
-                        .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Menu");
-                });
-
             modelBuilder.Entity("DigitalMenu.Entity.Entities.ProductTranslation", b =>
                 {
                     b.HasOne("DigitalMenu.Entity.Entities.Culture", "Culture")
@@ -888,10 +821,6 @@ namespace DigitalMenu.Data.Migrations
                         .HasForeignKey("CultureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("DigitalMenu.Entity.Entities.ProductGroup", null)
-                        .WithMany("ProductTranslation")
-                        .HasForeignKey("ProductGroupId");
 
                     b.HasOne("DigitalMenu.Entity.Entities.Product", "Product")
                         .WithMany("ProductTranslation")
@@ -992,21 +921,6 @@ namespace DigitalMenu.Data.Migrations
                     b.Navigation("SubscriptionType");
                 });
 
-            modelBuilder.Entity("ProductProductGroup", b =>
-                {
-                    b.HasOne("DigitalMenu.Entity.Entities.ProductGroup", null)
-                        .WithMany()
-                        .HasForeignKey("ProductGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DigitalMenu.Entity.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Category", b =>
                 {
                     b.Navigation("CategoryTranslation");
@@ -1031,16 +945,9 @@ namespace DigitalMenu.Data.Migrations
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Menu", b =>
                 {
                     b.Navigation("Product");
-
-                    b.Navigation("ProductGroup");
                 });
 
             modelBuilder.Entity("DigitalMenu.Entity.Entities.Product", b =>
-                {
-                    b.Navigation("ProductTranslation");
-                });
-
-            modelBuilder.Entity("DigitalMenu.Entity.Entities.ProductGroup", b =>
                 {
                     b.Navigation("ProductTranslation");
                 });

@@ -50,9 +50,8 @@ namespace DigitalMenu.Entity.Entities
         [StringLength(10)]
         public string LinkColor { get; set; }
 
-        public int ProductCount => Product.Count + ProductGroup.Count;
+        public int ProductCount => Product.Count;
         public List<Product> Product { get; set; }
-        public List<ProductGroup> ProductGroup { get; set; }
         public DMUser User { get; set; }
         public Company Company { get; set; }
     }

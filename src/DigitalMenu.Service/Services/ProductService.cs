@@ -206,5 +206,28 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<object>(true);
         }
+
+        public async Task<ServiceResponse<ProductDTO>> GetByIdAsync(Guid userId, Guid productId)
+        {
+            var entity = await _unitOfWork.ProductRepository
+                            .Find(x => x.Id == productId && x.Menu.UserId == userId)
+                            .Include(x => x.ProductTranslation)
+                            .FirstOrDefaultAsync();
+            if (entity == null) return new ServiceResponse<ProductDTO>(false, "entity not found");
+
+            var dto = new ProductDTO
+            {
+                Id = entity.Id,
+                CategoryId = entity.CategoryId,
+                NameTR = entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name,
+                NameEN = entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
+                DescriptionTR = entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
+                DescriptionEN = entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
+                Price = entity.Price,
+                ImagePath = entity.HasImage ? $"https://localhost:5001/{userId}/product/{entity.ImageName}" : null,
+            };
+
+            return new ServiceResponse<ProductDTO>(true) { Data = dto };
+        }
     }
 }

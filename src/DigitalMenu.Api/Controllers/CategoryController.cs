@@ -53,7 +53,16 @@ namespace DigitalMenu.Api.Controllers
             var response = await _categoryService.DeleteCategoryAsync(categoryId, userId);
             if (response.Success)
                 return Success();
-            return Error();
+            return Error(response.Message, response.InternalMessage);
+        }
+
+        [HttpGet("{userId}/{categoryId}")]
+        public async Task<IActionResult> GetCategoryById([FromRoute] Guid userId, [FromRoute] Guid categoryId)
+        {
+            var response = await _categoryService.GetByIdAsync(userId, categoryId);
+            if (response.Success)
+                return Success(data: response.Data);
+            return Error(response.Message, response.InternalMessage);
         }
     }
 }

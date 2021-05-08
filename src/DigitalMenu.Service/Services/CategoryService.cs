@@ -118,5 +118,26 @@ namespace DigitalMenu.Service.Services
 
             return new ServiceResponse<object>(true);
         }
+
+        public async Task<ServiceResponse<CategoryDTO>> GetByIdAsync(Guid userId, Guid categoryId)
+        {
+            var entity = await _unitOfWork.CategoryRepository
+                                .Find(x => x.Id == categoryId && x.UserId == userId)
+                                .Include(x => x.CategoryTranslation)
+                                .FirstOrDefaultAsync();
+            if (entity == null) return new ServiceResponse<CategoryDTO>(false, "category not found");
+
+            var dto = new CategoryDTO
+            {
+                Id = entity.Id,
+                NameTR = entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Name,
+                NameEN = entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
+                DescriptionTR = entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
+                DescriptionEN = entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
+                ImagePath = entity.HasImage ? $"https://localhost:5001/{userId}/category/{entity.ImageName}" : null
+            };
+
+            return new ServiceResponse<CategoryDTO>(true) { Data = dto };
+        }
     }
 }

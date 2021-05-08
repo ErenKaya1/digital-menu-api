@@ -55,7 +55,7 @@ namespace DigitalMenu.Api.Controllers
         }
 
         [HttpGet("{userId}/{productId}")]
-        public async Task<IActionResult> GetProductById(Guid userId, Guid productId)
+        public async Task<IActionResult> GetProductById([FromRoute] Guid userId, [FromRoute] Guid productId)
         {
             var response = await _productService.GetByIdAsync(userId, productId);
             if (response.Success)

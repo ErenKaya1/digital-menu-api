@@ -12,7 +12,7 @@ namespace DigitalMenu.Service.Contracts
         Task<ServiceResponse<UserDTO>> RefreshTokenAsync(string token, string ipAddress);
         Task<ServiceResponse<Guid>> GetUserIdByEmailAsync(string emailAddress);
         Task<ServiceResponse<Guid>> SendResetPasswordMailAsync(string emailAddress);
-        Task<ServiceResponse<UserDTO>> ResetPasswordAsync(Guid userId, string newPassword, string resetPasswordToken);
+        Task<ServiceResponse<UserDTO>> ResetPasswordAsync(ResetPasswordModel model);
         Task<ServiceResponse<UserDTO>> UpdateUserAsync(Guid userId, UpdateProfileModel model);
         Task<ServiceResponse<UserDTO>> ChangePasswordAsync(Guid userId, UpdatePasswordModel model);
         Task<ServiceResponse<CompanyDTO>> GetCompanyAsync(Guid userId);

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using AutoMapper;
 using DigitalMenu.Core.Cache;
 using DigitalMenu.Core.Constants;
@@ -15,7 +14,6 @@ using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -29,7 +27,6 @@ namespace DigitalMenu.Service.Services
         private readonly ITokenService _tokenService;
         private readonly IEncryption _encryption;
         private readonly IRabbitMQService _rabbitMQService;
-        private readonly IDataProtector _dataProtector;
         private readonly IOptions<MailSettings> _mailSettings;
         private readonly IImageService _imageService;
         private readonly IRedisCacheService _redisCacheService;
@@ -40,7 +37,6 @@ namespace DigitalMenu.Service.Services
                            ITokenService tokenService,
                            IEncryption encryption,
                            IRabbitMQService rabbitMQService,
-                           IDataProtectionProvider dataProtectionProvider,
                            IOptions<MailSettings> mailSettings,
                            IImageService imageService,
                            IRedisCacheService redisCacheService)
@@ -51,7 +47,6 @@ namespace DigitalMenu.Service.Services
             _tokenService = tokenService;
             _encryption = encryption;
             _rabbitMQService = rabbitMQService;
-            _dataProtector = dataProtectionProvider.CreateProtector(DataProtectionKeys.ResetPasswordTokenKey);
             _mailSettings = mailSettings;
             _imageService = imageService;
             _redisCacheService = redisCacheService;
@@ -131,7 +126,7 @@ namespace DigitalMenu.Service.Services
         {
             // check if username and email are correct
             var user = await _unitOfWork.UserRepository.Find(x => x.UserName == model.UserName && x.PasswordHash == _hasher.CreateHash(model.Password)).Include(x => x.Role).FirstOrDefaultAsync();
-            if (user == null) return new ServiceResponse<UserDTO>(false, "authentication failed", "username or password incorrect");
+            if (user == null) return new ServiceResponse<UserDTO>(false, "authentication failed", errorCode: ErrorCodes.IncorrectLogin);
 
             // if correct, generate jwt and refresh token
             var jwtToken = _tokenService.GenerateJwtToken(user);
@@ -200,9 +195,7 @@ namespace DigitalMenu.Service.Services
             if (!userResponse.Success) return new ServiceResponse<Guid>(false, userResponse.Message, userResponse.InternalMessage);
             var refreshPasswordTokenResponse = await _tokenService.GenerateResetPasswordTokenAsync(userResponse.Data);
             if (!refreshPasswordTokenResponse.Success) return new ServiceResponse<Guid>(false, refreshPasswordTokenResponse.Message, refreshPasswordTokenResponse.InternalMessage);
-            var urlEncodedToken = HttpUtility.UrlEncode(refreshPasswordTokenResponse.Data.Token);
-            var protectedToken = _dataProtector.Protect(urlEncodedToken);
-            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='https://localhost:5001/user/reset-password/{userResponse.Data}/{urlEncodedToken}'>tiklayiniz</a>.</p>" +
+            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='http://localhost:8080/reset-password/{userResponse.Data}/{refreshPasswordTokenResponse.Data.Token}'>tiklayiniz</a>.</p>" +
                                "<p>Bu link 15 dakika sonra gecersiz olacaktir.</p>";
 
             var mail = new MailDTO
@@ -220,15 +213,15 @@ namespace DigitalMenu.Service.Services
                 return new ServiceResponse<Guid>(false, "rabbit mq error");
         }
 
-        public async Task<ServiceResponse<UserDTO>> ResetPasswordAsync(Guid userId, string newPassword, string resetPasswordToken)
+        public async Task<ServiceResponse<UserDTO>> ResetPasswordAsync(ResetPasswordModel model)
         {
-            var tokenEntity = await _unitOfWork.ResetPasswordTokenRepository.FindOneAsync(x => x.UserId == userId && x.TokenHash == _hasher.CreateHash(resetPasswordToken));
-            if (tokenEntity == null) return new ServiceResponse<UserDTO>(false, "invalid token");
-            if (tokenEntity.IsExpired) return new ServiceResponse<UserDTO>(false, "token was expired");
-            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.Id == userId);
+            var tokenEntity = await _unitOfWork.ResetPasswordTokenRepository.FindOneAsync(x => x.UserId == model.UserId && x.TokenHash == _hasher.CreateHash(model.Token));
+            if (tokenEntity == null) return new ServiceResponse<UserDTO>(false, "invalid token", errorCode: ErrorCodes.InvalidResetPasswordToken);
+            if (tokenEntity.IsExpired) return new ServiceResponse<UserDTO>(false, "token was expired", errorCode: ErrorCodes.ExpiredResetPasswordToken);
+            var user = await _unitOfWork.UserRepository.FindOneAsync(x => x.Id == model.UserId);
             if (user == null) return new ServiceResponse<UserDTO>(false, "user not found");
 
-            user.PasswordHash = _hasher.CreateHash(newPassword);
+            user.PasswordHash = _hasher.CreateHash(model.NewPassword);
             tokenEntity.Expires = DateTime.UtcNow;
 
             _unitOfWork.UserRepository.Update(user);

@@ -4,6 +4,9 @@ namespace DigitalMenu.Core.Enum
     {
         DuplicatedCompanySlug,
         DuplicatedUsername,
-        DuplicatedEmailAddress
+        DuplicatedEmailAddress,
+        IncorrectLogin,
+        ExpiredResetPasswordToken,
+        InvalidResetPasswordToken
     }
 }

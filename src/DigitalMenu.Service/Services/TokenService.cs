@@ -84,29 +84,31 @@ namespace DigitalMenu.Service.Services
 
         public async Task<ServiceResponse<ResetPasswordTokenDTO>> GenerateResetPasswordTokenAsync(Guid userId)
         {
-            using var provider = new RNGCryptoServiceProvider();
-            var randomBytes = new byte[16];
-            provider.GetBytes(randomBytes);
-            var token = Convert.ToBase64String(randomBytes);
-
-            var entity = new ResetPasswordToken
+            using (var provider = new RNGCryptoServiceProvider())
             {
-                Id = Guid.NewGuid(),
-                TokenHash = _hasher.CreateHash(token),
-                Expires = DateTime.UtcNow.AddMinutes(15),
-                UserId = userId
-            };
+                var randomBytes = new byte[16];
+                provider.GetBytes(randomBytes);
+                var token = Convert.ToBase64String(randomBytes);
 
-            _unitOfWork.ResetPasswordTokenRepository.Add(entity);
-            await _unitOfWork.SaveChangesAsync();
+                var entity = new ResetPasswordToken
+                {
+                    Id = Guid.NewGuid(),
+                    TokenHash = _hasher.CreateHash(token),
+                    Expires = DateTime.UtcNow.AddMinutes(15),
+                    UserId = userId
+                };
 
-            var data = new ResetPasswordTokenDTO
-            {
-                UserId = userId,
-                Token = token
-            };
+                _unitOfWork.ResetPasswordTokenRepository.Add(entity);
+                await _unitOfWork.SaveChangesAsync();
 
-            return new ServiceResponse<ResetPasswordTokenDTO>(true) { Data = data };
+                var data = new ResetPasswordTokenDTO
+                {
+                    UserId = userId,
+                    Token = token
+                };
+
+                return new ServiceResponse<ResetPasswordTokenDTO>(true) { Data = data };
+            }
         }
 
         public async Task RevokeRefreshTokensAsync(Guid userId, string newRefreshToken, string ipAddress)

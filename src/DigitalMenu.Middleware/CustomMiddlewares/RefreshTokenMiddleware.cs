@@ -43,7 +43,9 @@ namespace DigitalMenu.Middleware.CustomMiddlewares
                             var refreshTokenResult = await _userService.RefreshTokenAsync(refreshToken, ipAddress);
                             if (refreshTokenResult.Success)
                             {
-                                HttpHelper.SetRefreshTokenCookie(context, refreshTokenResult.Data.RefreshToken, true);
+                                bool.TryParse(context.Request.Headers["X-IsPersistent"], out bool isPersistent);
+
+                                HttpHelper.SetRefreshTokenCookie(context, refreshTokenResult.Data.RefreshToken, isPersistent);
                                 var newJwtToken = refreshTokenResult.Data.AccessToken;
 
                                 context.Request.Headers["Authorization"] = $"Bearer {newJwtToken}";

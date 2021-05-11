@@ -4,10 +4,12 @@ using DigitalMenu.Api.Controllers.Base;
 using DigitalMenu.Common.Helper;
 using DigitalMenu.Core.Model.Subscription;
 using DigitalMenu.Service.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalMenu.Api.Controllers
 {
+    [Authorize]
     public class SubscriptionController : BaseController
     {
         private readonly ISubscriptionTypeService _subscriptionTypeService;
@@ -20,10 +22,14 @@ namespace DigitalMenu.Api.Controllers
         }
 
         [HttpGet("types")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSubscriptionTypes()
         {
+            System.Console.WriteLine("subscription types");
             var response = await _subscriptionTypeService.GetSubscriptionTypesAsync(GetCurrentLanguage());
-            return Success(data: response.Data);
+            if (response.Success)
+                return Success(data: response.Data);
+            return Error(response.Message, response.InternalMessage, errorCode: response.ErrorCode);
         }
 
         [HttpGet("check/{userId}")]

@@ -43,7 +43,7 @@ namespace DigitalMenu.Service.Services
                     new Claim(ClaimTypes.Role, user.Role.RoleName),
                     new Claim("userId", user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddSeconds(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256),
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

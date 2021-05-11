@@ -68,8 +68,8 @@ namespace DigitalMenu.Api
             app.UseCors(builder =>
             {
                 builder
-                    .WithOrigins("http://localhost:8080")
-                    .WithExposedHeaders("X-New-Jwt-Token")
+                    .WithOrigins("http://localhost:8080", "https://localhost:8080")
+                    .WithExposedHeaders("X-New-Jwt-Token", "X-IsPersistent")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();

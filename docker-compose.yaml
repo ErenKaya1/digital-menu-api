@@ -1,0 +1,112 @@
+version: "3.7"
+
+# if you change redis, rabbitmq, db service names, update the api service depends.
+# if you change api service name, update the client service depends.
+
+services:
+  # .NET 5.0 Backend Api
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: erenkaya/digital-menu:api
+    container_name: api
+    ports:
+      - 5001:80
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+    restart: always
+    environment:
+      # production or development
+      ASPNETCORE_ENVIRONMENT: development
+
+      # required
+      # it does not set the url address where the project will run.
+      # just the url where api project is running (for the image urls, etc.)
+      API_URL: http://localhost:5001
+
+      # required
+      # the url where client app is running
+      CLIENT_APP_URL: http://localhost
+
+      # optional
+      # default => Username=user;password=postgres;Database=digital_menu;host=db;port=5432;Pooling=True;
+      # host name must be same as postgres service name
+      # credentials (username & password) must match with the environment variables (POSTGRES_USER & POSTGRES_PASSWORD) of db service
+      POSTGRESQL_CONNECTION_STRING: Username=user;password=postgres;Database=digital_menu;host=db;port=5432;Pooling=True;
+
+      # optional
+      # default => redis
+      # must be same as redis service name
+      REDIS_HOST: redis
+
+      # optional
+      # default => 6379
+      # must be same as redis service port
+      REDIS_PORT: 6379
+
+      # optional
+      # default => rabbitmq
+      # must be same as rabbitmq service name
+      RABBITMQ_HOST: rabbitmq
+
+      # optional
+      # default => user
+      # must be same as RABBITMQ_DEFAUT_USER environment variable of rabbitmq service
+      RABBITMQ_USERNAME: user
+
+      # optional
+      # default => password
+      # must be same as RABBITMQ_DEFAUT_PASS environment variable of rabbitmq service
+      RABBITMQ_PASSWORD: password
+
+  # Vue Client App
+  # if you work on your local, change image to erenkaya/digital-menu:client-local
+  # local tag's backend url is 'http://localhost:5001'
+  client:
+    image: erenkaya/digital-menu:client-local
+    # image: erenkaya/digital-menu:client
+    container_name: client
+    depends_on:
+      - api
+    ports:
+      - 80:8080
+    restart: always
+
+  # PostgreSQL Db
+  db:
+    image: postgres
+    container_name: postgres1
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - app-db:/var/lib/postgresql/data
+    restart: always
+
+  # Redis Cache
+  redis:
+    image: redis
+    container_name: redis1
+    ports:
+      - 6379:6379
+    restart: always
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq1
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    restart: always
+
+volumes:
+  app-db:

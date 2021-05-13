@@ -1,7 +1,5 @@
-using System;
 using DigitalMenu.Middleware.CustomMiddlewares;
 using DigitalMenu.RabbitMQ.Consumer.Consumers;
-using DigitalMenu.Service.BackgroundServices;
 using DigitalMenu.Service.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,7 +34,6 @@ namespace DigitalMenu.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DigitalMenu.Api", Version = "v1" });
             });
 
-            services.AddDataProtection();
             services.ConfigureDbContext(Configuration);
             services.ConfigureEncryption(Configuration);
             services.ConfigureHasher(Configuration);
@@ -68,7 +65,7 @@ namespace DigitalMenu.Api
             app.UseCors(builder =>
             {
                 builder
-                    .WithOrigins("http://localhost:8080", "https://localhost:8080")
+                    .WithOrigins("http://localhost", "http://localhost:80", "https://localhost:80", "https://localhost", "http://localhost:8080", "https://localhost:8080")
                     .WithExposedHeaders("X-New-Jwt-Token", "X-IsPersistent")
                     .AllowAnyHeader()
                     .AllowAnyMethod()

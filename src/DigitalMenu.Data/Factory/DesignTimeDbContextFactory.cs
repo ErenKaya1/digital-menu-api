@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using DigitalMenu.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -11,14 +12,21 @@ namespace DigitalMenu.Data.Factory
         public DMContext CreateDbContext(string[] args)
         {
             var builder = new DbContextOptionsBuilder<DMContext>();
-            var configPath = Path.Combine(Directory.GetCurrentDirectory(), "../DigitalMenu.Api");
-            var configuration = new ConfigurationBuilder()
-                                    .SetBasePath(configPath)
-                                    .AddJsonFile("appsettings.json")
-                                    .Build();
-            var connectionString = configuration.GetConnectionString("PostgreSqlProvider");
-            builder.UseNpgsql(connectionString);
+            var connectionString = "";
 
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING")))
+                connectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING");
+            else
+            {
+                var configPath = Path.Combine(Directory.GetCurrentDirectory(), "../DigitalMenu.Api");
+                var configuration = new ConfigurationBuilder()
+                                        .SetBasePath(configPath)
+                                        .AddJsonFile("appsettings.json")
+                                        .Build();
+                connectionString = configuration.GetConnectionString("PostgreSqlProvider");
+            }
+
+            builder.UseNpgsql(connectionString);
             return new DMContext(builder.Options);
         }
     }

@@ -27,13 +27,21 @@ namespace DigitalMenu.Service.Extensions
     {
         public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("PostgreSqlProvider");
+            var connectionString = "";
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING")))
+                connectionString = Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING");
+            else
+                connectionString = configuration.GetConnectionString("PostgreSqlProvider");
+
             services.AddDbContext<DMContext>(options =>
             {
                 options.UseNpgsql(connectionString);
-                options.EnableSensitiveDataLogging();
-                options.EnableDetailedErrors();
             });
+
+            var scopeFactory = services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            using (var dbContext = scope.ServiceProvider.GetRequiredService<DMContext>())
+                dbContext.Database.Migrate();
         }
 
         public static void ConfigureEncryption(this IServiceCollection services, IConfiguration configuration)
@@ -129,7 +137,12 @@ namespace DigitalMenu.Service.Extensions
 
         public static void ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<RabbitMQConfig>(configuration.GetSection("RabbitMQConfig"));
+            services.Configure<RabbitMQConfig>(x =>
+            {
+                x.Host = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? configuration["RabbitMQConfig:Host"];
+                x.Username = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? configuration["RabbitMQConfig:Username"];
+                x.Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? configuration["RabbitMQConfig:Password"];
+            });
 
             services.AddScoped<IRabbitMQService>(x => new RabbitMQService
             {
@@ -142,8 +155,10 @@ namespace DigitalMenu.Service.Extensions
         public static void ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IRedisCacheService>(x => new RedisCacheService(
-                host: configuration["RedisConfig:Host"],
-                port: string.IsNullOrEmpty(configuration["RedisConfig:Port"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Port"]),
+                host: Environment.GetEnvironmentVariable("REDIS_HOST") ?? configuration["RedisConfig:Host"],
+                port: string.IsNullOrEmpty(Environment.GetEnvironmentVariable("REDIS_PORT"))
+                        ? Convert.ToInt32(configuration["RedisConfig:Port"])
+                        : Convert.ToInt32(Environment.GetEnvironmentVariable("REDIS_PORT")),
                 timeout: string.IsNullOrEmpty(configuration["RedisConfig:Timeout"]) ? 0 : Convert.ToInt32(configuration["RedisConfig:Timeout"])
             ));
         }

@@ -25,7 +25,6 @@ namespace DigitalMenu.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetSubscriptionTypes()
         {
-            System.Console.WriteLine("subscription types");
             var response = await _subscriptionTypeService.GetSubscriptionTypesAsync(GetCurrentLanguage());
             if (response.Success)
                 return Success(data: response.Data);

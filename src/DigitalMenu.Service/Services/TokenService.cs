@@ -10,13 +10,14 @@ using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DigitalMenu.Service.Services
 {
-    public class TokenService : ITokenService
+    public class TokenService : BaseService, ITokenService
     {
         private readonly IOptions<JwtSettings> _jwtSettings;
         private readonly IUnitOfWork _unitOfWork;
@@ -43,7 +44,7 @@ namespace DigitalMenu.Service.Services
                     new Claim(ClaimTypes.Role, user.Role.RoleName),
                     new Claim("userId", user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(5),
+                Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256),
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

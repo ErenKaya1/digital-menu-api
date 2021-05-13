@@ -14,12 +14,13 @@ using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace DigitalMenu.Service.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService, IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHasher _hasher;
@@ -195,7 +196,7 @@ namespace DigitalMenu.Service.Services
             if (!userResponse.Success) return new ServiceResponse<Guid>(false, userResponse.Message, userResponse.InternalMessage);
             var refreshPasswordTokenResponse = await _tokenService.GenerateResetPasswordTokenAsync(userResponse.Data);
             if (!refreshPasswordTokenResponse.Success) return new ServiceResponse<Guid>(false, refreshPasswordTokenResponse.Message, refreshPasswordTokenResponse.InternalMessage);
-            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='http://localhost:8080/reset-password/{userResponse.Data}/{refreshPasswordTokenResponse.Data.Token}'>tiklayiniz</a>.</p>" +
+            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='{CustomEnvironment.ClientAppUrl}/reset-password/{userResponse.Data}/{refreshPasswordTokenResponse.Data.Token}'>tiklayiniz</a>.</p>" +
                                "<p>Bu link 15 dakika sonra gecersiz olacaktir.</p>";
 
             var mail = new MailDTO
@@ -272,7 +273,7 @@ namespace DigitalMenu.Service.Services
             if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
             if (user.Company == null) return new ServiceResponse<CompanyDTO>(false, "company not found");
             var dto = _mapper.Map<CompanyDTO>(user.Company);
-            dto.LogoName = user.Company.HasLogo ? $"https://localhost:5001/{userId}/logo/{dto.LogoName}" : null;
+            dto.LogoName = user.Company.HasLogo ? $"{CustomEnvironment.ApiUrl}/{userId}/logo/{dto.LogoName}" : null;
 
             return new ServiceResponse<CompanyDTO>(true) { Data = dto };
         }
@@ -282,8 +283,7 @@ namespace DigitalMenu.Service.Services
             if (model == null) return new ServiceResponse<CompanyDTO>(false);
             var user = await _unitOfWork.UserRepository.Find(x => x.Id == userId).Include(x => x.Company).FirstOrDefaultAsync();
             if (user == null) return new ServiceResponse<CompanyDTO>(false, "user not found");
-
-            if (user.Company.Slug != model.Slug && await _unitOfWork.CompanyRepository.Find(x => x.Slug == model.Slug).AnyAsync())
+            if (user.Company != null && user.Company.Slug != model.Slug && await _unitOfWork.CompanyRepository.Find(x => x.Slug == model.Slug).AnyAsync())
                 return new ServiceResponse<CompanyDTO>(false, "slug already taken before", errorCode: ErrorCodes.DuplicatedCompanySlug);
 
             var data = new CompanyDTO();
@@ -305,13 +305,10 @@ namespace DigitalMenu.Service.Services
                 data = _mapper.Map<CompanyDTO>(company);
             }
 
-            if (model.LogoFile != null)
+            if (model.LogoFile != null && await _imageService.SaveCompanyLogoAsync(model.LogoFile, userId, true))
             {
-                if (await _imageService.SaveCompanyLogoAsync(model.LogoFile, userId, true))
-                {
-                    user.Company.LogoName = model.LogoFile.FileName;
-                    data.LogoName = model.LogoFile.FileName;
-                }
+                user.Company.LogoName = model.LogoFile.FileName;
+                data.LogoName = model.LogoFile.FileName;
             }
 
             _unitOfWork.UserRepository.Update(user);

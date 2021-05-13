@@ -7,12 +7,13 @@ using DigitalMenu.Core.Security.Contracts;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Iyzipay.Request;
 using Microsoft.Extensions.Options;
 
 namespace DigitalMenu.Service.Services
 {
-    public class PaymentService : IPaymentService
+    public class PaymentService : BaseService, IPaymentService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEncryption _encryption;
@@ -45,9 +46,9 @@ namespace DigitalMenu.Service.Services
                 {
                     CardHolderName = model.CardHolder,
                     CardNumber = model.CardNumber,
-                    ExpireMonth = model.CardMonth, // 12
-                    ExpireYear = model.CardYear, // 2030 
-                    Cvc = model.CardCvv, // 123
+                    ExpireMonth = model.CardMonth,
+                    ExpireYear = model.CardYear,
+                    Cvc = model.CardCvv,
                     RegisterCard = 0,
                 },
                 Buyer = new Iyzipay.Model.Buyer

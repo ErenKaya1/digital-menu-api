@@ -10,11 +10,12 @@ using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Service.Services
 {
-    public class SubscriptionService : ISubscriptionService
+    public class SubscriptionService : BaseService, ISubscriptionService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

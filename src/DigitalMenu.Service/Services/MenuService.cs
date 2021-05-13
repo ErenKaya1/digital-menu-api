@@ -9,11 +9,12 @@ using DigitalMenu.Core.Model.Menu;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Service.Services
 {
-    public class MenuService : IMenuService
+    public class MenuService : BaseService, IMenuService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRedisCacheService _redisCacheService;
@@ -61,7 +62,7 @@ namespace DigitalMenu.Service.Services
 
                 dto = new MenuDTO
                 {
-                    CompanyLogo = menu.Company.HasLogo ? $"https://localhost:5001/{menu.UserId}/logo/{menu.Company.LogoName}" : string.Empty,
+                    CompanyLogo = menu.Company.HasLogo ? $"{CustomEnvironment.ApiUrl}/{menu.UserId}/logo/{menu.Company.LogoName}" : string.Empty,
                     CompanyName = menu.Company.Name,
                     BackgroundColor = menu.BackgroundColor,
                     TextColor = menu.TextColor,
@@ -81,7 +82,7 @@ namespace DigitalMenu.Service.Services
                         Description = string.IsNullOrEmpty(x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Description)
                                       ? x.CategoryTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Description
                                       : x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Description,
-                        ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/category/{x.ImageName}" : string.Empty,
+                        ImagePath = x.HasImage ? $"{CustomEnvironment.ApiUrl}/{menu.UserId}/category/{x.ImageName}" : string.Empty,
                         Products = x.Product.Select(x => new ProductDTO
                         {
                             Id = x.Id,
@@ -92,7 +93,7 @@ namespace DigitalMenu.Service.Services
                                           ? x.ProductTranslation.FirstOrDefault(x => x.Culture.IsDefaultCulture).Description
                                           : x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode).Description,
                             Price = x.Price,
-                            ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/product/{x.ImageName}" : string.Empty,
+                            ImagePath = x.HasImage ? $"{CustomEnvironment.ApiUrl}/{menu.UserId}/product/{x.ImageName}" : string.Empty,
                             CategoryId = x.CategoryId
                         }).ToList()
                     }).ToList()

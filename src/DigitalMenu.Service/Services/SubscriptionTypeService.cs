@@ -7,11 +7,12 @@ using DigitalMenu.Core.Constants;
 using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Service.Services
 {
-    public class SubscriptionTypeService : ISubscriptionTypeService
+    public class SubscriptionTypeService : BaseService, ISubscriptionTypeService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRedisCacheService _redisCacheService;
@@ -42,8 +43,8 @@ namespace DigitalMenu.Service.Services
                                     .Select(x => new SubscriptionTypeDTO
                                     {
                                         Id = x.Id,
-                                        Title = x.SubscriptionTypeTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode) == null 
-                                                ? x.SubscriptionTypeTranslation.First(x => x.Culture.IsDefaultCulture).Title 
+                                        Title = x.SubscriptionTypeTranslation.FirstOrDefault(x => x.Culture.CultureCode == cultureCode) == null
+                                                ? x.SubscriptionTypeTranslation.First(x => x.Culture.IsDefaultCulture).Title
                                                 : x.SubscriptionTypeTranslation.First(x => x.Culture.CultureCode == cultureCode).Title,
                                         Price = x.Price,
                                         Features = x.SubscriptionTypeFeature.Select(x => new SubscriptionTypeFeatureDTO

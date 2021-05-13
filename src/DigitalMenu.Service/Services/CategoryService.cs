@@ -9,11 +9,12 @@ using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Service.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : BaseService, ICategoryService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly List<Culture> _cultures;
@@ -71,7 +72,7 @@ namespace DigitalMenu.Service.Services
                                 NameEN = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
                                 DescriptionTR = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
                                 DescriptionEN = x.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
-                                ImagePath = x.HasImage ? $"https://localhost:5001/{userId}/category/{x.ImageName}" : string.Empty
+                                ImagePath = x.HasImage ? $"{CustomEnvironment.ApiUrl}/{userId}/category/{x.ImageName}" : string.Empty
                             })
                             .ToListAsync();
 
@@ -134,7 +135,7 @@ namespace DigitalMenu.Service.Services
                 NameEN = entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Name,
                 DescriptionTR = entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
                 DescriptionEN = entity.CategoryTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
-                ImagePath = entity.HasImage ? $"https://localhost:5001/{userId}/category/{entity.ImageName}" : null
+                ImagePath = entity.HasImage ? $"{CustomEnvironment.ApiUrl}/{userId}/category/{entity.ImageName}" : null
             };
 
             return new ServiceResponse<CategoryDTO>(true) { Data = dto };

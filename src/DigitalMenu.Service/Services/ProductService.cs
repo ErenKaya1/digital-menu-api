@@ -10,11 +10,12 @@ using DigitalMenu.Entity.DTOs;
 using DigitalMenu.Entity.Entities;
 using DigitalMenu.Repository.Contracts;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace DigitalMenu.Service.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : BaseService, IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly List<Culture> _cultures;
@@ -112,7 +113,7 @@ namespace DigitalMenu.Service.Services
                 DescriptionTR = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
                 DescriptionEN = x.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
                 CategoryId = x.CategoryId,
-                ImagePath = x.HasImage ? $"https://localhost:5001/{menu.UserId}/product/{x.ImageName}" : string.Empty
+                ImagePath = x.HasImage ? $"{CustomEnvironment.ApiUrl}/{menu.UserId}/product/{x.ImageName}" : string.Empty
             }).ToList();
 
             return new ServiceResponse<List<ProductDTO>>(true) { Data = entities };
@@ -224,7 +225,7 @@ namespace DigitalMenu.Service.Services
                 DescriptionTR = entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "tr").Description,
                 DescriptionEN = entity.ProductTranslation.FirstOrDefault(x => x.Culture.CultureCode == "en").Description,
                 Price = entity.Price,
-                ImagePath = entity.HasImage ? $"https://localhost:5001/{userId}/product/{entity.ImageName}" : null,
+                ImagePath = entity.HasImage ? $"{CustomEnvironment.ApiUrl}/{userId}/product/{entity.ImageName}" : null,
             };
 
             return new ServiceResponse<ProductDTO>(true) { Data = dto };

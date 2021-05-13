@@ -3,12 +3,13 @@ using System.IO;
 using System.Threading.Tasks;
 using DigitalMenu.Common.Extensions;
 using DigitalMenu.Service.Contracts;
+using DigitalMenu.Service.Services.Base;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace DigitalMenu.Service.Services
 {
-    public class ImageService : IImageService
+    public class ImageService : BaseService, IImageService
     {
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly string _wwwRootPath;
@@ -43,6 +44,7 @@ namespace DigitalMenu.Service.Services
         public async Task<bool> SaveCategoryImageAsync(IFormFile file, Guid userId)
         {
             if (!file.IsImage()) return false;
+            System.Console.WriteLine(_wwwRootPath);
             var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "category");
             if (!Directory.Exists(imagesPath))
                 Directory.CreateDirectory(imagesPath);

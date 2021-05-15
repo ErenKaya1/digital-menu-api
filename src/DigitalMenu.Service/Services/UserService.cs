@@ -196,7 +196,7 @@ namespace DigitalMenu.Service.Services
             if (!userResponse.Success) return new ServiceResponse<Guid>(false, userResponse.Message, userResponse.InternalMessage);
             var refreshPasswordTokenResponse = await _tokenService.GenerateResetPasswordTokenAsync(userResponse.Data);
             if (!refreshPasswordTokenResponse.Success) return new ServiceResponse<Guid>(false, refreshPasswordTokenResponse.Message, refreshPasswordTokenResponse.InternalMessage);
-            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='{CustomEnvironment.ClientAppUrl}/reset-password/{userResponse.Data}/{refreshPasswordTokenResponse.Data.Token}'>tiklayiniz</a>.</p>" +
+            var mailContent = $"<p>Parolanizi sifirlamak icin <a href='{CustomEnvironment.ClientAppUrl}/reset-password?userId={userResponse.Data}&token={refreshPasswordTokenResponse.Data.Token}'>tiklayiniz</a>.</p>" +
                                "<p>Bu link 15 dakika sonra gecersiz olacaktir.</p>";
 
             var mail = new MailDTO

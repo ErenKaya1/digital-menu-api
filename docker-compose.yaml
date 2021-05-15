@@ -6,10 +6,10 @@ version: "3.7"
 services:
   # .NET 5.0 Backend Api
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    # image: erenkaya/digital-menu:api
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: erenkaya/digital-menu:api
     container_name: api
     ports:
       - 5001:80
@@ -32,13 +32,13 @@ services:
       CLIENT_APP_URL: http://localhost
 
       # optional
-      # default => Username=user;password=postgres;Database=digital_menu;host=db;port=5432;Pooling=True;
+      # default => Username=user;password=postgres;Database=digital_menu;host=localhost;port=5432;Pooling=True;
       # host name must be same as postgres service name
       # credentials (username & password) must match with the environment variables (POSTGRES_USER & POSTGRES_PASSWORD) of db service
       POSTGRESQL_CONNECTION_STRING: Username=user;password=postgres;Database=digital_menu;host=db;port=5432;Pooling=True;
 
       # optional
-      # default => redis
+      # default => 127.0.0.1
       # must be same as redis service name
       REDIS_HOST: redis
 
@@ -48,7 +48,7 @@ services:
       REDIS_PORT: 6379
 
       # optional
-      # default => rabbitmq
+      # default => localhost
       # must be same as rabbitmq service name
       RABBITMQ_HOST: rabbitmq
 

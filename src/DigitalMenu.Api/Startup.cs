@@ -1,3 +1,4 @@
+using System;
 using DigitalMenu.Middleware.CustomMiddlewares;
 using DigitalMenu.RabbitMQ.Consumer.Consumers;
 using DigitalMenu.Service.Extensions;
@@ -65,7 +66,7 @@ namespace DigitalMenu.Api
             app.UseCors(builder =>
             {
                 builder
-                    .WithOrigins("http://localhost", "http://localhost:80", "https://localhost:80", "https://localhost", "http://localhost:8080", "https://localhost:8080")
+                    .WithOrigins(Environment.GetEnvironmentVariable("CLIENT_APP_URL"))
                     .WithExposedHeaders("X-New-Jwt-Token", "X-IsPersistent")
                     .AllowAnyHeader()
                     .AllowAnyMethod()

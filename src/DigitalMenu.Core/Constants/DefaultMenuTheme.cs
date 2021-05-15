@@ -9,7 +9,7 @@ namespace DigitalMenu.Core.Constants
         public const string SelectedCategoryBorderColor = "#3AB5A1";
         public const string ProductBackgroundColor = "#F5F5F5";
         public const string LanguageCurrencyBackgroundColor = "#3AB5A1";
-        public const string LanguageCurrencyTextColor = "#3AB5A1";
+        public const string LanguageCurrencyTextColor = "#F5F5F5";
         public const string LinkColor = "#4e5155";
     }
 }

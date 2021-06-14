@@ -31,7 +31,7 @@ Gereksinimler
 - Redis
 - RabbitMQ
 
-Backend için [AppSettings.json](/src/DigitalMenu.Api/appSettings.json) dosyasındaki `PostgreSqlProvider`, `RabbitMQConfig`, `RedisConfig` bağlantı değerlerine kendi ayarlarınızı girdikten sonra, terminalden [DigitalMenu.Api.csproj](/src/DigitalMenu.Api/DigitalMenu.Api.csproj) konumundayken
+Backend için [AppSettings.json](/src/DigitalMenu.Api/appsettings.json) dosyasındaki `PostgreSqlProvider`, `RabbitMQConfig`, `RedisConfig` bağlantı değerlerine kendi ayarlarınızı girdikten sonra, terminalden [DigitalMenu.Api.csproj](/src/DigitalMenu.Api/DigitalMenu.Api.csproj) konumundayken
 
 ```
 dotnet run

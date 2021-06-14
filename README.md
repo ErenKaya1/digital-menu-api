@@ -46,3 +46,4 @@ npm run serve
 ```
 
 komutu ile projeyi çalıştırabilirsiniz.
+Client projesinin root dizininindeki `.env` dosyasının içindeki **VUE_APP_BACKEND_URL** ortam değişkeni backend projesinin çalıştığı url ile aynı olmak zorundadır. Http requestleri bu adrese gönderilmektedir.

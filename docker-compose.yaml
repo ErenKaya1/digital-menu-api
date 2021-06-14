@@ -1,7 +1,9 @@
 version: "3.7"
 
-# if you change redis, rabbitmq, db service names, update the api service depends.
-# if you change api service name, update the client service depends.
+# Servislerin isimlerini değiştirmenize gerek yoktur.
+# Projeyi local bilgisayarınızda çalıştıracaksanız 'api' servisindeki API_URL ve CLIENT_APP_URL ortam değişkenlerini düzenlemeniz gerekmektedir.
+# API_URL değişkenine 'api' projesinin çalıştğı url i, CLIENT_APP_URL değişkenine ise Vue ile yazılmış 'client' uygulamasının çalıştığı url i yazmanız gerekmektedir. 
+# Containerleri ayağa kaldırmadan önce ilgili portların boşta olduğundan emin olun.
 
 services:
   # .NET 5.0 Backend Api
@@ -19,55 +21,54 @@ services:
       - rabbitmq
     restart: always
     environment:
-      # production or development
+      # production veya development
       ASPNETCORE_ENVIRONMENT: development
 
-      # required
-      # it does not set the url address where the project will run.
-      # just the url where api project is running (for the image urls, etc.)
-      API_URL: http://localhost:5001
+      # Zorunlu
+      # Backend projesinin çalıştığı url.
+      # Image adreslerinde kullanılıyor. Örn: https://localhost:5001/images/1.jpg
+      API_URL: http://api.digitalmenu-iesu.tk
 
-      # required
-      # the url where client app is running
-      CLIENT_APP_URL: http://localhost
+      # Zorunlu
+      # Vue client uygulamasının çalıştığı url adresi.
+      # CORS ayarlarında kullanılıyor.
+      CLIENT_APP_URL: http://digitalmenu-iesu.tk
 
-      # optional
-      # default => Username=user;password=postgres;Database=digital_menu;host=localhost;port=5432;Pooling=True;
-      # host name must be same as postgres service name
-      # credentials (username & password) must match with the environment variables (POSTGRES_USER & POSTGRES_PASSWORD) of db service
+      # Opsiyonel
+      # Varsayılan => Username=user;password=postgres;Database=digital_menu;host=localhost;port=5432;Pooling=True;
+      # Connection String'deki host, 'db' servisinin adı ile aynı olmak zorundadır.
+      # db servisindeki POSTGRES_USER ve POSTGRES_PASSWORD ortam değişkenleri ile Connection String'deki username ve password değerleri aynı olmak zorundadır. (Değiştirmezseniz zaten bu şekilde.)
       POSTGRESQL_CONNECTION_STRING: Username=user;password=postgres;Database=digital_menu;host=db;port=5432;Pooling=True;
 
-      # optional
-      # default => 127.0.0.1
-      # must be same as redis service name
+      # Opsiyonel
+      # Varsayılan => 127.0.0.1
+      # 'redis' servis adı ile aynı değere sahip olmak zorundadır.
       REDIS_HOST: redis
 
-      # optional
-      # default => 6379
-      # must be same as redis service port
+      # Opsiyonel
+      # Varsayılan => 6379
+      # 'redis' servisindeki port ile aynı olmak zorundadır.
       REDIS_PORT: 6379
 
-      # optional
-      # default => localhost
-      # must be same as rabbitmq service name
+      # Opsiyonel
+      # Varsayılan => localhost
+      # 'rabbitmq' servis adı ile aynı olmak zorundadır.
       RABBITMQ_HOST: rabbitmq
 
-      # optional
-      # default => user
-      # must be same as RABBITMQ_DEFAUT_USER environment variable of rabbitmq service
+      # Opsiyonel
+      # Varsayılan => user
+      # 'rabbitmq' servisindeki RABBITMQ_DEFAUT_USER ortam değişkeni ile aynı değere sahip olmak zorundadır.
       RABBITMQ_USERNAME: user
 
-      # optional
-      # default => password
-      # must be same as RABBITMQ_DEFAUT_PASS environment variable of rabbitmq service
+      # Opsiyonel
+      # Varsayılan => password
+      # 'rabbitmq' servisindeki RABBITMQ_DEFAUT_PASS ortam değişkeni ile aynı değere sahip olmak zorundadır.
       RABBITMQ_PASSWORD: password
 
   # Vue Client App
-  # if you work on your local, change image to erenkaya/digital-menu:client-local
-  # local tag's backend url is 'http://localhost:5001'
   client:
-    image: erenkaya/digital-menu:client-local
-    # image: erenkaya/digital-menu:client
+    image: erenkaya/digital-menu:client
+    # ima+ge: erenkaya/digital-menu:client
     container_name: client
     depends_on:
       - api
@@ -78,7 +79,7 @@ services:
   # PostgreSQL Db
   db:
     image: postgres
-    container_name: postgres1
+    container_name: postgres
     ports:
       - 5432:5432
     environment:
@@ -91,7 +92,7 @@ services:
   # Redis Cache
   redis:
     image: redis
-    container_name: redis1
+    container_name: redis
     ports:
       - 6379:6379
     restart: always
@@ -99,7 +100,7 @@ services:
   # RabbitMQ
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq1
+    container_name: rabbitmq
     ports:
       - 15672:15672
       - 5672:5672

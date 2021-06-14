@@ -141,8 +141,8 @@ namespace DigitalMenu.Service.Services
             await _unitOfWork.SaveChangesAsync();
 
             // clear cache
-            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId + "_tr");
-            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId + "_en");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_tr");
+            _redisCacheService.Remove(RedisKeyPrefixes.MENU + userId.ToString() + "_en");
 
             return new ServiceResponse<object>(true);
         }

@@ -44,7 +44,6 @@ namespace DigitalMenu.Service.Services
         public async Task<bool> SaveCategoryImageAsync(IFormFile file, Guid userId)
         {
             if (!file.IsImage()) return false;
-            System.Console.WriteLine(_wwwRootPath);
             var imagesPath = Path.Combine(_wwwRootPath, userId.ToString(), "category");
             if (!Directory.Exists(imagesPath))
                 Directory.CreateDirectory(imagesPath);

@@ -17,7 +17,7 @@ Gereksinimler
 docker-compose up -d
 ```
 
-komutu ile projeyi çalıştırabilirsiniz. Projelerin güncel halleri `Docker Hub`'da tutulmaktadır.
+komutu ile projeyi çalıştırabilirsiniz. Projelerin güncel halleri `Docker Hub`'ta tutulmaktadır.
 
 ## Manuel Kurulum
 

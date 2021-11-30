@@ -1,10 +1,5 @@
 version: "3.7"
 
-# Servislerin isimlerini değiştirmenize gerek yoktur.
-# Projeyi local bilgisayarınızda çalıştıracaksanız 'api' servisindeki API_URL ve CLIENT_APP_URL ortam değişkenlerini düzenlemeniz gerekmektedir.
-# API_URL değişkenine 'api' projesinin çalıştğı url i, CLIENT_APP_URL değişkenine ise Vue ile yazılmış 'client' uygulamasının çalıştığı url i yazmanız gerekmektedir. 
-# Containerleri ayağa kaldırmadan önce ilgili portların boşta olduğundan emin olun.
-
 services:
   # .NET 5.0 Backend Api
   api:
@@ -21,54 +16,44 @@ services:
       - rabbitmq
     restart: always
     environment:
-      # production veya development
+      # production or development
       ASPNETCORE_ENVIRONMENT: development
 
-      # Zorunlu
-      # Backend projesinin çalıştığı url.
-      # Image adreslerinde kullanılıyor. Örn: https://localhost:5001/images/1.jpg
+      # Required
+      # The url where REST API is running
       API_URL: http://api.digitalmenu-iesu.tk
 
-      # Zorunlu
-      # Vue client uygulamasının çalıştığı url adresi.
-      # CORS ayarlarında kullanılıyor.
+      # Required
+      # The url where Vue client app is running
       CLIENT_APP_URL: http://digitalmenu-iesu.tk
 
-      # Opsiyonel
-      # Varsayılan => Username=user;password=postgres;Database=digital_menu;host=localhost;port=5432;Pooling=True;
-      # Connection String'deki host, 'db' servisinin adı ile aynı olmak zorundadır.
-      # db servisindeki POSTGRES_USER ve POSTGRES_PASSWORD ortam değişkenleri ile Connection String'deki username ve password değerleri aynı olmak zorundadır. (Değiştirmezseniz zaten bu şekilde.)
+      # Optional
+      # Default => Username=user;password=postgres;Database=digital_menu;host=localhost;port=5432;Pooling=True;
       POSTGRESQL_CONNECTION_STRING: Username=user;password=postgres;Database=digital_menu;host=db;port=5432;Pooling=True;
 
-      # Opsiyonel
-      # Varsayılan => 127.0.0.1
-      # 'redis' servis adı ile aynı değere sahip olmak zorundadır.
+      # Optional
+      # Default => 127.0.0.1
       REDIS_HOST: redis
 
-      # Opsiyonel
-      # Varsayılan => 6379
-      # 'redis' servisindeki port ile aynı olmak zorundadır.
+      # Optional
+      # Default => 6379
       REDIS_PORT: 6379
 
-      # Opsiyonel
-      # Varsayılan => localhost
-      # 'rabbitmq' servis adı ile aynı olmak zorundadır.
+      # Optional
+      # Default => localhost
       RABBITMQ_HOST: rabbitmq
 
-      # Opsiyonel
-      # Varsayılan => user
-      # 'rabbitmq' servisindeki RABBITMQ_DEFAUT_USER ortam değişkeni ile aynı değere sahip olmak zorundadır.
+      # Optional
+      # Default => user
       RABBITMQ_USERNAME: user
 
-      # Opsiyonel
-      # Varsayılan => password
-      # 'rabbitmq' servisindeki RABBITMQ_DEFAUT_PASS ortam değişkeni ile aynı değere sahip olmak zorundadır.
+      # Optional
+      # Default => password
       RABBITMQ_PASSWORD: password
 
   # Vue Client App
   client:
     image: erenkaya/digital-menu:client
-    # ima+ge: erenkaya/digital-menu:client
     container_name: client
     depends_on:
       - api
